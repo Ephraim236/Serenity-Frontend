@@ -48,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const verifyToken = async (token: string) => {
     try {
-      const response = await fetch(`${API_URL}/auth/me`, {
+      const response = await fetch(`${API_URL}/api/auth/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -79,7 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loginWithGoogle = () => {
     // Redirect to backend Google OAuth endpoint
-    window.location.href = `${API_URL}/auth/google`;
+    window.location.href = `${API_URL}/api/auth/google`;
   };
 
   return (
@@ -114,7 +114,7 @@ export function getAuthToken(): string | null {
 // API helper functions
 export const authApi = {
   login: async (email: string, password: string) => {
-    const response = await fetch(`${API_URL}/auth/login`, {
+    const response = await fetch(`${API_URL}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -129,7 +129,7 @@ export const authApi = {
   },
   
   register: async (data: { email: string; password: string; name: string; role: string; businessName?: string }) => {
-    const response = await fetch(`${API_URL}/auth/register`, {
+    const response = await fetch(`${API_URL}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -144,7 +144,7 @@ export const authApi = {
   },
   
   getGoogleAuthStatus: async () => {
-    const response = await fetch(`${API_URL}/auth/google/status`);
+    const response = await fetch(`${API_URL}/api/auth/google/status`);
     return response.json();
   },
 };

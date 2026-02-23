@@ -124,7 +124,7 @@ export function AdminDashboard() {
     
     try {
       // Fetch stats
-      const statsResponse = await fetch(`${API_URL}/dashboard/stats`, {
+      const statsResponse = await fetch(`${API_URL}/api/dashboard/stats`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -137,7 +137,7 @@ export function AdminDashboard() {
       }
 
       // Fetch revenue data
-      const revenueResponse = await fetch(`${API_URL}/dashboard/revenue?period=${period}`, {
+      const revenueResponse = await fetch(`${API_URL}/api/dashboard/revenue?period=${period}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -151,7 +151,7 @@ export function AdminDashboard() {
       }
 
       // Fetch staff data
-      const staffResponse = await fetch(`${API_URL}/dashboard/staff`, {
+      const staffResponse = await fetch(`${API_URL}/api/dashboard/staff`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -175,7 +175,7 @@ export function AdminDashboard() {
     const token = getAuthToken();
     
     try {
-      const response = await fetch(`${API_URL}/dashboard/appointments/${appointmentId}`, {
+      const response = await fetch(`${API_URL}/api/dashboard/appointments/${appointmentId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
