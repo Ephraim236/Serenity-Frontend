@@ -28,7 +28,7 @@ import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Link } from "react-router";
 import { getAuthToken } from "../contexts/AuthContext";
 
-const API_URL = "/api";
+const API_URL = "https://serenity-production-bafc.up.railway.app";
 
 interface DashboardStats {
   totalRevenue: string;

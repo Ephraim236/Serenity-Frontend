@@ -21,8 +21,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const STORAGE_KEY = "serenity_auth_user";
 const TOKEN_KEY = "serenity_auth_token";
-// Use relative URL - Vite proxy will forward to backend
-const API_URL = "/api";
+// Use production backend URL
+const API_URL = "https://serenity-production-bafc.up.railway.app";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -78,8 +78,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const loginWithGoogle = () => {
-    // Redirect to backend Google OAuth endpoint (relative URL)
-    window.location.href = `${window.location.origin}/api/auth/google`;
+    // Redirect to backend Google OAuth endpoint
+    window.location.href = `${API_URL}/auth/google`;
   };
 
   return (

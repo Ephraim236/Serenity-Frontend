@@ -24,8 +24,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'https://serenity-production-bafc.up.railway.app',
         changeOrigin: true,
+        secure: true,
       },
     },
   },
