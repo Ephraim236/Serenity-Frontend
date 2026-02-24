@@ -93,40 +93,69 @@ export function LoginPage() {
         className="w-full max-w-md z-10"
       >
         <div className="text-center mb-10">
-          <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center text-white mx-auto mb-6 shadow-2xl border border-white/20">
+          <motion.div 
+            className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center text-white mx-auto mb-6 shadow-2xl border border-white/20"
+            key={role}
+            initial={{ scale: 0.8, rotate: -5 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+          >
             <Scissors className="w-10 h-10" />
-          </div>
-          <h1 className="text-4xl font-bold text-white drop-shadow-lg">Welcome Back</h1>
-          <p className="text-white/70 mt-2">Sign in to your Serenity account</p>
+          </motion.div>
+          <motion.h1 
+            key={`title-${role}`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl font-bold text-white drop-shadow-lg"
+          >
+            Welcome Back
+          </motion.h1>
+          <motion.p 
+            key={`subtitle-${role}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-white/70 mt-2"
+          >
+            Sign in as {role === "client" ? "a Client" : "a Business Owner"}
+          </motion.p>
         </div>
 
         <Card className="p-8 border-none shadow-2xl bg-white/95 backdrop-blur-md rounded-[32px]">
           {/* Role Selector */}
-          <div className="flex bg-neutral-100 p-1 rounded-2xl mb-8">
-            <button
-              type="button"
-              onClick={() => setRole("client")}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${
-                role === "client" 
-                  ? "bg-white text-indigo-600 shadow-sm" 
-                  : "text-neutral-500 hover:text-neutral-700"
-              }`}
-            >
-              <User className="w-4 h-4" />
-              Client
-            </button>
-            <button
-              type="button"
-              onClick={() => setRole("business")}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${
-                role === "business" 
-                  ? "bg-white text-indigo-600 shadow-sm" 
-                  : "text-neutral-500 hover:text-neutral-700"
-              }`}
-            >
-              <Building2 className="w-4 h-4" />
-              Business
-            </button>
+          <div className="relative bg-neutral-100 p-1 rounded-2xl mb-8">
+            {/* Animated sliding indicator */}
+            <motion.div
+              className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-xl shadow-sm"
+              initial={false}
+              animate={{ x: role === "client" ? 0 : "100%" }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            />
+            <div className="relative flex">
+              <button
+                type="button"
+                onClick={() => setRole("client")}
+                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-colors z-10 ${
+                  role === "client" 
+                    ? "text-indigo-600" 
+                    : "text-neutral-500 hover:text-neutral-700"
+                }`}
+              >
+                <User className="w-4 h-4" />
+                Client
+              </button>
+              <button
+                type="button"
+                onClick={() => setRole("business")}
+                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-colors z-10 ${
+                  role === "business" 
+                    ? "text-indigo-600" 
+                    : "text-neutral-500 hover:text-neutral-700"
+                }`}
+              >
+                <Building2 className="w-4 h-4" />
+                Business
+              </button>
+            </div>
           </div>
 
           {/* Google OAuth Button */}

@@ -14,7 +14,7 @@ import {
   Briefcase,
   Chrome
 } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 import { useAuth, authApi } from "../contexts/AuthContext";
 
@@ -105,51 +105,91 @@ export function SignUpPage() {
         className="w-full max-w-xl z-10"
       >
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center text-white mx-auto mb-6 shadow-2xl border border-white/20">
+          <motion.div 
+            className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center text-white mx-auto mb-6 shadow-2xl border border-white/20"
+            key={role}
+            initial={{ scale: 0.8, rotate: -5 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+          >
             <UserPlus className="w-10 h-10" />
-          </div>
-          <h1 className="text-4xl font-bold text-white drop-shadow-lg">Create Account</h1>
-          <p className="text-white/70 mt-2">Join Serenity Spa & Wellness</p>
+          </motion.div>
+          <motion.h1 
+            key={`title-${role}`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl font-bold text-white drop-shadow-lg"
+          >
+            Create Account
+          </motion.h1>
+          <motion.p 
+            key={`subtitle-${role}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-white/70 mt-2"
+          >
+            Join as {role === "client" ? "a Client" : "a Business Owner"}
+          </motion.p>
         </div>
 
         <Card className="p-10 border-none shadow-2xl bg-white/95 backdrop-blur-md rounded-[40px]">
           <div className="mb-10">
             <label className="text-sm font-bold text-neutral-700 block mb-4 text-center">I want to join as a:</label>
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                type="button"
-                onClick={() => setRole("client")}
-                className={`flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all ${
-                  role === "client" 
-                    ? "border-indigo-600 bg-indigo-50/50 text-indigo-700" 
-                    : "border-neutral-100 hover:border-neutral-200 text-neutral-500"
-                }`}
-              >
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "client" ? "bg-indigo-600 text-white" : "bg-neutral-100"}`}>
-                  <User className="w-6 h-6" />
-                </div>
-                <div className="text-center">
-                  <span className="block font-bold">Client</span>
-                  <span className="text-[10px] opacity-70">Book appointments</span>
-                </div>
-              </button>
-              <button
-                type="button"
-                onClick={() => setRole("business")}
-                className={`flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all ${
-                  role === "business" 
-                    ? "border-indigo-600 bg-indigo-50/50 text-indigo-700" 
-                    : "border-neutral-100 hover:border-neutral-200 text-neutral-500"
-                }`}
-              >
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "business" ? "bg-indigo-600 text-white" : "bg-neutral-100"}`}>
-                  <Briefcase className="w-6 h-6" />
-                </div>
-                <div className="text-center">
-                  <span className="block font-bold">Business</span>
-                  <span className="text-[10px] opacity-70">Manage my salon</span>
-                </div>
-              </button>
+            <div className="relative">
+              {/* Animated sliding background */}
+              <motion.div
+                className="absolute inset-0 rounded-3xl border-2 border-indigo-600 bg-indigo-50/50"
+                initial={false}
+                animate={{ 
+                  x: role === "client" ? 0 : "50%",
+                  opacity: 1 
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              />
+              <div className="relative grid grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setRole("client")}
+                  className={`flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all ${
+                    role === "client" 
+                      ? "border-transparent text-indigo-700" 
+                      : "border-transparent text-neutral-500"
+                  }`}
+                >
+                  <motion.div 
+                    className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "client" ? "bg-indigo-600 text-white" : "bg-neutral-100"}`}
+                    animate={{ scale: role === "client" ? 1 : 0.9 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  >
+                    <User className="w-6 h-6" />
+                  </motion.div>
+                  <div className="text-center">
+                    <span className="block font-bold">Client</span>
+                    <span className="text-[10px] opacity-70">Book appointments</span>
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRole("business")}
+                  className={`flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all ${
+                    role === "business" 
+                      ? "border-transparent text-indigo-700" 
+                      : "border-transparent text-neutral-500"
+                  }`}
+                >
+                  <motion.div 
+                    className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "business" ? "bg-indigo-600 text-white" : "bg-neutral-100"}`}
+                    animate={{ scale: role === "business" ? 1 : 0.9 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  >
+                    <Briefcase className="w-6 h-6" />
+                  </motion.div>
+                  <div className="text-center">
+                    <span className="block font-bold">Business</span>
+                    <span className="text-[10px] opacity-70">Manage my salon</span>
+                  </div>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -204,8 +244,15 @@ export function SignUpPage() {
               </div>
             </div>
 
+            <AnimatePresence mode="wait">
             {role === "business" && (
-              <div className="space-y-2">
+              <motion.div
+                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                animate={{ opacity: 1, height: "auto", marginTop: undefined }}
+                exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                transition={{ duration: 0.2 }}
+                className="space-y-2 overflow-hidden"
+              >
                 <label className="text-sm font-bold text-neutral-700 ml-1">Business Name</label>
                 <input
                   required
@@ -216,8 +263,9 @@ export function SignUpPage() {
                   onChange={handleChange}
                   className="w-full px-5 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
                 />
-              </div>
+              </motion.div>
             )}
+          </AnimatePresence>
 
             <div className="space-y-2">
               <label className="text-sm font-bold text-neutral-700 ml-1">Password</label>
@@ -246,7 +294,16 @@ export function SignUpPage() {
             >
               {isLoading ? "Creating Account..." : (
                 <>
-                  Create {role === "client" ? "Client" : "Business"} Account <ArrowRight className="w-5 h-5" />
+                  <motion.span
+                    key={role}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    Create {role === "client" ? "Client" : "Business"} Account
+                  </motion.span>
+                  <ArrowRight className="w-5 h-5" />
                 </>
               )}
             </Button>

@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite'
-import path from 'path'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 
@@ -13,7 +12,7 @@ export default defineConfig({
   resolve: {
     alias: {
       // Alias @ to the src directory
-      '@': path.resolve(__dirname, './src'),
+      '@': new URL('./src', import.meta.url).pathname
     },
   },
 
@@ -24,9 +23,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://serenity-production-bafc.up.railway.app',
+        target: 'http://localhost:3000',
         changeOrigin: true,
-        secure: true,
       },
     },
   },
