@@ -93,106 +93,40 @@ export function LoginPage() {
         className="w-full max-w-md z-10"
       >
         <div className="text-center mb-10">
-          <motion.div 
-            className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center text-white mx-auto mb-6 shadow-2xl border border-white/20"
-            key={role}
-            initial={{ scale: 0.8, rotate: -5 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ type: "spring", stiffness: 400, damping: 20 }}
-          >
+          <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center text-white mx-auto mb-6 shadow-2xl border border-white/20">
             <Scissors className="w-10 h-10" />
-          </motion.div>
-          <motion.h1 
-            key={`title-${role}`}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl font-bold text-white drop-shadow-lg"
-          >
-            Welcome Back
-          </motion.h1>
-          <motion.p 
-            key={`subtitle-${role}`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-white/70 mt-2"
-          >
-            Sign in as {role === "client" ? "a Client" : "a Business Owner"}
-          </motion.p>
+          </div>
+          <h1 className="text-4xl font-bold text-white drop-shadow-lg">Welcome Back</h1>
+          <p className="text-white/70 mt-2">Sign in to your Serenity account</p>
         </div>
 
-        <Card className="p-8 border-none shadow-2xl rounded-[32px] overflow-hidden relative">
-          {/* Animated gradient background covering the whole form - water effect */}
-          <motion.div
-            className="absolute inset-0 -z-10"
-            initial={false}
-            animate={{
-              background: role === "client"
-                ? "linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 25%, #a5b4fc 50%, #c7d2fe 75%, #e0e7ff 100%)"
-                : "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 25%, #c4b5fd 50%, #ddd6fe 75%, #ede9fe 100%)"
-            }}
-            transition={{ duration: 1, ease: "easeInOut" }}
-          />
-          {/* Shimmer overlay for water flow effect */}
-          <motion.div
-            className="absolute inset-0 -z-10 opacity-50"
-            animate={{ backgroundPosition: ["0% 0%", "200% 0%"] }}
-            transition={{ duration: 2, repeat: Infinity, repeatDelay: 0.5, ease: "linear" }}
-            style={{
-              background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%)",
-              backgroundSize: "200% 100%"
-            }}
-          />
-          
+        <Card className="p-8 border-none shadow-2xl bg-white/95 backdrop-blur-md rounded-[32px]">
           {/* Role Selector */}
-          <div className="relative bg-white/70 backdrop-blur-sm p-1 rounded-2xl mb-8 shadow-inner">
-            {/* Animated flowing gradient background - water effect */}
-            <motion.div
-              className="absolute inset-0 rounded-xl"
-              initial={false}
-              animate={{
-                background: role === "client"
-                  ? "linear-gradient(135deg, #a5b4fc 0%, #818cf8 25%, #6366f1 50%, #818cf8 75%, #a5b4fc 100%)"
-                  : "linear-gradient(135deg, #c4b5fd 0%, #a78bfa 25%, #8b5cf6 50%, #a78bfa 75%, #c4b5fd 100%)"
-              }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
-            />
-            {/* Animated shimmer overlay for water flow effect */}
-            <motion.div
-              className="absolute inset-0 rounded-xl opacity-40"
-              initial={false}
-              animate={{ backgroundPosition: ["0% 0%", "200% 0%"] }}
-              transition={{ duration: 2, repeat: Infinity, repeatDelay: 0.5, ease: "linear" }}
-              style={{
-                background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%)",
-                backgroundSize: "200% 100%"
-              }}
-            />
-            <div className="relative flex">
-              <button
-                type="button"
-                onClick={() => setRole("client")}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all z-10 ${
-                  role === "client" 
-                    ? "text-white drop-shadow-md" 
-                    : "text-white/70 hover:text-white"
-                }`}
-              >
-                <User className="w-4 h-4" />
-                Client
-              </button>
-              <button
-                type="button"
-                onClick={() => setRole("business")}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all z-10 ${
-                  role === "business" 
-                    ? "text-white drop-shadow-md" 
-                    : "text-white/70 hover:text-white"
-                }`}
-              >
-                <Building2 className="w-4 h-4" />
-                Business
-              </button>
-            </div>
+          <div className="flex bg-neutral-100 p-1 rounded-2xl mb-8">
+            <button
+              type="button"
+              onClick={() => setRole("client")}
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${
+                role === "client" 
+                  ? "bg-white text-indigo-600 shadow-sm" 
+                  : "text-neutral-500 hover:text-neutral-700"
+              }`}
+            >
+              <User className="w-4 h-4" />
+              Client
+            </button>
+            <button
+              type="button"
+              onClick={() => setRole("business")}
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${
+                role === "business" 
+                  ? "bg-white text-indigo-600 shadow-sm" 
+                  : "text-neutral-500 hover:text-neutral-700"
+              }`}
+            >
+              <Building2 className="w-4 h-4" />
+              Business
+            </button>
           </div>
 
           {/* Google OAuth Button */}
