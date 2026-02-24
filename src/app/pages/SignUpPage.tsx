@@ -136,15 +136,31 @@ export function SignUpPage() {
           <div className="mb-10">
             <label className="text-sm font-bold text-neutral-700 block mb-4 text-center">I want to join as a:</label>
             <div className="relative">
-              {/* Animated sliding background */}
+              {/* Animated flowing gradient background - water effect */}
               <motion.div
-                className="absolute inset-0 rounded-3xl border-2 border-indigo-600 bg-indigo-50/50"
+                className="absolute inset-0 rounded-3xl"
                 initial={false}
-                animate={{ 
-                  x: role === "client" ? 0 : "50%",
-                  opacity: 1 
+                animate={{
+                  background: role === "client"
+                    ? "linear-gradient(135deg, #a5b4fc 0%, #818cf8 25%, #6366f1 50%, #818cf8 75%, #a5b4fc 100%)"
+                    : "linear-gradient(135deg, #c4b5fd 0%, #a78bfa 25%, #8b5cf6 50%, #a78bfa 75%, #c4b5fd 100%)"
                 }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                transition={{ duration: 0.8, ease: "easeInOut" }}
+              />
+              {/* Animated shimmer overlay */}
+              <motion.div
+                className="absolute inset-0 rounded-3xl opacity-30"
+                initial={false}
+                animate={{
+                  background: role === "client"
+                    ? "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)"
+                    : "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)"
+                }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                style={{
+                  backgroundSize: "200% 100%",
+                  animation: "shimmer 1.5s infinite"
+                }}
               />
               <div className="relative grid grid-cols-2 gap-4">
                 <button
@@ -152,13 +168,13 @@ export function SignUpPage() {
                   onClick={() => setRole("client")}
                   className={`flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all ${
                     role === "client" 
-                      ? "border-transparent text-indigo-700" 
-                      : "border-transparent text-neutral-500"
+                      ? "border-transparent text-white drop-shadow-md" 
+                      : "border-transparent text-white/70 hover:text-white"
                   }`}
                 >
                   <motion.div 
-                    className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "client" ? "bg-indigo-600 text-white" : "bg-neutral-100"}`}
-                    animate={{ scale: role === "client" ? 1 : 0.9 }}
+                    className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "client" ? "bg-white/30 backdrop-blur-sm" : "bg-white/20"}`}
+                    animate={{ scale: role === "client" ? 1 : 0.95 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
                   >
                     <User className="w-6 h-6" />
@@ -173,13 +189,13 @@ export function SignUpPage() {
                   onClick={() => setRole("business")}
                   className={`flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all ${
                     role === "business" 
-                      ? "border-transparent text-indigo-700" 
-                      : "border-transparent text-neutral-500"
+                      ? "border-transparent text-white drop-shadow-md" 
+                      : "border-transparent text-white/70 hover:text-white"
                   }`}
                 >
                   <motion.div 
-                    className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "business" ? "bg-indigo-600 text-white" : "bg-neutral-100"}`}
-                    animate={{ scale: role === "business" ? 1 : 0.9 }}
+                    className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "business" ? "bg-white/30 backdrop-blur-sm" : "bg-white/20"}`}
+                    animate={{ scale: role === "business" ? 1 : 0.95 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
                   >
                     <Briefcase className="w-6 h-6" />
@@ -191,6 +207,12 @@ export function SignUpPage() {
                 </button>
               </div>
             </div>
+            <style>{`
+              @keyframes shimmer {
+                0% { background-position: -200% 0; }
+                100% { background-position: 200% 0; }
+              }
+            `}</style>
           </div>
 
           {/* Google OAuth Button */}

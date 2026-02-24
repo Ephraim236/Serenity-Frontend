@@ -122,22 +122,37 @@ export function LoginPage() {
 
         <Card className="p-8 border-none shadow-2xl bg-white/95 backdrop-blur-md rounded-[32px]">
           {/* Role Selector */}
-          <div className="relative bg-neutral-100 p-1 rounded-2xl mb-8">
-            {/* Animated sliding indicator */}
+          <div className="relative bg-neutral-100 p-1 rounded-2xl mb-8 overflow-hidden">
+            {/* Animated flowing gradient background - water effect */}
             <motion.div
-              className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-xl shadow-sm"
+              className="absolute inset-0 rounded-xl"
               initial={false}
-              animate={{ x: role === "client" ? 0 : "100%" }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              animate={{
+                background: role === "client"
+                  ? "linear-gradient(135deg, #a5b4fc 0%, #818cf8 25%, #6366f1 50%, #818cf8 75%, #a5b4fc 100%)"
+                  : "linear-gradient(135deg, #c4b5fd 0%, #a78bfa 25%, #8b5cf6 50%, #a78bfa 75%, #c4b5fd 100%)"
+              }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+            />
+            {/* Animated shimmer overlay for water flow effect */}
+            <motion.div
+              className="absolute inset-0 rounded-xl opacity-40"
+              initial={false}
+              animate={{ backgroundPosition: ["0% 0%", "200% 0%"] }}
+              transition={{ duration: 2, repeat: Infinity, repeatDelay: 0.5, ease: "linear" }}
+              style={{
+                background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%)",
+                backgroundSize: "200% 100%"
+              }}
             />
             <div className="relative flex">
               <button
                 type="button"
                 onClick={() => setRole("client")}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-colors z-10 ${
+                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all z-10 ${
                   role === "client" 
-                    ? "text-indigo-600" 
-                    : "text-neutral-500 hover:text-neutral-700"
+                    ? "text-white drop-shadow-md" 
+                    : "text-white/70 hover:text-white"
                 }`}
               >
                 <User className="w-4 h-4" />
@@ -146,10 +161,10 @@ export function LoginPage() {
               <button
                 type="button"
                 onClick={() => setRole("business")}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-colors z-10 ${
+                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all z-10 ${
                   role === "business" 
-                    ? "text-indigo-600" 
-                    : "text-neutral-500 hover:text-neutral-700"
+                    ? "text-white drop-shadow-md" 
+                    : "text-white/70 hover:text-white"
                 }`}
               >
                 <Building2 className="w-4 h-4" />
