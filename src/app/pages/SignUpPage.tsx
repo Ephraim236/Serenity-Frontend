@@ -132,35 +132,41 @@ export function SignUpPage() {
           </motion.p>
         </div>
 
-        <Card className="p-10 border-none shadow-2xl bg-white/95 backdrop-blur-md rounded-[40px]">
+        <Card className="p-10 border-none shadow-2xl rounded-[40px] overflow-hidden relative">
+          {/* Animated gradient background covering the whole form - water effect */}
+          <motion.div
+            className="absolute inset-0 -z-10"
+            initial={false}
+            animate={{
+              background: role === "client"
+                ? "linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 25%, #a5b4fc 50%, #c7d2fe 75%, #e0e7ff 100%)"
+                : "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 25%, #c4b5fd 50%, #ddd6fe 75%, #ede9fe 100%)"
+            }}
+            transition={{ duration: 1, ease: "easeInOut" }}
+          />
+          {/* Shimmer overlay for water flow effect */}
+          <motion.div
+            className="absolute inset-0 -z-10 opacity-50"
+            animate={{ backgroundPosition: ["0% 0%", "200% 0%"] }}
+            transition={{ duration: 2, repeat: Infinity, repeatDelay: 0.5, ease: "linear" }}
+            style={{
+              background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%)",
+              backgroundSize: "200% 100%"
+            }}
+          />
+
           <div className="mb-10">
             <label className="text-sm font-bold text-neutral-700 block mb-4 text-center">I want to join as a:</label>
             <div className="relative">
-              {/* Animated flowing gradient background - water effect */}
+              {/* Animated sliding background */}
               <motion.div
-                className="absolute inset-0 rounded-3xl"
+                className="absolute inset-0 rounded-3xl border-2 border-indigo-600 bg-indigo-50/50"
                 initial={false}
-                animate={{
-                  background: role === "client"
-                    ? "linear-gradient(135deg, #a5b4fc 0%, #818cf8 25%, #6366f1 50%, #818cf8 75%, #a5b4fc 100%)"
-                    : "linear-gradient(135deg, #c4b5fd 0%, #a78bfa 25%, #8b5cf6 50%, #a78bfa 75%, #c4b5fd 100%)"
+                animate={{ 
+                  x: role === "client" ? 0 : "50%",
+                  opacity: 1 
                 }}
-                transition={{ duration: 0.8, ease: "easeInOut" }}
-              />
-              {/* Animated shimmer overlay */}
-              <motion.div
-                className="absolute inset-0 rounded-3xl opacity-30"
-                initial={false}
-                animate={{
-                  background: role === "client"
-                    ? "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)"
-                    : "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)"
-                }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                style={{
-                  backgroundSize: "200% 100%",
-                  animation: "shimmer 1.5s infinite"
-                }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
               />
               <div className="relative grid grid-cols-2 gap-4">
                 <button

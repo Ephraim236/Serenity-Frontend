@@ -120,9 +120,31 @@ export function LoginPage() {
           </motion.p>
         </div>
 
-        <Card className="p-8 border-none shadow-2xl bg-white/95 backdrop-blur-md rounded-[32px]">
+        <Card className="p-8 border-none shadow-2xl rounded-[32px] overflow-hidden relative">
+          {/* Animated gradient background covering the whole form - water effect */}
+          <motion.div
+            className="absolute inset-0 -z-10"
+            initial={false}
+            animate={{
+              background: role === "client"
+                ? "linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 25%, #a5b4fc 50%, #c7d2fe 75%, #e0e7ff 100%)"
+                : "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 25%, #c4b5fd 50%, #ddd6fe 75%, #ede9fe 100%)"
+            }}
+            transition={{ duration: 1, ease: "easeInOut" }}
+          />
+          {/* Shimmer overlay for water flow effect */}
+          <motion.div
+            className="absolute inset-0 -z-10 opacity-50"
+            animate={{ backgroundPosition: ["0% 0%", "200% 0%"] }}
+            transition={{ duration: 2, repeat: Infinity, repeatDelay: 0.5, ease: "linear" }}
+            style={{
+              background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%)",
+              backgroundSize: "200% 100%"
+            }}
+          />
+          
           {/* Role Selector */}
-          <div className="relative bg-neutral-100 p-1 rounded-2xl mb-8 overflow-hidden">
+          <div className="relative bg-white/70 backdrop-blur-sm p-1 rounded-2xl mb-8 shadow-inner">
             {/* Animated flowing gradient background - water effect */}
             <motion.div
               className="absolute inset-0 rounded-xl"
