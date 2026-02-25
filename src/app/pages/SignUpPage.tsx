@@ -12,11 +12,51 @@ import {
   ChevronLeft,
   UserPlus,
   Briefcase,
-  Chrome
+  Chrome,
+  MapPin,
+  Clock,
+  Phone,
+  Image as ImageIcon,
+  Plus,
+  X
 } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 import { useAuth, authApi } from "../contexts/AuthContext";
+
+const DAYS_OF_WEEK = [
+  { key: 'monday', label: 'Mon' },
+  { key: 'tuesday', label: 'Tue' },
+  { key: 'wednesday', label: 'Wed' },
+  { key: 'thursday', label: 'Thu' },
+  { key: 'friday', label: 'Fri' },
+  { key: 'saturday', label: 'Sat' },
+  { key: 'sunday', label: 'Sun' },
+];
+
+const DEFAULT_SERVICE_HOURS = {
+  monday: { open: '09:00', close: '18:00', isClosed: false },
+  tuesday: { open: '09:00', close: '18:00', isClosed: false },
+  wednesday: { open: '09:00', close: '18:00', isClosed: false },
+  thursday: { open: '09:00', close: '18:00', isClosed: false },
+  friday: { open: '09:00', close: '18:00', isClosed: false },
+  saturday: { open: '09:00', close: '18:00', isClosed: false },
+  sunday: { open: '09:00', close: '18:00', isClosed: true }
+};
+
+interface ServiceHours {
+  open: string;
+  close: string;
+  isClosed: boolean;
+}
+
+interface Location {
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
+}
 
 export function SignUpPage() {
   const navigate = useNavigate();
@@ -25,18 +65,84 @@ export function SignUpPage() {
   const [role, setRole] = useState<"client" | "business">("client");
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-    businessName: ""
+    // Business details
+    businessName: "",
+    businessEmail: "",
+    businessPhone: "",
+    location: {
+      address: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      country: ""
+    } as Location,
+    serviceHours: { ...DEFAULT_SERVICE_HOURS } as { [key: string]: ServiceHours },
+    operatingDays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'] as string[],
+    businessImages: [] as string[]
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    if (name.includes('.')) {
+      const [parent, child] = name.split('.');
+      setFormData(prev => ({
+        ...prev,
+        [parent]: {
+          ...(prev[parent as keyof typeof prev] as object),
+          [child]: value
+        }
+      }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleServiceHoursChange = (day: string, field: keyof ServiceHours, value: string | boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      serviceHours: {
+        ...prev.serviceHours,
+        [day]: {
+          ...prev.serviceHours[day],
+          [field]: value
+        }
+      }
+    }));
+  };
+
+  const toggleOperatingDay = (day: string) => {
+    setFormData(prev => ({
+      ...prev,
+      operatingDays: prev.operatingDays.includes(day)
+        ? prev.operatingDays.filter(d => d !== day)
+        : [...prev.operatingDays, day]
+    }));
+  };
+
+  const handleImageUrlAdd = () => {
+    setFormData(prev => ({
+      ...prev,
+      businessImages: [...prev.businessImages, ""]
+    }));
+  };
+
+  const handleImageUrlChange = (index: number, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      businessImages: prev.businessImages.map((img, i) => i === index ? value : img)
+    }));
+  };
+
+  const handleImageUrlRemove = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      businessImages: prev.businessImages.filter((_, i) => i !== index)
+    }));
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -49,7 +155,13 @@ export function SignUpPage() {
         password: formData.password,
         name: formData.name,
         role: role,
-        businessName: role === "business" ? formData.businessName : undefined
+        businessName: role === "business" ? formData.businessName : undefined,
+        businessEmail: role === "business" ? formData.businessEmail : undefined,
+        businessPhone: role === "business" ? formData.businessPhone : undefined,
+        location: role === "business" ? formData.location : undefined,
+        serviceHours: role === "business" ? formData.serviceHours : undefined,
+        operatingDays: role === "business" ? formData.operatingDays : undefined,
+        businessImages: role === "business" ? formData.businessImages : undefined
       });
       
       login(response.user, response.token);
@@ -72,6 +184,9 @@ export function SignUpPage() {
     setIsGoogleLoading(true);
     loginWithGoogle();
   };
+
+  const nextStep = () => setCurrentStep(prev => prev + 1);
+  const prevStep = () => setCurrentStep(prev => prev - 1);
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 py-12 relative overflow-hidden">
@@ -102,7 +217,7 @@ export function SignUpPage() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-xl z-10"
+        className="w-full max-w-2xl z-10"
       >
         <div className="text-center mb-8">
           <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center text-white mx-auto mb-6 shadow-2xl border border-white/20">
@@ -112,101 +227,63 @@ export function SignUpPage() {
           <p className="text-white/70 mt-2">Join Serenity Spa & Wellness</p>
         </div>
 
-        <Card className="p-10 border-none shadow-2xl bg-white/95 backdrop-blur-md rounded-[40px]">
-          <div className="mb-10">
-            <label className="text-sm font-bold text-neutral-700 block mb-4 text-center">I want to join as a:</label>
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                type="button"
-                onClick={() => setRole("client")}
-                className={`flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all ${
-                  role === "client" 
-                    ? "border-indigo-600 bg-indigo-50/50 text-indigo-700" 
-                    : "border-neutral-100 hover:border-neutral-200 text-neutral-500"
-                }`}
-              >
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "client" ? "bg-indigo-600 text-white" : "bg-neutral-100"}`}>
-                  <User className="w-6 h-6" />
-                </div>
-                <div className="text-center">
-                  <span className="block font-bold">Client</span>
-                  <span className="text-[10px] opacity-70">Book appointments</span>
-                </div>
-              </button>
-              <button
-                type="button"
-                onClick={() => setRole("business")}
-                className={`flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all ${
-                  role === "business" 
-                    ? "border-indigo-600 bg-indigo-50/50 text-indigo-700" 
-                    : "border-neutral-100 hover:border-neutral-200 text-neutral-500"
-                }`}
-              >
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "business" ? "bg-indigo-600 text-white" : "bg-neutral-100"}`}>
-                  <Briefcase className="w-6 h-6" />
-                </div>
-                <div className="text-center">
-                  <span className="block font-bold">Business</span>
-                  <span className="text-[10px] opacity-70">Manage my salon</span>
-                </div>
-              </button>
-            </div>
-          </div>
-
-          {/* Google OAuth Button */}
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleGoogleLogin}
-            disabled={isGoogleLoading}
-            className="w-full h-12 mb-6 bg-white border-2 border-neutral-200 hover:bg-neutral-50 text-neutral-700 rounded-2xl text-sm font-bold flex items-center justify-center gap-2"
-          >
-            {isGoogleLoading ? (
-              <div className="w-5 h-5 border-2 border-neutral-400 border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <Chrome className="w-5 h-5" />
-            )}
-            Continue with Google
-          </Button>
-
-          {/* Divider */}
-          <div className="flex items-center gap-4 mb-8">
-            <div className="flex-1 h-px bg-neutral-200" />
-            <span className="text-xs text-neutral-400 font-medium">or sign up with email</span>
-            <div className="flex-1 h-px bg-neutral-200" />
-          </div>
-
-          <form onSubmit={handleSignUp} className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-neutral-700 ml-1">Full Name</label>
-                <input
-                  required
-                  type="text"
-                  name="name"
-                  placeholder="Jane Doe"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full px-5 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-neutral-700 ml-1">Email Address</label>
-                <input
-                  required
-                  type="email"
-                  name="email"
-                  placeholder="jane@example.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full px-5 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
-                />
+        <Card className="p-8 border-none shadow-2xl bg-white/95 backdrop-blur-md rounded-[40px]">
+          {/* Role Selector */}
+          {currentStep === 1 && (
+            <div className="mb-8">
+              <label className="text-sm font-bold text-neutral-700 block mb-4 text-center">I want to join as a:</label>
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setRole("client")}
+                  className={`flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all ${
+                    role === "client" 
+                      ? "border-indigo-600 bg-indigo-50/50 text-indigo-700" 
+                      : "border-neutral-100 hover:border-neutral-200 text-neutral-500"
+                  }`}
+                >
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "client" ? "bg-indigo-600 text-white" : "bg-neutral-100"}`}>
+                    <User className="w-6 h-6" />
+                  </div>
+                  <div className="text-center">
+                    <span className="block font-bold">Client</span>
+                    <span className="text-[10px] opacity-70">Book appointments</span>
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setRole("business"); nextStep(); }}
+                  className={`flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all ${
+                    role === "business" 
+                      ? "border-indigo-600 bg-indigo-50/50 text-indigo-700" 
+                      : "border-neutral-100 hover:border-neutral-200 text-neutral-500"
+                  }`}
+                >
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "business" ? "bg-indigo-600 text-white" : "bg-neutral-100"}`}>
+                    <Briefcase className="w-6 h-6" />
+                  </div>
+                  <div className="text-center">
+                    <span className="block font-bold">Business</span>
+                    <span className="text-[10px] opacity-70">Manage my salon</span>
+                  </div>
+                </button>
               </div>
             </div>
+          )}
 
-            {role === "business" && (
+          {/* Business Profile Form - Step 2 */}
+          {currentStep === 2 && role === "business" && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-neutral-900">Business Profile</h2>
+                <button type="button" onClick={prevStep} className="text-sm text-indigo-600 font-medium hover:underline">
+                  Back
+                </button>
+              </div>
+
+              {/* Business Name */}
               <div className="space-y-2">
-                <label className="text-sm font-bold text-neutral-700 ml-1">Business Name</label>
+                <label className="text-sm font-bold text-neutral-700 ml-1">Business Name *</label>
                 <input
                   required
                   type="text"
@@ -217,40 +294,298 @@ export function SignUpPage() {
                   className="w-full px-5 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
                 />
               </div>
-            )}
 
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-neutral-700 ml-1">Password</label>
-              <input
-                required
-                type="password"
-                name="password"
-                placeholder="Create a strong password"
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full px-5 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
-              />
+              {/* Contact Info */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-neutral-700 ml-1">Business Email *</label>
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-indigo-400" />
+                    <input
+                      required
+                      type="email"
+                      name="businessEmail"
+                      placeholder="contact@business.com"
+                      value={formData.businessEmail}
+                      onChange={handleChange}
+                      className="w-full pl-12 pr-4 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-neutral-700 ml-1">Business Phone *</label>
+                  <div className="relative">
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-indigo-400" />
+                    <input
+                      required
+                      type="tel"
+                      name="businessPhone"
+                      placeholder="+1 (555) 123-4567"
+                      value={formData.businessPhone}
+                      onChange={handleChange}
+                      className="w-full pl-12 pr-4 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Location */}
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-neutral-700 ml-1 flex items-center gap-2">
+                  <MapPin className="w-4 h-4" /> Location
+                </label>
+                <input
+                  required
+                  type="text"
+                  name="location.address"
+                  placeholder="Street Address"
+                  value={formData.location.address}
+                  onChange={handleChange}
+                  className="w-full px-5 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all mb-3"
+                />
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <input
+                    type="text"
+                    name="location.city"
+                    placeholder="City"
+                    value={formData.location.city}
+                    onChange={handleChange}
+                    className="px-4 py-2.5 bg-neutral-50 border border-neutral-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                  />
+                  <input
+                    type="text"
+                    name="location.state"
+                    placeholder="State"
+                    value={formData.location.state}
+                    onChange={handleChange}
+                    className="px-4 py-2.5 bg-neutral-50 border border-neutral-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                  />
+                  <input
+                    type="text"
+                    name="location.zipCode"
+                    placeholder="Zip Code"
+                    value={formData.location.zipCode}
+                    onChange={handleChange}
+                    className="px-4 py-2.5 bg-neutral-50 border border-neutral-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                  />
+                  <input
+                    type="text"
+                    name="location.country"
+                    placeholder="Country"
+                    value={formData.location.country}
+                    onChange={handleChange}
+                    className="px-4 py-2.5 bg-neutral-50 border border-neutral-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* Operating Days */}
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-neutral-700 ml-1">Operating Days *</label>
+                <div className="flex flex-wrap gap-2">
+                  {DAYS_OF_WEEK.map((day) => (
+                    <button
+                      key={day.key}
+                      type="button"
+                      onClick={() => toggleOperatingDay(day.key)}
+                      className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                        formData.operatingDays.includes(day.key)
+                          ? "bg-indigo-600 text-white"
+                          : "bg-neutral-100 text-neutral-500 hover:bg-neutral-200"
+                      }`}
+                    >
+                      {day.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Service Hours */}
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-neutral-700 ml-1 flex items-center gap-2">
+                  <Clock className="w-4 h-4" /> Service Hours
+                </label>
+                <div className="space-y-3 max-h-48 overflow-y-auto pr-2">
+                  {DAYS_OF_WEEK.map((day) => (
+                    <div key={day.key} className="flex items-center gap-3">
+                      <span className="w-16 text-sm font-medium text-neutral-600">{day.label}</span>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={!formData.serviceHours[day.key].isClosed}
+                          onChange={(e) => handleServiceHoursChange(day.key, 'isClosed', !e.target.checked)}
+                          className="w-4 h-4 rounded border-neutral-300 text-indigo-600 focus:ring-indigo-500"
+                        />
+                        <span className="text-xs text-neutral-500">Open</span>
+                      </label>
+                      <AnimatePresence>
+                        {!formData.serviceHours[day.key].isClosed && (
+                          <motion.div
+                            initial={{ opacity: 0, width: 0 }}
+                            animate={{ opacity: 1, width: 'auto' }}
+                            exit={{ opacity: 0, width: 0 }}
+                            className="flex items-center gap-2"
+                          >
+                            <input
+                              type="time"
+                              value={formData.serviceHours[day.key].open}
+                              onChange={(e) => handleServiceHoursChange(day.key, 'open', e.target.value)}
+                              className="px-3 py-1.5 bg-neutral-50 border border-neutral-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                            <span className="text-neutral-400">to</span>
+                            <input
+                              type="time"
+                              value={formData.serviceHours[day.key].close}
+                              onChange={(e) => handleServiceHoursChange(day.key, 'close', e.target.value)}
+                              className="px-3 py-1.5 bg-neutral-50 border border-neutral-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Business Images */}
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-neutral-700 ml-1 flex items-center gap-2">
+                  <ImageIcon className="w-4 h-4" /> Business Images (URLs)
+                </label>
+                <div className="space-y-2">
+                  {formData.businessImages.map((img, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <input
+                        type="url"
+                        placeholder="https://example.com/image.jpg"
+                        value={img}
+                        onChange={(e) => handleImageUrlChange(index, e.target.value)}
+                        className="flex-1 px-4 py-2.5 bg-neutral-50 border border-neutral-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleImageUrlRemove(index)}
+                        className="p-2 text-neutral-400 hover:text-red-500 transition-colors"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={handleImageUrlAdd}
+                  className="flex items-center gap-2 text-sm text-indigo-600 font-medium hover:underline"
+                >
+                  <Plus className="w-4 h-4" /> Add Image URL
+                </button>
+              </div>
+
+              <Button 
+                type="button" 
+                onClick={nextStep}
+                className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-lg font-bold shadow-lg shadow-indigo-100 flex items-center justify-center gap-2"
+              >
+                Continue <ArrowRight className="w-5 h-5" />
+              </Button>
             </div>
+          )}
 
-            <div className="flex items-start gap-3 px-1">
-              <input type="checkbox" required className="mt-1 w-4 h-4 rounded border-neutral-300 text-indigo-600 focus:ring-indigo-500" />
-              <label className="text-xs text-neutral-500 leading-tight">
-                I agree to the <button type="button" className="text-indigo-600 font-bold hover:underline">Terms of Service</button> and <button type="button" className="text-indigo-600 font-bold hover:underline">Privacy Policy</button>.
-              </label>
-            </div>
-
-            <Button 
-              type="submit" 
-              disabled={isLoading}
-              className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-lg font-bold shadow-lg shadow-indigo-100 flex items-center justify-center gap-2 mt-4"
-            >
-              {isLoading ? "Creating Account..." : (
-                <>
-                  Create {role === "client" ? "Client" : "Business"} Account <ArrowRight className="w-5 h-5" />
-                </>
+          {/* Account Details - Step 3 or for clients */}
+          {(currentStep === 3 || role === "client") && (
+            <form onSubmit={handleSignUp} className="space-y-6">
+              {role === "business" && (
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold text-neutral-900">Account Details</h2>
+                  <button type="button" onClick={prevStep} className="text-sm text-indigo-600 font-medium hover:underline">
+                    Back
+                  </button>
+                </div>
               )}
-            </Button>
-          </form>
+
+              {/* Google OAuth Button */}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleGoogleLogin}
+                disabled={isGoogleLoading}
+                className="w-full h-12 mb-6 bg-white border-2 border-neutral-200 hover:bg-neutral-50 text-neutral-700 rounded-2xl text-sm font-bold flex items-center justify-center gap-2"
+              >
+                {isGoogleLoading ? (
+                  <div className="w-5 h-5 border-2 border-neutral-400 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Chrome className="w-5 h-5" />
+                )}
+                Continue with Google
+              </Button>
+
+              {/* Divider */}
+              <div className="flex items-center gap-4 mb-8">
+                <div className="flex-1 h-px bg-neutral-200" />
+                <span className="text-xs text-neutral-400 font-medium">or sign up with email</span>
+                <div className="flex-1 h-px bg-neutral-200" />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-neutral-700 ml-1">Full Name</label>
+                  <input
+                    required
+                    type="text"
+                    name="name"
+                    placeholder="Jane Doe"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full px-5 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-neutral-700 ml-1">Email Address</label>
+                  <input
+                    required
+                    type="email"
+                    name="email"
+                    placeholder="jane@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full px-5 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-neutral-700 ml-1">Password</label>
+                <input
+                  required
+                  type="password"
+                  name="password"
+                  placeholder="Create a strong password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full px-5 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                />
+              </div>
+
+              <div className="flex items-start gap-3 px-1">
+                <input type="checkbox" required className="mt-1 w-4 h-4 rounded border-neutral-300 text-indigo-600 focus:ring-indigo-500" />
+                <label className="text-xs text-neutral-500 leading-tight">
+                  I agree to the <button type="button" className="text-indigo-600 font-bold hover:underline">Terms of Service</button> and <button type="button" className="text-indigo-600 font-bold hover:underline">Privacy Policy</button>.
+                </label>
+              </div>
+
+              <Button 
+                type="submit" 
+                disabled={isLoading}
+                className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-lg font-bold shadow-lg shadow-indigo-100 flex items-center justify-center gap-2 mt-4"
+              >
+                {isLoading ? "Creating Account..." : (
+                  <>
+                    Create {role === "client" ? "Client" : "Business"} Account <ArrowRight className="w-5 h-5" />
+                  </>
+                )}
+              </Button>
+            </form>
+          )}
 
           <div className="mt-10 pt-8 border-t border-neutral-50 text-center">
             <p className="text-neutral-500 text-sm">

@@ -128,7 +128,27 @@ export const authApi = {
     return response.json();
   },
   
-  register: async (data: { email: string; password: string; name: string; role: string; businessName?: string }) => {
+  register: async (data: { 
+    email: string; 
+    password: string; 
+    name: string; 
+    role: string; 
+    businessName?: string;
+    businessEmail?: string;
+    businessPhone?: string;
+    location?: {
+      address?: string;
+      city?: string;
+      state?: string;
+      zipCode?: string;
+      country?: string;
+    };
+    serviceHours?: {
+      [key: string]: { open: string; close: string; isClosed: boolean };
+    };
+    operatingDays?: string[];
+    businessImages?: string[];
+  }) => {
     const response = await fetch(`${API_URL}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
