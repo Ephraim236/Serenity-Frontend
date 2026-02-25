@@ -32,7 +32,6 @@ export function AppLayout() {
     { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { label: "Appointments", href: "/admin/appointments", icon: Calendar },
     { label: "Services", href: "/admin/services", icon: Settings },
-    { label: "Client View", href: "/", icon: User },
   ];
 
   const currentNav = isAdmin ? adminNav : clientNav;
