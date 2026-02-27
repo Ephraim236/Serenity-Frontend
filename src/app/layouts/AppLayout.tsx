@@ -15,6 +15,12 @@ import { useState } from "react";
 import { Button } from "../components/ui/button";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "../contexts/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../components/ui/dropdown-menu";
 
 export function AppLayout() {
   const location = useLocation();
@@ -68,28 +74,29 @@ export function AppLayout() {
                 <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
               </Button>
             ) : isAuthenticated ? (
-              <div className="flex items-center gap-3">
-                {user?.avatar ? (
-                  <img 
-                    src={user.avatar} 
-                    alt={user.name} 
-                    className="w-8 h-8 rounded-full object-cover border-2 border-indigo-200"
-                  />
-                ) : (
-                  <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-sm border-2 border-indigo-200">
-                    {user?.name?.charAt(0).toUpperCase()}
-                  </div>
-                )}
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={logout}
-                  className="text-neutral-500 hover:text-red-600"
-                  title="Sign out"
-                >
-                  <LogOut className="w-5 h-5" />
-                </Button>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-2 focus:outline-none">
+                    {user?.avatar ? (
+                      <img 
+                        src={user.avatar} 
+                        alt={user.name} 
+                        className="w-8 h-8 rounded-full object-cover border-2 border-indigo-200 cursor-pointer hover:border-indigo-400 transition-colors"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-sm border-2 border-indigo-200 cursor-pointer hover:border-indigo-400 transition-colors">
+                        {user?.name?.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={logout} className="cursor-pointer text-red-600 focus:text-red-600">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <div className="flex items-center gap-3">
                 <Link to="/login">
