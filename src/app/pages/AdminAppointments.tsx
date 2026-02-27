@@ -8,7 +8,6 @@ import {
   X,
   Trash2,
   Loader2,
-  Play,
   Clock
 } from "lucide-react";
 import { Button } from "../components/ui/button";
@@ -355,24 +354,14 @@ export function AdminAppointments() {
                           </>
                         )}
                         {apt.status === 'confirmed' && (
-                          <>
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              className="rounded-xl h-10 px-3 text-blue-600 border-blue-200 hover:bg-blue-50 hover:border-blue-300"
-                              onClick={() => handleUpdateStatus(apt._id, 'in_progress')}
-                            >
-                              <Play className="w-4 h-4 mr-1" /> Start
-                            </Button>
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              className="rounded-xl h-10 px-3 text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"
-                              onClick={() => openCancelDialog(apt)}
-                            >
-                              <X className="w-4 h-4 mr-1" /> Cancel
-                            </Button>
-                          </>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="rounded-xl h-10 px-3 text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"
+                            onClick={() => openCancelDialog(apt)}
+                          >
+                            <X className="w-4 h-4 mr-1" /> Cancel
+                          </Button>
                         )}
                         {apt.status === 'in_progress' && (
                           <Button 
