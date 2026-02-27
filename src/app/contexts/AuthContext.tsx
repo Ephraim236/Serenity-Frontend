@@ -167,4 +167,25 @@ export const authApi = {
     const response = await fetch(`${API_URL}/api/auth/google/status`);
     return response.json();
   },
+
+  uploadImage: async (file: File): Promise<{ url: string }> => {
+    const token = localStorage.getItem(TOKEN_KEY);
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const response = await fetch(`${API_URL}/api/upload/image`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || "Upload failed");
+    }
+
+    return response.json();
+  },
 };

@@ -145,6 +145,37 @@ export function SignUpPage() {
     }));
   };
 
+  const handleImageFilesChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    // For now, we'll use FileReader to create preview URLs
+    // In production, you'd upload to the server first
+    const newImages: string[] = [];
+    
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error(`${file.name} is too large. Maximum 5MB allowed.`);
+        continue;
+      }
+      
+      const reader = new FileReader();
+      const imagePromise = new Promise<string>((resolve) => {
+        reader.onload = (e) => {
+          resolve(e.target?.result as string);
+        };
+      });
+      reader.readAsDataURL(file);
+      newImages.push(await imagePromise);
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      businessImages: [...prev.businessImages, ...newImages]
+    }));
+  };
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -450,35 +481,90 @@ export function SignUpPage() {
               {/* Business Images */}
               <div className="space-y-2">
                 <label className="text-sm font-bold text-neutral-700 ml-1 flex items-center gap-2">
-                  <ImageIcon className="w-4 h-4" /> Business Images (URLs)
+                  <ImageIcon className="w-4 h-4" /> Business Images
                 </label>
-                <div className="space-y-2">
-                  {formData.businessImages.map((img, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <input
-                        type="url"
-                        placeholder="https://example.com/image.jpg"
-                        value={img}
-                        onChange={(e) => handleImageUrlChange(index, e.target.value)}
-                        className="flex-1 px-4 py-2.5 bg-neutral-50 border border-neutral-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleImageUrlRemove(index)}
-                        className="p-2 text-neutral-400 hover:text-red-500 transition-colors"
-                      >
-                        <X className="w-5 h-5" />
-                      </button>
+                
+                {/* File Upload Area */}
+                <div className="border-2 border-dashed border-neutral-200 rounded-2xl p-6 text-center hover:border-indigo-400 transition-colors">
+                  <input
+                    type="file"
+                    id="business-images"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageFilesChange}
+                    className="hidden"
+                  />
+                  <label htmlFor="business-images" className="cursor-pointer">
+                    <div className="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <ImageIcon className="w-6 h-6 text-indigo-600" />
                     </div>
-                  ))}
+                    <p className="text-sm font-medium text-neutral-700">
+                      Click to upload images
+                    </p>
+                    <p className="text-xs text-neutral-400 mt-1">
+                      or drag and drop
+                    </p>
+                    <p className="text-xs text-neutral-400 mt-1">
+                      PNG, JPG, GIF up to 5MB
+                    </p>
+                  </label>
                 </div>
-                <button
-                  type="button"
-                  onClick={handleImageUrlAdd}
-                  className="flex items-center gap-2 text-sm text-indigo-600 font-medium hover:underline"
-                >
-                  <Plus className="w-4 h-4" /> Add Image URL
-                </button>
+
+                {/* Uploaded Images Preview */}
+                {formData.businessImages.length > 0 && (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
+                    {formData.businessImages.map((img, index) => (
+                      <div key={index} className="relative group rounded-xl overflow-hidden aspect-square bg-neutral-100">
+                        <img 
+                          src={img} 
+                          alt={`Business ${index + 1}`} 
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleImageUrlRemove(index)}
+                          className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Add URL Option */}
+                <details className="mt-3">
+                  <summary className="text-sm text-indigo-600 font-medium cursor-pointer hover:underline">
+                    Or add image URL
+                  </summary>
+                  <div className="mt-3 space-y-2">
+                    {formData.businessImages.map((img, index) => (
+                      <div key={`url-${index}`} className="flex items-center gap-2">
+                        <input
+                          type="url"
+                          placeholder="https://example.com/image.jpg"
+                          value={img}
+                          onChange={(e) => handleImageUrlChange(index, e.target.value)}
+                          className="flex-1 px-4 py-2.5 bg-neutral-50 border border-neutral-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleImageUrlRemove(index)}
+                          className="p-2 text-neutral-400 hover:text-red-500 transition-colors"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={handleImageUrlAdd}
+                      className="flex items-center gap-2 text-sm text-indigo-600 font-medium hover:underline"
+                    >
+                      <Plus className="w-4 h-4" /> Add Image URL
+                    </button>
+                  </div>
+                </details>
               </div>
 
               <Button 
