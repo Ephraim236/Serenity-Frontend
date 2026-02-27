@@ -180,32 +180,32 @@ export function ClientHome() {
                 Find the nearest salon or spa to you and book your relaxing experience today.
               </p>
               
-              {/* Ghana Map Illustration */}
-              <div className="relative w-full max-w-md mx-auto lg:mx-0">
-                <svg viewBox="0 0 200 180" className="w-full h-auto">
-                  {/* Ghana map outline */}
+              {/* Ghana Map - Simplified Style */}
+              <div className="relative w-full max-w-sm mx-auto lg:mx-0">
+                <svg viewBox="0 0 400 350" className="w-full h-auto">
+                  {/* Simplified Ghana map outline */}
                   <path 
-                    d="M45,30 L80,25 L130,28 L165,35 L175,60 L180,90 L175,120 L160,145 L130,155 L90,158 L55,150 L30,130 L20,100 L25,70 L35,45 Z" 
-                    fill="#ffffff" 
-                    fillOpacity="0.2" 
+                    d="M80,60 L160,50 L220,45 L280,50 L340,65 L360,100 L365,160 L360,220 L340,280 L280,310 L200,320 L120,300 L60,260 L40,200 L45,140 L60,90 Z" 
+                    fill="none" 
                     stroke="#ffffff" 
-                    strokeWidth="2"
+                    strokeWidth="3"
+                    strokeOpacity="0.6"
+                  />
+                  {/* Inner fill */}
+                  <path 
+                    d="M80,60 L160,50 L220,45 L280,50 L340,65 L360,100 L365,160 L360,220 L340,280 L280,310 L200,320 L120,300 L60,260 L40,200 L45,140 L60,90 Z" 
+                    fill="#ffffff" 
+                    fillOpacity="0.1"
                   />
                   {/* Accra marker */}
-                  <circle cx="130" cy="130" r="8" fill="#fbbf24" />
-                  <circle cx="130" cy="130" r="15" fill="#fbbf24" fillOpacity="0.3" />
-                  <text x="130" y="110" textAnchor="middle" fill="#ffffff" fontSize="10" fontWeight="bold">ACCRA</text>
+                  <circle cx="280" cy="220" r="8" fill="#fbbf24" />
+                  <circle cx="280" cy="220" r="20" fill="#fbbf24" fillOpacity="0.3" />
                   {/* Kumasi marker */}
-                  <circle cx="95" cy="85" r="6" fill="#fbbf24" />
-                  <circle cx="95" cy="85" r="12" fill="#fbbf24" fillOpacity="0.3" />
-                  <text x="95" y="70" textAnchor="middle" fill="#ffffff" fontSize="8" fontWeight="bold">KUMASI</text>
+                  <circle cx="200" cy="160" r="6" fill="#fbbf24" />
+                  <circle cx="200" cy="160" r="14" fill="#fbbf24" fillOpacity="0.3" />
                   {/* Tamale marker */}
-                  <circle cx="90" cy="35" r="5" fill="#fbbf24" />
-                  <circle cx="90" cy="35" r="10" fill="#fbbf24" fillOpacity="0.3" />
-                  <text x="90" y="22" textAnchor="middle" fill="#ffffff" fontSize="7" fontWeight="bold">TAMALE</text>
-                  {/* Cape Coast marker */}
-                  <circle cx="140" cy="155" r="4" fill="#fbbf24" />
-                  <circle cx="140" cy="155" r="8" fill="#fbbf24" fillOpacity="0.3" />
+                  <circle cx="180" cy="80" r="5" fill="#fbbf24" />
+                  <circle cx="180" cy="80" r="12" fill="#fbbf24" fillOpacity="0.3" />
                 </svg>
               </div>
             </div>
