@@ -40,14 +40,25 @@ export function LoginPage() {
     
     try {
       const response = await authApi.login(email, password);
-      login(response.user, response.token);
-      toast.success(`Logged in as ${role === "client" ? "Client" : "Business Owner"}`);
       
-      const from = location.state?.from || "/";
-      if (role === "business") {
+      // Check if selected role matches user's actual role
+      if (response.user.role !== role) {
+        if (response.user.role === 'business' && role === 'client') {
+          throw new Error("This account is registered as a business. Please select Business to login.");
+        } else if (response.user.role === 'client' && role === 'business') {
+          throw new Error("This account is registered as a client. Please select Client to login.");
+        }
+      }
+      
+      login(response.user, response.token);
+      toast.success(`Logged in successfully`);
+      
+      // Redirect based on actual user role from response
+      const userRole = response.user.role;
+      if (userRole === "business") {
         navigate("/admin");
       } else {
-        navigate(from === "/login" || from === "/signup" ? "/" : from);
+        navigate("/");
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Login failed");
