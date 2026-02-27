@@ -69,10 +69,29 @@ export function AppLayout() {
               </Link>
             ))}
             {isAdmin ? (
-               <Button variant="ghost" size="icon" className="relative">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-2 focus:outline-none">
+                    {user?.avatar ? (
+                      <img 
+                        src={user.avatar} 
+                        alt={user.name} 
+                        className="w-8 h-8 rounded-full object-cover border-2 border-indigo-200 cursor-pointer hover:border-indigo-400 transition-colors"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-sm border-2 border-indigo-200 cursor-pointer hover:border-indigo-400 transition-colors">
+                        {user?.name?.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={logout} className="cursor-pointer text-red-600 focus:text-red-600">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

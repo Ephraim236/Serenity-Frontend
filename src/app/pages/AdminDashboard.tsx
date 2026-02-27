@@ -236,15 +236,10 @@ export function AdminDashboard() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
         <div>
           <h1 className="text-3xl font-bold text-neutral-900">Business Overview</h1>
-          <p className="text-neutral-500">Welcome back, Serenity Admin!</p>
+          <p className="text-neutral-500">Welcome back!</p>
         </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" className="rounded-xl">Export Report</Button>
-          <Link to="/book">
-            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl flex items-center gap-2">
-              <Plus className="w-4 h-4" /> New Appointment
-            </Button>
-          </Link>
         </div>
       </div>
 

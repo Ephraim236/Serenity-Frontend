@@ -1,39 +1,156 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Calendar as CalendarIcon, 
-  ChevronLeft, 
-  ChevronRight, 
-  Clock, 
   Search, 
-  Filter,
-  Plus,
-  MoreHorizontal,
   Mail,
-  Phone
+  Phone,
+  Check,
+  X,
+  Trash2,
+  Loader2,
+  Play,
+  Clock
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { Calendar } from "../components/ui/calendar";
 import { format } from "date-fns";
-import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import { getAuthToken } from "../contexts/AuthContext";
+import { toast } from "sonner";
 
-const APPOINTMENTS = [
-  { id: 1, client: "Alice Freeman", service: "Luxury Facial", time: "09:00 AM", specialist: "Sarah J.", status: "completed", price: "$85", email: "alice@example.com", phone: "(555) 001-2233" },
-  { id: 2, client: "John Doe", service: "Designer Haircut", time: "10:30 AM", specialist: "Emma W.", status: "confirmed", price: "$65", email: "john@example.com", phone: "(555) 001-4455" },
-  { id: 3, client: "Samanta Smith", service: "Deep Tissue", time: "11:45 AM", specialist: "Michael C.", status: "confirmed", price: "$120", email: "sam@example.com", phone: "(555) 001-6677" },
-  { id: 4, client: "Robert Pattinson", service: "Hot Stone Therapy", time: "01:30 PM", specialist: "Michael C.", status: "pending", price: "$140", email: "rob@example.com", phone: "(555) 001-8899" },
-  { id: 5, client: "Emily Blunt", service: "Manicure", time: "03:00 PM", specialist: "David L.", status: "confirmed", price: "$45", email: "emily@example.com", phone: "(555) 002-1122" },
-  { id: 6, client: "Tom Hardy", service: "Beard Trim", time: "04:15 PM", specialist: "Emma W.", status: "cancelled", price: "$35", email: "tom@example.com", phone: "(555) 002-3344" },
+const API_URL = "https://serenity-production-bafc.up.railway.app";
+
+interface Appointment {
+  _id: string;
+  clientName: string;
+  service: string;
+  time: string;
+  status: string;
+  specialist: string;
+  price?: string;
+  email?: string;
+  phone?: string;
+  date?: string;
+}
+
+// Default data for when API is not available
+const DEFAULT_APPOINTMENTS: Appointment[] = [
+  { _id: "1", clientName: "Alice Freeman", service: "Luxury Facial", time: "09:00 AM", specialist: "Sarah J.", status: "completed", price: "$85", email: "alice@example.com", phone: "(555) 001-2233" },
+  { _id: "2", clientName: "John Doe", service: "Designer Haircut", time: "10:30 AM", specialist: "Emma W.", status: "confirmed", price: "$65", email: "john@example.com", phone: "(555) 001-4455" },
+  { _id: "3", clientName: "Samanta Smith", service: "Deep Tissue", time: "11:45 AM", specialist: "Michael C.", status: "confirmed", price: "$120", email: "sam@example.com", phone: "(555) 001-6677" },
+  { _id: "4", clientName: "Robert Pattinson", service: "Hot Stone Therapy", time: "01:30 PM", specialist: "Michael C.", status: "pending", price: "$140", email: "rob@example.com", phone: "(555) 001-8899" },
+  { _id: "5", clientName: "Emily Blunt", service: "Manicure", time: "03:00 PM", specialist: "David L.", status: "confirmed", price: "$45", email: "emily@example.com", phone: "(555) 002-1122" },
+  { _id: "6", clientName: "Tom Hardy", service: "Beard Trim", time: "04:15 PM", specialist: "Emma W.", status: "cancelled", price: "$35", email: "tom@example.com", phone: "(555) 002-3344" },
 ];
 
 export function AdminAppointments() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [searchTerm, setSearchTerm] = useState("");
+  const [appointments, setAppointments] = useState<Appointment[]>(DEFAULT_APPOINTMENTS);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
 
-  const filteredAppointments = APPOINTMENTS.filter(apt => 
-    apt.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    apt.service.toLowerCase().includes(searchTerm.toLowerCase())
+  useEffect(() => {
+    fetchAppointments();
+  }, [selectedDate]);
+
+  const fetchAppointments = async () => {
+    setIsLoading(true);
+    const token = getAuthToken();
+    
+    try {
+      const response = await fetch(`${API_URL}/api/dashboard/appointments/today`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.length > 0) {
+          setAppointments(data);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch appointments:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleUpdateStatus = async (appointmentId: string, newStatus: string) => {
+    const token = getAuthToken();
+    
+    try {
+      const response = await fetch(`${API_URL}/api/dashboard/appointments/${appointmentId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        setAppointments(appointments.map(apt => 
+          apt._id === appointmentId ? { ...apt, status: newStatus } : apt
+        ));
+        toast.success(`Appointment ${newStatus} successfully`);
+      }
+    } catch (error) {
+      console.error("Failed to update appointment:", error);
+      toast.error("Failed to update appointment");
+    }
+  };
+
+  const handleDeleteAppointment = async (appointmentId: string) => {
+    if (!confirm("Are you sure you want to delete this appointment?")) return;
+    
+    const token = getAuthToken();
+    
+    try {
+      const response = await fetch(`${API_URL}/api/dashboard/appointments/${appointmentId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        setAppointments(appointments.filter(apt => apt._id !== appointmentId));
+        toast.success("Appointment deleted successfully");
+      }
+    } catch (error) {
+      console.error("Failed to delete appointment:", error);
+      toast.error("Failed to delete appointment");
+    }
+  };
+
+  const filteredAppointments = appointments.filter(apt => 
+    apt.clientName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    apt.service?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'confirmed': return 'bg-green-50 text-green-600';
+      case 'pending': return 'bg-amber-50 text-amber-600';
+      case 'in_progress': return 'bg-blue-50 text-blue-600';
+      case 'completed': return 'bg-emerald-50 text-emerald-600';
+      case 'cancelled': return 'bg-red-50 text-red-600';
+      default: return 'bg-neutral-50 text-neutral-600';
+    }
+  };
+
+  const formatStatus = (status: string) => {
+    return status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+  };
+
+  // Calculate summary
+  const totalBookings = filteredAppointments.length;
+  const confirmed = filteredAppointments.filter(a => a.status === 'confirmed').length;
+  const pending = filteredAppointments.filter(a => a.status === 'pending').length;
+  const cancelled = filteredAppointments.filter(a => a.status === 'cancelled').length;
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -45,7 +162,12 @@ export function AdminAppointments() {
             <Calendar
               mode="single"
               selected={date}
-              onSelect={setDate}
+              onSelect={(newDate) => {
+                setDate(newDate);
+                if (newDate) {
+                  setSelectedDate(format(newDate, 'yyyy-MM-dd'));
+                }
+              }}
               className="w-full"
             />
           </Card>
@@ -55,22 +177,37 @@ export function AdminAppointments() {
             <div className="space-y-4">
               <div className="flex justify-between items-center text-sm">
                 <span className="text-neutral-500">Total Bookings</span>
-                <span className="font-bold">12</span>
+                <span className="font-bold">{totalBookings}</span>
               </div>
               <div className="flex justify-between items-center text-sm">
                 <span className="text-neutral-500">Confirmed</span>
-                <span className="font-bold text-green-600">8</span>
+                <span className="font-bold text-green-600">{confirmed}</span>
               </div>
               <div className="flex justify-between items-center text-sm">
                 <span className="text-neutral-500">Pending</span>
-                <span className="font-bold text-amber-600">3</span>
+                <span className="font-bold text-amber-600">{pending}</span>
               </div>
               <div className="flex justify-between items-center text-sm">
                 <span className="text-neutral-500">Cancelled</span>
-                <span className="font-bold text-red-600">1</span>
+                <span className="font-bold text-red-600">{cancelled}</span>
               </div>
             </div>
           </Card>
+
+          {/* Pending Appointments Alert */}
+          {pending > 0 && (
+            <Card className="p-4 border-none shadow-sm bg-amber-50 rounded-3xl">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-amber-600" />
+                </div>
+                <div>
+                  <p className="font-bold text-amber-800">{pending} Pending</p>
+                  <p className="text-xs text-amber-600">Require confirmation</p>
+                </div>
+              </div>
+            </Card>
+          )}
         </div>
 
         {/* Right Content - Appointments List */}
@@ -93,73 +230,128 @@ export function AdminAppointments() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <Button variant="outline" size="icon" className="rounded-xl shrink-0">
-                <Filter className="w-4 h-4" />
-              </Button>
             </div>
           </div>
 
-          <div className="space-y-4">
-            {filteredAppointments.length > 0 ? (
-              filteredAppointments.map((apt) => (
-                <Card key={apt.id} className="p-6 border-none shadow-sm bg-white rounded-3xl group hover:ring-2 hover:ring-indigo-100 transition-all">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex flex-col items-center justify-center shrink-0">
-                        <span className="text-[10px] uppercase font-bold text-indigo-400">Time</span>
-                        <span className="font-bold text-indigo-700 text-xs">{apt.time.split(' ')[0]}</span>
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-lg">{apt.client}</h4>
-                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1 text-sm text-neutral-500">
-                          <span className="flex items-center gap-1"><Mail className="w-3 h-3" /> {apt.email}</span>
-                          <span className="flex items-center gap-1"><Phone className="w-3 h-3" /> {apt.phone}</span>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {filteredAppointments.length > 0 ? (
+                filteredAppointments.map((apt) => (
+                  <Card key={apt._id} className="p-6 border-none shadow-sm bg-white rounded-3xl group hover:ring-2 hover:ring-indigo-100 transition-all">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex flex-col items-center justify-center shrink-0">
+                          <span className="text-[10px] uppercase font-bold text-indigo-400">Time</span>
+                          <span className="font-bold text-indigo-700 text-xs">{apt.time}</span>
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-lg">{apt.clientName}</h4>
+                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1 text-sm text-neutral-500">
+                            {apt.email && <span className="flex items-center gap-1"><Mail className="w-3 h-3" /> {apt.email}</span>}
+                            {apt.phone && <span className="flex items-center gap-1"><Phone className="w-3 h-3" /> {apt.phone}</span>}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-8 flex-1">
-                      <div>
-                        <p className="text-[10px] uppercase font-bold text-neutral-400 mb-1">Service</p>
-                        <p className="font-bold text-sm">{apt.service}</p>
-                        <p className="text-neutral-500 text-xs">{apt.price}</p>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-8 flex-1">
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-neutral-400 mb-1">Service</p>
+                          <p className="font-bold text-sm">{apt.service}</p>
+                          {apt.price && <p className="text-neutral-500 text-xs">{apt.price}</p>}
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-neutral-400 mb-1">Specialist</p>
+                          <p className="font-bold text-sm">{apt.specialist}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-neutral-400 mb-1">Status</p>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${getStatusColor(apt.status)}`}>
+                            {formatStatus(apt.status)}
+                          </span>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-[10px] uppercase font-bold text-neutral-400 mb-1">Specialist</p>
-                        <p className="font-bold text-sm">{apt.specialist}</p>
-                      </div>
-                      <div>
-                        <p className="text-[10px] uppercase font-bold text-neutral-400 mb-1">Status</p>
-                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                          apt.status === 'confirmed' ? 'bg-green-50 text-green-600' :
-                          apt.status === 'pending' ? 'bg-amber-50 text-amber-600' :
-                          apt.status === 'completed' ? 'bg-blue-50 text-blue-600' :
-                          'bg-red-50 text-red-600'
-                        }`}>
-                          {apt.status}
-                        </span>
-                      </div>
-                    </div>
 
-                    <div className="flex items-center gap-2">
-                      <Button variant="outline" size="sm" className="rounded-xl h-10 px-4">Edit</Button>
-                      <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl">
-                        <MoreHorizontal className="w-4 h-4" />
-                      </Button>
+                      {/* Action Buttons */}
+                      <div className="flex items-center gap-2">
+                        {apt.status === 'pending' && (
+                          <>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="rounded-xl h-10 px-3 text-green-600 border-green-200 hover:bg-green-50 hover:border-green-300"
+                              onClick={() => handleUpdateStatus(apt._id, 'confirmed')}
+                            >
+                              <Check className="w-4 h-4 mr-1" /> Confirm
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="rounded-xl h-10 px-3 text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"
+                              onClick={() => handleUpdateStatus(apt._id, 'cancelled')}
+                            >
+                              <X className="w-4 h-4 mr-1" /> Cancel
+                            </Button>
+                          </>
+                        )}
+                        {apt.status === 'confirmed' && (
+                          <>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="rounded-xl h-10 px-3 text-blue-600 border-blue-200 hover:bg-blue-50 hover:border-blue-300"
+                              onClick={() => handleUpdateStatus(apt._id, 'in_progress')}
+                            >
+                              <Play className="w-4 h-4 mr-1" /> Start
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="rounded-xl h-10 px-3 text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"
+                              onClick={() => handleUpdateStatus(apt._id, 'cancelled')}
+                            >
+                              <X className="w-4 h-4 mr-1" /> Cancel
+                            </Button>
+                          </>
+                        )}
+                        {apt.status === 'in_progress' && (
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="rounded-xl h-10 px-3 text-green-600 border-green-200 hover:bg-green-50 hover:border-green-300"
+                            onClick={() => handleUpdateStatus(apt._id, 'completed')}
+                          >
+                            <Check className="w-4 h-4 mr-1" /> Complete
+                          </Button>
+                        )}
+                        {apt.status !== 'completed' && apt.status !== 'cancelled' && (
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-10 w-10 rounded-xl text-red-400 hover:text-red-600 hover:bg-red-50"
+                            onClick={() => handleDeleteAppointment(apt._id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
+                  </Card>
+                ))
+              ) : (
+                <div className="text-center py-20 bg-white rounded-[40px] border-2 border-dashed border-neutral-100">
+                  <div className="w-16 h-16 bg-neutral-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CalendarIcon className="w-8 h-8 text-neutral-300" />
                   </div>
-                </Card>
-              ))
-            ) : (
-              <div className="text-center py-20 bg-white rounded-[40px] border-2 border-dashed border-neutral-100">
-                <div className="w-16 h-16 bg-neutral-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CalendarIcon className="w-8 h-8 text-neutral-300" />
+                  <h3 className="font-bold text-xl mb-2">No appointments found</h3>
+                  <p className="text-neutral-400">Try adjusting your search or selected date</p>
                 </div>
-                <h3 className="font-bold text-xl mb-2">No appointments found</h3>
-                <p className="text-neutral-400">Try adjusting your search or selected date</p>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
