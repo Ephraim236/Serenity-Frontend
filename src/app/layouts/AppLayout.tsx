@@ -158,6 +158,37 @@ export function AppLayout() {
                 <span className="font-medium">{item.label}</span>
               </Link>
             ))}
+            
+            {/* Mobile User Section */}
+            {isAuthenticated && (
+              <div className="border-t pt-4 mt-2">
+                <div className="flex items-center gap-3 p-3">
+                  {user?.avatar ? (
+                    <img 
+                      src={user.avatar} 
+                      alt={user.name} 
+                      className="w-10 h-10 rounded-full object-cover border-2 border-indigo-200"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold border-2 border-indigo-200">
+                      {user?.name?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <div>
+                    <p className="font-bold text-neutral-900">{user?.name}</p>
+                    <p className="text-xs text-neutral-500">{user?.email}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => { logout(); setIsMobileMenuOpen(false); }}
+                  className="flex items-center gap-3 p-3 w-full rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span className="font-medium">Sign out</span>
+                </button>
+              </div>
+            )}
+            
             {!isAdmin && (
               <Link
                 to="/admin"
