@@ -183,7 +183,7 @@ export function ClientHome() {
               {/* Ghana Map Image */}
               <div className="relative w-full max-w-md mx-auto lg:mx-0">
                 <img 
-                  src="/ghana-map.png" 
+                  src="/screen.png" 
                   alt="Ghana Map" 
                   className="w-full h-auto rounded-2xl"
                 />
