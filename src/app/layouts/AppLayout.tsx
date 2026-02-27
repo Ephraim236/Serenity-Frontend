@@ -69,10 +69,17 @@ export function AppLayout() {
               </Button>
             ) : isAuthenticated ? (
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 rounded-full">
-                  <User className="w-4 h-4 text-indigo-600" />
-                  <span className="text-sm font-medium text-indigo-700">{user?.name}</span>
-                </div>
+                {user?.avatar ? (
+                  <img 
+                    src={user.avatar} 
+                    alt={user.name} 
+                    className="w-8 h-8 rounded-full object-cover border-2 border-indigo-200"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-sm border-2 border-indigo-200">
+                    {user?.name?.charAt(0).toUpperCase()}
+                  </div>
+                )}
                 <Button 
                   variant="ghost" 
                   size="icon"

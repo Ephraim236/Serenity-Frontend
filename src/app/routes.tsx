@@ -27,6 +27,7 @@ function AuthCallback() {
         email: payload.email,
         name: payload.name || "User",
         role: payload.role || "client",
+        avatar: payload.avatar || "",
       };
       localStorage.setItem("serenity_auth_user", JSON.stringify(user));
       window.location.href = payload.role === "business" ? "/admin" : "/";
