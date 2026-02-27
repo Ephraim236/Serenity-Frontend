@@ -14,6 +14,16 @@ import {
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { Calendar } from "../components/ui/calendar";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../components/ui/alert-dialog";
 import { format } from "date-fns";
 import { getAuthToken } from "../contexts/AuthContext";
 import { toast } from "sonner";
@@ -49,6 +59,13 @@ export function AdminAppointments() {
   const [appointments, setAppointments] = useState<Appointment[]>(DEFAULT_APPOINTMENTS);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
+  
+  // Confirmation dialog states
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [actionType, setActionType] = useState<string>("");
 
   useEffect(() => {
     fetchAppointments();
@@ -144,6 +161,46 @@ export function AdminAppointments() {
 
   const formatStatus = (status: string) => {
     return status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+  };
+
+  // Dialog handlers
+  const openConfirmDialog = (apt: Appointment) => {
+    setSelectedAppointment(apt);
+    setConfirmDialogOpen(true);
+  };
+
+  const openCancelDialog = (apt: Appointment) => {
+    setSelectedAppointment(apt);
+    setCancelDialogOpen(true);
+  };
+
+  const openDeleteDialog = (apt: Appointment) => {
+    setSelectedAppointment(apt);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmAction = () => {
+    if (selectedAppointment) {
+      handleUpdateStatus(selectedAppointment._id, 'confirmed');
+    }
+    setConfirmDialogOpen(false);
+    setSelectedAppointment(null);
+  };
+
+  const handleCancelAction = () => {
+    if (selectedAppointment) {
+      handleUpdateStatus(selectedAppointment._id, 'cancelled');
+    }
+    setCancelDialogOpen(false);
+    setSelectedAppointment(null);
+  };
+
+  const handleDeleteAction = () => {
+    if (selectedAppointment) {
+      handleDeleteAppointment(selectedAppointment._id);
+    }
+    setDeleteDialogOpen(false);
+    setSelectedAppointment(null);
   };
 
   // Calculate summary
@@ -283,7 +340,7 @@ export function AdminAppointments() {
                               variant="outline" 
                               size="sm" 
                               className="rounded-xl h-10 px-3 text-green-600 border-green-200 hover:bg-green-50 hover:border-green-300"
-                              onClick={() => handleUpdateStatus(apt._id, 'confirmed')}
+                              onClick={() => openConfirmDialog(apt)}
                             >
                               <Check className="w-4 h-4 mr-1" /> Confirm
                             </Button>
@@ -291,7 +348,7 @@ export function AdminAppointments() {
                               variant="outline" 
                               size="sm" 
                               className="rounded-xl h-10 px-3 text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"
-                              onClick={() => handleUpdateStatus(apt._id, 'cancelled')}
+                              onClick={() => openCancelDialog(apt)}
                             >
                               <X className="w-4 h-4 mr-1" /> Cancel
                             </Button>
@@ -311,7 +368,7 @@ export function AdminAppointments() {
                               variant="outline" 
                               size="sm" 
                               className="rounded-xl h-10 px-3 text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"
-                              onClick={() => handleUpdateStatus(apt._id, 'cancelled')}
+                              onClick={() => openCancelDialog(apt)}
                             >
                               <X className="w-4 h-4 mr-1" /> Cancel
                             </Button>
@@ -332,7 +389,7 @@ export function AdminAppointments() {
                             variant="ghost" 
                             size="icon" 
                             className="h-10 w-10 rounded-xl text-red-400 hover:text-red-600 hover:bg-red-50"
-                            onClick={() => handleDeleteAppointment(apt._id)}
+                            onClick={() => openDeleteDialog(apt)}
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
@@ -354,6 +411,72 @@ export function AdminAppointments() {
           )}
         </div>
       </div>
+
+      {/* Confirm Appointment Dialog */}
+      <AlertDialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
+        <AlertDialogContent className="rounded-3xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Appointment</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to confirm this appointment for {selectedAppointment?.clientName}? 
+              This will notify the client that their booking has been accepted.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleConfirmAction}
+              className="bg-green-600 hover:bg-green-700 rounded-xl"
+            >
+              Yes, Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Cancel Appointment Dialog */}
+      <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
+        <AlertDialogContent className="rounded-3xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancel Appointment</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to cancel this appointment for {selectedAppointment?.clientName}? 
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-xl">Keep Appointment</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleCancelAction}
+              className="bg-red-600 hover:bg-red-700 rounded-xl"
+            >
+              Yes, Cancel
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Appointment Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent className="rounded-3xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Appointment</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to permanently delete this appointment for {selectedAppointment?.clientName}? 
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDeleteAction}
+              className="bg-red-600 hover:bg-red-700 rounded-xl"
+            >
+              Yes, Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

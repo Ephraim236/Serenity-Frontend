@@ -445,26 +445,6 @@ export function AdminDashboard() {
                           </Button>
                         </>
                       )}
-                      {apt.status === 'confirmed' && (
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          className="h-8 w-8 rounded-lg text-blue-600 hover:bg-blue-50"
-                          onClick={() => handleUpdateStatus(apt._id, 'in_progress')}
-                        >
-                          <Clock className="w-4 h-4" />
-                        </Button>
-                      )}
-                      {apt.status === 'in_progress' && (
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          className="h-8 w-8 rounded-lg text-green-600 hover:bg-green-50"
-                          onClick={() => handleUpdateStatus(apt._id, 'completed')}
-                        >
-                          <Check className="w-4 h-4" />
-                        </Button>
-                      )}
                       <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
                         <MoreVertical className="w-4 h-4" />
                       </Button>
