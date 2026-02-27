@@ -63,10 +63,10 @@ export function ClientHome() {
               Welcome to Serenity
             </span>
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              Rejuvenate Your <span className="text-indigo-400">Mind, Body</span> & Soul
+              Luxury <span className="text-indigo-400">Self-Care</span> Effortlessly Booked
             </h1>
             <p className="text-lg md:text-xl text-neutral-200 mb-8 max-w-lg">
-              Experience the ultimate relaxation with our services tailored just for you.
+              Connecting Clients and Services Effortlessly.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link to="/book">
