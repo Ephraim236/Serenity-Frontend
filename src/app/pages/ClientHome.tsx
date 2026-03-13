@@ -168,8 +168,16 @@ export function ClientHome() {
       </section>
 
       {/* Mobile App Promo */}
-      <section className="bg-neutral-900 py-16">
-        <div className="container mx-auto px-4">
+      <section className="relative bg-neutral-900 py-16 overflow-hidden">
+        {/* Ghana Independence Arch Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-20"
+          style={{ backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Independence_Arch_Accra_Ghana.jpg/1280px-Arch_of_Independence.jpg")' }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/80 to-neutral-900/60" />
+        
+        {/* Content */}
+        <div className="container mx-auto px-4 relative z-10">
           {/* Ghana Flag Colors Caption */}
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">
