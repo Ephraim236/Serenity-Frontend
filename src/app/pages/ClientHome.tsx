@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { useState, useEffect } from "react";
 import { Button } from "../components/ui/button";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { 
@@ -38,17 +39,44 @@ const SERVICES = [
   }
 ];
 
+// Hero slideshow images
+const HERO_IMAGES = [
+  "/african-american-man-guy-sitting-chair-wash-hair.jpg",
+  "/man-woman-doing-beauty-treatment-home.jpg",
+  "/medium-shot-man-living-as-digital-nomad.jpg",
+  "/stylist-woman-taking-care-her-client-afro-hair.jpg",
+  "/woman-getting-her-hair-done-salon.jpg",
+  "/young-african-american-man-visiting-barbershop.jpg"
+];
+
 export function ClientHome() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="flex flex-col gap-16 pb-16">
       {/* Hero Section */}
       <section className="relative h-[600px] flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <ImageWithFallback
-            src="https://images.unsplash.com/photo-1637777277337-f114350fb088?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBzcGElMjBpbnRlcmlvciUyMHNhbG9uJTIwbWFzc2FnZSUyMGZhY2lhbCUyMGhhaXJkcmVzc2VyfGVufDF8fHx8MTc3MTYwNzA5NXww&ixlib=rb-4.1.0&q=80&w=1080"
-            alt="Spa Interior"
-            className="w-full h-full object-cover"
-          />
+          {HERO_IMAGES.map((image, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
+            >
+              <img
+                src={image}
+                alt={`Slide ${index + 1}`}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ))}
           <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
         </div>
         
@@ -169,10 +197,10 @@ export function ClientHome() {
 
       {/* Mobile App Promo */}
       <section className="relative bg-neutral-900 py-16 overflow-hidden">
-        {/* Ghana Independence Arch Background Image */}
+        {/* Ghana Map Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-20"
-          style={{ backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Independence_Arch_Accra_Ghana.jpg/1280px-Arch_of_Independence.jpg")' }}
+          style={{ backgroundImage: 'url("/map-ghana-polygonal-mesh-line-map-flag-map.jpg")' }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/80 to-neutral-900/60" />
         
