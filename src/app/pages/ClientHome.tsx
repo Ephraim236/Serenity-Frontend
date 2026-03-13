@@ -41,7 +41,7 @@ const SERVICES = [
 
 // Hero slideshow images
 const HERO_IMAGES = [
-  "/Serenity Pics/african-american-man-guy-sitting-chair-wash-hair.jpg",
+  "/Serenity Pics/african-american-man-guy-sitting-chair-barber-works-with-beard (1).jpg",
   "/Serenity Pics/man-woman-doing-beauty-treatment-home.jpg",
   "/Serenity Pics/medium-shot-man-living-as-digital-nomad.jpg",
   "/Serenity Pics/stylist-woman-taking-care-her-client-afro-hair.jpg",
@@ -74,6 +74,8 @@ export function ClientHome() {
                 src={image}
                 alt={`Slide ${index + 1}`}
                 className="w-full h-full object-cover"
+                loading={index === 0 ? "eager" : "lazy"}
+                fetchPriority={index === 0 ? "high" : "low"}
               />
             </div>
           ))}
