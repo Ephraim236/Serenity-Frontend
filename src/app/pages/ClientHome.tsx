@@ -41,12 +41,12 @@ const SERVICES = [
 
 // Hero slideshow images
 const HERO_IMAGES = [
-  "/african-american-man-guy-sitting-chair-wash-hair.jpg",
-  "/man-woman-doing-beauty-treatment-home.jpg",
-  "/medium-shot-man-living-as-digital-nomad.jpg",
-  "/stylist-woman-taking-care-her-client-afro-hair.jpg",
-  "/woman-getting-her-hair-done-salon.jpg",
-  "/young-african-american-man-visiting-barbershop.jpg"
+  "/Serenity Pics/african-american-man-guy-sitting-chair-wash-hair.jpg",
+  "/Serenity Pics/man-woman-doing-beauty-treatment-home.jpg",
+  "/Serenity Pics/medium-shot-man-living-as-digital-nomad.jpg",
+  "/Serenity Pics/stylist-woman-taking-care-her-client-afro-hair.jpg",
+  "/Serenity Pics/woman-getting-her-hair-done-salon.jpg",
+  "/Serenity Pics/young-african-american-man-visiting-barbershop.jpg"
 ];
 
 export function ClientHome() {
@@ -200,7 +200,7 @@ export function ClientHome() {
         {/* Ghana Map Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-20"
-          style={{ backgroundImage: 'url("/map-ghana-polygonal-mesh-line-map-flag-map.jpg")' }}
+          style={{ backgroundImage: 'url("/Serenity Pics/map-ghana-polygonal-mesh-line-map-flag-map.jpg")' }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/80 to-neutral-900/60" />
         
