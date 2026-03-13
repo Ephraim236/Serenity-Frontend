@@ -55,7 +55,7 @@ export function ClientHome() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % HERO_IMAGES.length);
-    }, 2000);
+    }, 4000);
 
     return () => clearInterval(interval);
   }, []);
@@ -77,7 +77,7 @@ export function ClientHome() {
               />
             </div>
           ))}
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
+          <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" />
         </div>
         
         <div className="container mx-auto px-4 relative z-10 text-white">
@@ -196,10 +196,10 @@ export function ClientHome() {
       </section>
 
       {/* Mobile App Promo */}
-      <section className="relative bg-neutral-900 py-16 overflow-hidden">
+      <section className="relative bg-neutral-900 py-24 overflow-hidden">
         {/* Ghana Map Background Image */}
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-20"
+          className="absolute inset-0 bg-cover bg-center opacity-40"
           style={{ backgroundImage: 'url("/Serenity Pics/map-ghana-polygonal-mesh-line-map-flag-map.jpg")' }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/80 to-neutral-900/60" />
