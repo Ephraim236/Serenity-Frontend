@@ -22,7 +22,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const STORAGE_KEY = "serenity_auth_user";
 const TOKEN_KEY = "serenity_auth_token";
 // Use production backend URL
-const API_URL = "https://serenity-production-bafc.up.railway.app";
+const API_URL = "https://serenity-5zku.onrender.com";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);

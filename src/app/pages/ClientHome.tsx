@@ -7,8 +7,7 @@ import {
   CheckCircle2, 
   ArrowRight,
   MapPin,
-  Phone,
-  Smartphone
+  Phone
 } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -168,65 +167,58 @@ export function ClientHome() {
         </div>
       </section>
 
-      {/* Ghana Map & Mobile App */}
+      {/* Contact Info */}
       <section className="bg-indigo-600 py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Ghana Map */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="text-white">
-              <h2 className="text-3xl font-bold mb-6">Book Anywhere in Ghana</h2>
-              <p className="text-indigo-100 mb-8 text-lg">
-                Serenity Spa & Wellness is available in multiple locations across Ghana. 
-                Find the nearest salon or spa to you and book your relaxing experience today.
-              </p>
-              
-              {/* Ghana Map Image */}
-              <div className="relative w-full max-w-md mx-auto lg:mx-0">
-                <img 
-                  src="/screen.png" 
-                  alt="Ghana Map" 
-                  className="w-full h-auto rounded-2xl"
-                />
+              <h2 className="text-3xl font-bold mb-8">Visit Our Office</h2>
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center shrink-0">
+                    <MapPin className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-lg">Location</h4>
+                    <p className="text-indigo-100">Pawpaw Street<br />East-Legon,Accra</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center shrink-0">
+                    <Phone className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-lg">Contact</h4>
+                    <p className="text-indigo-100">Phone: (+233) 123-4567<br />Email: hello@serenity.com</p>
+                  </div>
+                </div>
               </div>
             </div>
-
-            {/* Mobile App Download */}
-            <div className="bg-white p-8 rounded-3xl shadow-2xl text-center">
-              <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Smartphone className="w-10 h-10 text-indigo-600" />
-              </div>
-              <h3 className="text-2xl font-bold mb-4 text-neutral-900">Download Our Mobile App</h3>
-              <p className="text-neutral-600 mb-8">
-                Book your spa appointments on the go! Get the Serenity app for a seamless experience.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                {/* App Store Button */}
-                <button className="flex items-center gap-3 bg-neutral-900 hover:bg-neutral-800 text-white px-6 py-3 rounded-2xl transition-colors">
-                  <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                  </svg>
-                  <div className="text-left">
-                    <p className="text-xs text-neutral-400">Download on the</p>
-                    <p className="text-sm font-bold">App Store</p>
+            <div className="bg-white p-8 rounded-3xl shadow-2xl">
+              <h3 className="text-2xl font-bold mb-6 text-neutral-900">Get a Call Back</h3>
+              <form className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-neutral-700">First Name</label>
+                    <input className="w-full p-3 rounded-xl border border-neutral-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Jane" />
                   </div>
-                </button>
-                
-                {/* Google Play Button */}
-                <button className="flex items-center gap-3 bg-neutral-900 hover:bg-neutral-800 text-white px-6 py-3 rounded-2xl transition-colors">
-                  <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 010 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z"/>
-                  </svg>
-                  <div className="text-left">
-                    <p className="text-xs text-neutral-400">Get it on</p>
-                    <p className="text-sm font-bold">Google Play</p>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-neutral-700">Last Name</label>
+                    <input className="w-full p-3 rounded-xl border border-neutral-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Doe" />
                   </div>
-                </button>
-              </div>
-              
-              <p className="mt-6 text-sm text-neutral-500">
-                Coming soon to your favorite app store
-              </p>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-neutral-700">Email</label>
+                  <input className="w-full p-3 rounded-xl border border-neutral-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="jane@example.com" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-neutral-700">Message</label>
+                  <input className="w-full p-3 rounded-xl border border-neutral-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Please input your message here" />
+                </div>
+                <Button className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl">
+                  Send Message
+                </Button>
+              </form>
             </div>
           </div>
         </div>
