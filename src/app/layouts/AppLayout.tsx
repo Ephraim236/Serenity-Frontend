@@ -15,6 +15,7 @@ import { useState } from "react";
 import { Button } from "../components/ui/button";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "../contexts/AuthContext";
+import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,6 +28,9 @@ export function AppLayout() {
   const isAdmin = location.pathname.startsWith("/admin");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
+
+  // Check if user is a business owner (for showing admin portal)
+  const isBusinessOwner = user?.role === "business";
 
   const clientNav = [
     { label: "Home", href: "/", icon: Scissors },
@@ -73,10 +77,11 @@ export function AppLayout() {
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center gap-2 focus:outline-none">
                     {user?.avatar ? (
-                      <img 
+                      <ImageWithFallback 
                         src={user.avatar} 
                         alt={user.name} 
                         className="w-8 h-8 rounded-full object-cover border-2 border-indigo-200 cursor-pointer hover:border-indigo-400 transition-colors"
+                        loading="eager"
                       />
                     ) : (
                       <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-sm border-2 border-indigo-200 cursor-pointer hover:border-indigo-400 transition-colors">
@@ -97,10 +102,11 @@ export function AppLayout() {
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center gap-2 focus:outline-none">
                     {user?.avatar ? (
-                      <img 
+                      <ImageWithFallback 
                         src={user.avatar} 
                         alt={user.name} 
                         className="w-8 h-8 rounded-full object-cover border-2 border-indigo-200 cursor-pointer hover:border-indigo-400 transition-colors"
+                        loading="eager"
                       />
                     ) : (
                       <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-sm border-2 border-indigo-200 cursor-pointer hover:border-indigo-400 transition-colors">
@@ -138,68 +144,106 @@ export function AppLayout() {
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Overlay - Fixed overlay that allows scrolling behind */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="md:hidden absolute top-16 left-0 w-full bg-white border-b z-40 p-4 space-y-2 shadow-lg"
-          >
-            {currentNav.map((item) => (
-              <Link
-                key={item.label}
-                to={item.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-neutral-100 transition-colors"
-              >
-                <item.icon className="w-5 h-5 text-indigo-600" />
-                <span className="font-medium">{item.label}</span>
-              </Link>
-            ))}
-            
-            {/* Mobile User Section */}
-            {isAuthenticated && (
-              <div className="border-t pt-4 mt-2">
-                <div className="flex items-center gap-3 p-3">
-                  {user?.avatar ? (
-                    <img 
-                      src={user.avatar} 
-                      alt={user.name} 
-                      className="w-10 h-10 rounded-full object-cover border-2 border-indigo-200"
-                    />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold border-2 border-indigo-200">
-                      {user?.name?.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                  <div>
-                    <p className="font-bold text-neutral-900">{user?.name}</p>
-                    <p className="text-xs text-neutral-500">{user?.email}</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => { logout(); setIsMobileMenuOpen(false); }}
-                  className="flex items-center gap-3 p-3 w-full rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+          <>
+            {/* Backdrop - click to close */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="md:hidden fixed inset-0 bg-black/50 z-40"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            {/* Menu Panel - Glass effect drawer */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="md:hidden fixed top-16 left-0 w-full max-w-sm z-50 max-h-[calc(100vh-4rem)] overflow-y-auto"
+            >
+              <div className="bg-white/80 backdrop-blur-lg border-r border-white/20 shadow-xl m-2 rounded-2xl overflow-hidden">
+            {/* Menu Content */}
+            <div className="p-4 space-y-2">
+              {currentNav.map((item) => (
+                <Link
+                  key={item.label}
+                  to={item.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-3 p-4 rounded-xl hover:bg-neutral-100 transition-colors text-lg font-medium"
                 >
-                  <LogOut className="w-5 h-5" />
-                  <span className="font-medium">Sign out</span>
-                </button>
-              </div>
-            )}
-            
-            {!isAdmin && (
-              <Link
-                to="/admin"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center gap-3 p-3 rounded-lg bg-indigo-50 text-indigo-700 font-medium"
-              >
-                <LayoutDashboard className="w-5 h-5" />
-                <span>Admin Portal</span>
-              </Link>
-            )}
-          </motion.div>
+                  <item.icon className="w-6 h-6 text-indigo-600" />
+                  <span>{item.label}</span>
+                </Link>
+              ))}
+              
+              {/* Mobile User Section */}
+              {isAuthenticated && (
+                <div className="border-t pt-4 mt-4">
+                  <div className="flex items-center gap-3 p-4">
+                    {user?.avatar ? (
+                      <ImageWithFallback 
+                        src={user.avatar} 
+                        alt={user.name} 
+                        className="w-12 h-12 rounded-full object-cover border-2 border-indigo-200"
+                        loading="eager"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold border-2 border-indigo-200">
+                        {user?.name?.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <div>
+                      <p className="font-bold text-neutral-900 text-lg">{user?.name}</p>
+                      <p className="text-sm text-neutral-500">{user?.email}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => { logout(); setIsMobileMenuOpen(false); }}
+                    className="flex items-center gap-3 p-4 w-full rounded-xl text-red-600 hover:bg-red-50 transition-colors text-lg font-medium"
+                  >
+                    <LogOut className="w-6 h-6" />
+                    <span>Sign out</span>
+                  </button>
+                </div>
+              )}
+              
+              {/* Admin Portal - Only show for business owners */}
+              {!isAdmin && isBusinessOwner && (
+                <Link
+                  to="/admin"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-3 p-4 rounded-xl bg-indigo-50 text-indigo-700 font-medium text-lg"
+                >
+                  <LayoutDashboard className="w-6 h-6" />
+                  <span>Admin Portal</span>
+                </Link>
+              )}
+
+              {/* Login/Signup for non-authenticated users */}
+              {!isAuthenticated && (
+                <div className="space-y-3 pt-4 border-t">
+                  <Link
+                    to="/login"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center justify-center p-4 rounded-xl border-2 border-indigo-600 text-indigo-600 font-medium text-lg"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/signup"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center justify-center p-4 rounded-xl bg-indigo-600 text-white font-medium text-lg"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
+            </div>
+            </div>
+            </motion.div>
+            </>
         )}
       </AnimatePresence>
 

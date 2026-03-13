@@ -20,11 +20,23 @@ import { format } from "date-fns";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 
 const SERVICES = [
-  { id: 's1', name: 'Luxury Facial', category: 'Skin', price: '$85', duration: '60 min', icon: Sparkles },
-  { id: 's2', name: 'Deep Tissue Massage', category: 'Massage', price: '$120', duration: '90 min', icon: Sparkles },
-  { id: 's3', name: 'Designer Haircut', category: 'Hair', price: '$65', duration: '45 min', icon: Scissors },
-  { id: 's4', name: 'Manicure & Pedicure', category: 'Nails', price: '$75', duration: '75 min', icon: Sparkles },
-  { id: 's5', name: 'Hot Stone Therapy', category: 'Massage', price: '$140', duration: '90 min', icon: Sparkles },
+  // Spa Services
+  { id: 's1', name: 'Luxury Facial', category: 'Spa', price: '₵850', duration: '60 min', icon: Sparkles, image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGElMjBmYWNpYWwlMjB0cmVhdG1lbnQlMjBwcm9mZXNzaW9uYWx8ZW58MXx8fHwxNzcxNjA3MDk4fDA&ixlib=rb-4.1.0&q=80&w=1080', description: 'Deep cleansing and rejuvenation for glowing skin' },
+  { id: 's2', name: 'Deep Tissue Massage', category: 'Spa', price: '₵1,200', duration: '90 min', icon: Sparkles, image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGElMjBtYXNzYWdlfGVufDF8fHx8MTc3NDQwNzgwMHww&ixlib=rb-4.1.0&q=80&w=1080', description: 'Targeted pressure to release muscle tension and stress' },
+  { id: 's3', name: 'Hot Stone Therapy', category: 'Spa', price: '₵1,400', duration: '90 min', icon: Sparkles, image: 'https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYWxvbiUyMHNhbG9uJTIwYXV0aG9yJTIwaW50ZXJpb3J8ZW58MXx8fHwxNzc0NDA3ODAwfDA&ixlib=rb-4.1.0&q=80&w=1080', description: 'Heated stones to melt away tension and promote relaxation' },
+  { id: 's4', name: 'Aromatherapy Massage', category: 'Spa', price: '₵1,100', duration: '75 min', icon: Sparkles, image: 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhcm9tYXRoZXJhcHklMjBtYXNzYWdlfGVufDF8fHx8MTc3NDQwNzgwMHww&ixlib=rb-4.1.0&q=80&w=1080', description: 'Essential oils combined with gentle massage for total relaxation' },
+  
+  // Men's Grooming
+  { id: 's5', name: 'Classic Haircut', category: 'Men\'s Grooming', price: '₵150', duration: '30 min', icon: Scissors, image: '/Serenity Pics/young-african-american-man-visiting-barbershop.jpg', description: 'Traditional haircut with clippers and scissors' },
+  { id: 's6', name: 'Beard Trim & Shape', category: 'Men\'s Grooming', price: '₵120', duration: '30 min', icon: Scissors, image: '/Serenity Pics/african-american-man-guy-sitting-chair-barber-works-with-beard (1).jpg', description: 'Professional beard grooming and styling' },
+  { id: 's7', name: 'Hot Towel Shave', category: 'Men\'s Grooming', price: '₵200', duration: '45 min', icon: Scissors, image: 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZW4lMjBzaGF2aW5nfGVufDF8fHx8MTc3NDQwNzgwMHww&ixlib=rb-4.1.0&q=80&w=1080', description: 'Luxurious hot towel treatment with straight razor shave' },
+  { id: 's8', name: 'Hair & Beard Combo', category: 'Men\'s Grooming', price: '₵250', duration: '60 min', icon: Scissors, image: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxiYXJiZXIlMjBoYWlyY3V0fGVufDF8fHx8MTc3NDQwNzgwMHww&ixlib=rb-4.1.0&q=80&w=1080', description: 'Complete grooming package for hair and beard' },
+  
+  // Female Makeover
+  { id: 's9', name: 'Hair Styling & Treatment', category: 'Female Makeover', price: '₵350', duration: '60 min', icon: Sparkles, image: '/Serenity Pics/woman-getting-her-hair-done-salon.jpg', description: 'Professional styling with deep conditioning treatment' },
+  { id: 's10', name: 'Manicure & Pedicure', category: 'Female Makeover', price: '₵300', duration: '75 min', icon: Sparkles, image: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHBlZGljdXJlJTIwbWFuaWN1cmV8ZW58MXx8fHx8MTc3NDQwNzgwMHww&ixlib=rb-4.1.0&q=80&w=1080', description: 'Full nail care with polish and nail art' },
+  { id: 's11', name: 'Bridal Makeup', category: 'Female Makeover', price: '₵1,500', duration: '90 min', icon: Sparkles, image: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxiaWRlYWwlMjBtYWtldXAlMjBicmlkYWx8ZW58MXx8fHx8MTc3NDQwNzgwMHww&ixlib=rb-4.1.0&q=80&w=1080', description: 'Professional bridal makeup for your special day' },
+  { id: 's12', name: 'Full Makeover Package', category: 'Female Makeover', price: '₵2,500', duration: '180 min', icon: Sparkles, image: '/Serenity Pics/stylist-woman-taking-care-her-client-afro-hair.jpg', description: 'Complete transformation with hair, makeup, and nails' },
 ];
 
 const SPECIALISTS = [
@@ -84,18 +96,32 @@ export function BookingPage() {
                 <button
                   key={service.id}
                   onClick={() => handleServiceSelect(service)}
-                  className="flex items-center justify-between p-6 bg-white border border-neutral-100 rounded-2xl shadow-sm hover:border-indigo-600 hover:shadow-md transition-all text-left"
+                  className="flex items-center gap-4 p-4 bg-white border border-neutral-100 rounded-2xl shadow-sm hover:border-indigo-600 hover:shadow-md transition-all text-left group"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
-                      <service.icon className="w-6 h-6" />
+                  <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0">
+                    <ImageWithFallback 
+                      src={service.image} 
+                      alt={service.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      loading="lazy"
+                      placeholder="skeleton"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-xs font-semibold px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-full">
+                        {service.category}
+                      </span>
                     </div>
-                    <div>
-                      <h4 className="font-bold text-lg">{service.name}</h4>
-                      <p className="text-neutral-400 text-sm">{service.duration} • {service.category}</p>
+                    <h4 className="font-bold text-lg text-neutral-900">{service.name}</h4>
+                    <p className="text-neutral-400 text-sm">{service.description}</p>
+                    <div className="flex items-center gap-3 mt-2 text-neutral-500 text-sm">
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3 h-3" /> {service.duration}
+                      </span>
                     </div>
                   </div>
-                  <div className="text-xl font-bold text-indigo-600">{service.price}</div>
+                  <div className="text-xl font-bold text-indigo-600 flex-shrink-0">{service.price}</div>
                 </button>
               ))}
             </div>

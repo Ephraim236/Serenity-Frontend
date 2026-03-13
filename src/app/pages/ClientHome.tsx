@@ -13,30 +13,63 @@ import {
 import { motion } from "motion/react";
 
 const SERVICES = [
+  // Spa Services
   {
     id: 1,
     name: "Luxury Facial",
+    category: "Spa",
     duration: "60 min",
-    price: "$85",
-    image: "https://images.unsplash.com/photo-1761718210055-e83ca7e2c9ad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGElMjBmYWNpYWwlMjB0cmVhdG1lbnQlMjBwcm9mZXNzaW9uYWx8ZW58MXx8fHwxNzcxNjA3MDk4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+    price: "₵850",
+    image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGElMjBmYWNpYWwlMjB0cmVhdG1lbnQlMjBwcm9mZXNzaW9uYWx8ZW58MXx8fHwxNzcxNjA3MDk4fDA&ixlib=rb-4.1.0&q=80&w=1080",
     description: "Deep cleansing and rejuvenation for glowing skin."
   },
   {
     id: 2,
     name: "Deep Tissue Massage",
+    category: "Spa",
     duration: "90 min",
-    price: "$120",
-    image: "https://images.unsplash.com/photo-1617952986600-802f965dcdbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0aGVyYXBldXRpYyUyMG1hc3NhZ2UlMjBzcGElMjB0aGVyYXBpc3R8ZW58MXx8fHwxNzcxNjA3MDk4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+    price: "₵1,200",
+    image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGElMjBtYXNzYWdlfGVufDF8fHx8MTc3NDQwNzgwMHww&ixlib=rb-4.1.0&q=80&w=1080",
     description: "Targeted pressure to release muscle tension and stress."
   },
   {
     id: 3,
-    name: "Designer Haircut",
-    duration: "45 min",
-    price: "$65",
-    image: "https://images.unsplash.com/photo-1761931403671-d020a14928d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBoYWlyY3V0JTIwc2Fsb24lMjBwcm9mZXNzaW9uYWwlMjBoYWlyJTIwc3R5bGlzdHxlbnwxfHx8fDE3NzE2MDcwOTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    description: "Modern styling from our master hair artists."
-  }
+    name: "Hot Stone Therapy",
+    category: "Spa",
+    duration: "90 min",
+    price: "₵1,400",
+    image: "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYWxvbiUyMHNhbG9uJTIwYXV0aG9yJTIwaW50ZXJpb3J8ZW58MXx8fHwxNzc0NDA3ODAwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+    description: "Heated stones to melt away tension and promote relaxation."
+  },
+  // Men's Grooming
+  {
+    id: 4,
+    name: "Classic Haircut",
+    category: "Men's Grooming",
+    duration: "30 min",
+    price: "₵150",
+    image: "/Serenity Pics/young-african-american-man-visiting-barbershop.jpg",
+    description: "Traditional haircut with professional styling."
+  },
+  {
+    id: 5,
+    name: "Beard Trim & Shape",
+    category: "Men's Grooming",
+    duration: "30 min",
+    price: "₵120",
+    image: "/Serenity Pics/african-american-man-guy-sitting-chair-barber-works-with-beard (1).jpg",
+    description: "Professional beard grooming and styling."
+  },
+  // Female Makeover
+  {
+    id: 6,
+    name: "Hair Styling",
+    category: "Female Makeover",
+    duration: "60 min",
+    price: "₵350",
+    image: "/Serenity Pics/woman-getting-her-hair-done-salon.jpg",
+    description: "Professional styling with premium products."
+  },
 ];
 
 // Hero slideshow images
@@ -70,12 +103,13 @@ export function ClientHome() {
               key={index}
               className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
             >
-              <img
+              <ImageWithFallback
                 src={image}
                 alt={`Slide ${index + 1}`}
                 className="w-full h-full object-cover"
-                loading={index === 0 ? "eager" : "lazy"}
-                fetchPriority={index === 0 ? "high" : "low"}
+                loading={index === 0 ? 'eager' : 'lazy'}
+                placeholder="skeleton"
+                fetchPriority={index === 0 ? 'high' : 'low'}
               />
             </div>
           ))}
@@ -159,7 +193,7 @@ export function ClientHome() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {SERVICES.map((service, index) => (
             <motion.div
               key={service.id}
@@ -180,9 +214,14 @@ export function ClientHome() {
                 </div>
               </div>
               <div className="p-6">
-                <div className="flex items-center gap-2 text-neutral-400 text-xs mb-3">
-                  <Clock className="w-3 h-3" />
-                  <span>{service.duration}</span>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-xs font-semibold px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full">
+                    {service.category}
+                  </span>
+                  <div className="flex items-center gap-1 text-neutral-400 text-xs">
+                    <Clock className="w-3 h-3" />
+                    <span>{service.duration}</span>
+                  </div>
                 </div>
                 <h3 className="text-xl font-bold mb-2">{service.name}</h3>
                 <p className="text-neutral-500 text-sm mb-6">{service.description}</p>
@@ -203,7 +242,15 @@ export function ClientHome() {
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-40"
           style={{ backgroundImage: 'url("/Serenity Pics/map-ghana-polygonal-mesh-line-map-flag-map.jpg")' }}
-        />
+        >
+          <ImageWithFallback
+            src="/Serenity Pics/map-ghana-polygonal-mesh-line-map-flag-map.jpg"
+            alt="Ghana map"
+            className="w-full h-full object-cover"
+            loading="lazy"
+            placeholder="skeleton"
+          />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/80 to-neutral-900/60" />
         
         {/* Content */}

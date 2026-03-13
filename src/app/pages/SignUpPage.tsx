@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
+import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { 
   Scissors, 
   Mail, 
@@ -223,10 +224,12 @@ export function SignUpPage() {
     <div className="min-h-screen flex items-center justify-center p-4 py-12 relative overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
-        <img 
+        <ImageWithFallback 
           src="https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYWxvbiUyMHNhbG9uJTIwYXV0aG9yJTIwaW50ZXJpb3J8ZW58MXx8fHwxNzc0NDA3ODAwfDA&ixlib=rb-4.1.0&q=80&w=2070" 
           alt="Spa background" 
           className="w-full h-full object-cover"
+          loading="eager"
+          placeholder="skeleton"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-rose-900/80 via-purple-900/70 to-indigo-900/60" />
         {/* Animated decorative circles */}
@@ -237,7 +240,13 @@ export function SignUpPage() {
 
       <div className="absolute top-4 left-4 z-10">
         <button 
-          onClick={() => navigate(-1)} 
+          onClick={() => {
+            if (window.history.length > 1) {
+              navigate(-1);
+            } else {
+              navigate('/');
+            }
+          }} 
           className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors backdrop-blur-sm bg-white/10 px-3 py-1.5 rounded-full"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -515,10 +524,12 @@ export function SignUpPage() {
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
                     {formData.businessImages.map((img, index) => (
                       <div key={index} className="relative group rounded-xl overflow-hidden aspect-square bg-neutral-100">
-                        <img 
+                        <ImageWithFallback 
                           src={img} 
                           alt={`Business ${index + 1}`} 
                           className="w-full h-full object-cover"
+                          loading="lazy"
+                          placeholder="skeleton"
                         />
                         <button
                           type="button"
