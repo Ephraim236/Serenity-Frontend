@@ -147,25 +147,24 @@ export function AppLayout() {
       {/* Mobile Menu Overlay - Fixed overlay that allows scrolling behind */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <>
+          <div className="md:hidden">
             {/* Backdrop - click to close */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="md:hidden fixed inset-0 bg-black/50 z-40"
+              className="fixed inset-0 bg-black/50 z-40"
               onClick={() => setIsMobileMenuOpen(false)}
             />
             {/* Menu Panel - Glass effect drawer */}
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="md:hidden fixed top-16 left-0 w-full max-w-sm z-50 max-h-[calc(100vh-4rem)] overflow-y-auto"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="fixed top-16 left-0 h-[calc(100vh-4rem)] w-80 bg-white/70 backdrop-blur-xl border-r border-white/30 shadow-2xl z-50 overflow-y-auto"
             >
-              <div className="bg-white/80 backdrop-blur-lg border-r border-white/20 shadow-xl m-2 rounded-2xl overflow-hidden">
-            {/* Menu Content */}
-            <div className="p-4 space-y-2">
+              {/* Menu Content */}
+              <div className="p-4 space-y-2">
               {currentNav.map((item) => (
                 <Link
                   key={item.label}
@@ -241,9 +240,8 @@ export function AppLayout() {
                 </div>
               )}
             </div>
-            </div>
             </motion.div>
-            </>
+          </div>
         )}
       </AnimatePresence>
 
