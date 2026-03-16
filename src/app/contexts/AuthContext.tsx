@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
+import { toast } from "sonner";
 
 interface User {
   id: string;
@@ -81,11 +82,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(TOKEN_KEY, token);
   };
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setUser(null);
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(TOKEN_KEY);
-  };
+  }, []);
+
+  // Handle browser back button to prevent unauthorized access
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      // Check if user is authenticated
+      const token = localStorage.getItem(TOKEN_KEY);
+      const storedUser = localStorage.getItem(STORAGE_KEY);
+      
+      if (token && storedUser) {
+        // User is authenticated, log them out
+        logout();
+        // Show logout message
+        toast.info("You have been logged out due to inactivity");
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [logout]);
 
   const loginWithGoogle = () => {
     // Redirect to backend Google OAuth endpoint

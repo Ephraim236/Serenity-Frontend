@@ -19,6 +19,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "../contexts/AuthContext";
 import { useTheme } from "../contexts/ThemeContext";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import { Chatbot } from "../components/Chatbot";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -65,6 +66,7 @@ export function AppLayout() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-1">
+            {/* Nav Items */}
             {currentNav.map((item) => (
               <Link
                 key={item.label}
@@ -78,19 +80,6 @@ export function AppLayout() {
                 {item.label}
               </Link>
             ))}
-            {/* Theme Toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              className="rounded-full hover:bg-violet-100 dark:hover:bg-violet-900/30"
-            >
-              {theme === 'light' ? (
-                <Moon className="w-5 h-5 text-violet-600" />
-              ) : (
-                <Sun className="w-5 h-5 text-amber-400" />
-              )}
-            </Button>
             {isAdmin ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -271,6 +260,8 @@ export function AppLayout() {
       <main className="flex-1">
         <Outlet />
       </main>
+
+      <Chatbot />
 
       <footer className="border-t bg-white py-8">
         <div className="container mx-auto px-4 text-center text-neutral-500 text-sm">

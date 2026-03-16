@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 import { Button } from "../components/ui/button";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
@@ -8,9 +8,34 @@ import {
   CheckCircle2, 
   ArrowRight,
   MapPin,
-  Phone
+  Phone,
+  Building2,
+  Mail
 } from "lucide-react";
 import { motion } from "motion/react";
+
+// API URL helper
+const getApiUrl = () => {
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:3000';
+  }
+  return 'https://serenity-5zku.onrender.com';
+};
+
+interface Business {
+  _id: string;
+  name: string;
+  email: string;
+  businessName?: string;
+  businessEmail?: string;
+  businessPhone?: string;
+  location?: {
+    address?: string;
+    city?: string;
+    state?: string;
+    country?: string;
+  };
+}
 
 const SERVICES = [
   // Spa Services
@@ -84,6 +109,9 @@ const HERO_IMAGES = [
 
 export function ClientHome() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [businesses, setBusinesses] = useState<Business[]>([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -92,6 +120,28 @@ export function ClientHome() {
 
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    const fetchBusinesses = async () => {
+      try {
+        const response = await fetch(`${getApiUrl()}/api/business`);
+        if (response.ok) {
+          const data = await response.json();
+          setBusinesses(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch businesses:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBusinesses();
+  }, []);
+
+  const handleBusinessClick = (businessId: string) => {
+    navigate(`/book?business=${businessId}`);
+  };
 
   return (
     <div className="flex flex-col gap-16 pb-16">
@@ -178,6 +228,69 @@ export function ClientHome() {
           </div>
         </div>
       </section>
+
+      {/* Businesses Section */}
+      {businesses.length > 0 && (
+        <section className="container mx-auto px-4">
+          <div className="flex items-end justify-between mb-12">
+            <div>
+              <h2 className="text-3xl font-bold mb-4 text-neutral-900 dark:text-white">Our Partner Businesses</h2>
+              <p className="text-neutral-500 dark:text-neutral-400 max-w-xl">
+                Choose a business below to view their services and book an appointment.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {businesses.map((business, index) => (
+              <motion.div
+                key={business._id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                onClick={() => handleBusinessClick(business._id)}
+                className="group bg-white dark:bg-neutral-800 rounded-3xl p-8 border border-neutral-100 dark:border-neutral-700 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer"
+              >
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-violet-600 to-purple-600 rounded-2xl flex items-center justify-center text-white shrink-0">
+                    <Building2 className="w-7 h-7" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-neutral-900 dark:text-white">
+                      {business.businessName || business.name}
+                    </h3>
+                    <p className="text-neutral-500 text-sm">{business.name}</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  {business.location?.address && (
+                    <div className="flex items-center gap-2 text-neutral-500 text-sm">
+                      <MapPin className="w-4 h-4 text-violet-600" />
+                      <span>{business.location.address}, {business.location.city}</span>
+                    </div>
+                  )}
+                  {business.businessPhone && (
+                    <div className="flex items-center gap-2 text-neutral-500 text-sm">
+                      <Phone className="w-4 h-4 text-violet-600" />
+                      <span>{business.businessPhone}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2 text-neutral-500 text-sm">
+                    <Mail className="w-4 h-4 text-violet-600" />
+                    <span>{business.email}</span>
+                  </div>
+                </div>
+
+                <Button className="w-full mt-6 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-xl">
+                  View Services & Book
+                </Button>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Featured Services */}
       <section className="container mx-auto px-4">

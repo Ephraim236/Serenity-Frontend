@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { toast } from "sonner";
@@ -18,6 +18,37 @@ import { motion, AnimatePresence } from "motion/react";
 import { Calendar } from "../components/ui/calendar";
 import { format } from "date-fns";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+
+// API URL helper
+const getApiUrl = () => {
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:3000';
+  }
+  return 'https://serenity-5zku.onrender.com';
+};
+
+interface BusinessService {
+  _id: string;
+  name: string;
+  category: string;
+  price: number;
+  duration: number;
+  description?: string;
+  image?: string;
+}
+
+interface BusinessDetails {
+  _id: string;
+  name: string;
+  businessName?: string;
+  location?: {
+    address?: string;
+    city?: string;
+  };
+  serviceHours?: {
+    [key: string]: { open: string; close: string; isClosed: boolean };
+  };
+}
 
 const SERVICES = [
   // Spa Services
@@ -51,11 +82,70 @@ const TIME_SLOTS = [
 
 export function BookingPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const businessId = searchParams.get('business');
+  
   const [step, setStep] = useState(1);
   const [selectedService, setSelectedService] = useState<any>(null);
   const [selectedSpecialist, setSelectedSpecialist] = useState<any>(null);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [business, setBusiness] = useState<BusinessDetails | null>(null);
+  const [services, setServices] = useState<BusinessService[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch business details and services
+  useEffect(() => {
+    const fetchBusinessData = async () => {
+      if (!businessId) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`${getApiUrl()}/api/business/${businessId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setBusiness(data);
+          setServices(data.services || []);
+        }
+      } catch (error) {
+        console.error('Failed to fetch business:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBusinessData();
+  }, [businessId]);
+
+  // Check if time slot is disabled (past time for today)
+  const isTimeDisabled = (time: string) => {
+    if (!selectedDate) return false;
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const selectedDay = new Date(selectedDate);
+    selectedDay.setHours(0, 0, 0, 0);
+    
+    // If selected date is not today, all times are available
+    if (selectedDay.getTime() !== today.getTime()) return false;
+    
+    // Parse the time and check if it's past
+    const [timeStr, period] = time.split(' ');
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    let hour24 = hours;
+    
+    if (period === 'PM' && hours !== 12) hour24 += 12;
+    if (period === 'AM' && hours === 12) hour24 = 0;
+    
+    const now = new Date();
+    const slotTime = new Date();
+    slotTime.setHours(hour24, minutes, 0, 0);
+    
+    return slotTime <= now;
+  };
 
   const handleServiceSelect = (service: any) => {
     setSelectedService(service);
@@ -92,9 +182,9 @@ export function BookingPage() {
               <p className="text-neutral-500 dark:text-neutral-400">Choose the treatment you'd like to book</p>
             </div>
             <div className="grid grid-cols-1 gap-4">
-              {SERVICES.map((service) => (
+              {(services.length > 0 ? services : SERVICES).map((service: any) => (
                 <button
-                  key={service.id}
+                  key={service.id || service._id}
                   onClick={() => handleServiceSelect(service)}
                   className="flex items-center gap-4 p-4 bg-white dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-2xl shadow-sm hover:border-indigo-600 hover:shadow-md transition-all text-left group"
                 >
@@ -209,19 +299,26 @@ export function BookingPage() {
                   Available Time Slots
                 </h4>
                 <div className="grid grid-cols-2 gap-3">
-                  {TIME_SLOTS.map((time) => (
-                    <button
-                      key={time}
-                      onClick={() => handleTimeSelect(time)}
-                      className={`p-4 rounded-xl border font-medium transition-all ${
-                        selectedTime === time 
-                          ? "bg-indigo-600 border-indigo-600 text-white shadow-lg" 
-                          : "bg-white border-neutral-200 text-neutral-600 hover:border-indigo-600"
-                      }`}
-                    >
-                      {time}
-                    </button>
-                  ))}
+                  {TIME_SLOTS.map((time) => {
+                    const disabled = isTimeDisabled(time);
+                    return (
+                      <button
+                        key={time}
+                        onClick={() => !disabled && handleTimeSelect(time)}
+                        disabled={disabled}
+                        className={`p-4 rounded-xl border font-medium transition-all ${
+                          selectedTime === time 
+                            ? "bg-indigo-600 border-indigo-600 text-white shadow-lg" 
+                            : disabled
+                              ? "bg-neutral-100 border-neutral-200 text-neutral-400 cursor-not-allowed"
+                              : "bg-white border-neutral-200 text-neutral-600 hover:border-indigo-600"
+                        }`}
+                      >
+                        {time}
+                        {disabled && <span className="block text-xs">Passed</span>}
+                      </button>
+                    );
+                  })}
                 </div>
                 
                 <div className="pt-8 space-y-4">
