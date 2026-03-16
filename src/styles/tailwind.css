@@ -1,4 +1,6 @@
-@import 'tailwindcss' source(none);
-@source '../**/*.{js,ts,jsx,tsx}';
+@import "tailwindcss";
 
-@import 'tw-animate-css';
+/* Dark mode support - Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@import "tw-animate-css";

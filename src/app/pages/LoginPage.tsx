@@ -120,16 +120,16 @@ export function LoginPage() {
           <p className="text-white/70 mt-2">Sign in to your Serenity account</p>
         </div>
 
-        <Card className="p-8 border-none shadow-2xl bg-white/95 backdrop-blur-md rounded-[32px]">
+        <Card className="p-8 border-none shadow-2xl bg-white/95 dark:bg-neutral-800/95 backdrop-blur-md rounded-[32px]">
           {/* Role Selector */}
-          <div className="flex bg-neutral-100 p-1 rounded-2xl mb-8">
+          <div className="flex bg-neutral-100 dark:bg-neutral-700 p-1 rounded-2xl mb-8">
             <button
               type="button"
               onClick={() => setRole("client")}
               className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${
                 role === "client" 
-                  ? "bg-white text-indigo-600 shadow-sm" 
-                  : "text-neutral-500 hover:text-neutral-700"
+                  ? "bg-white dark:bg-neutral-600 text-indigo-600 dark:text-white shadow-sm" 
+                  : "text-neutral-500 dark:text-neutral-300 hover:text-neutral-700 dark:hover:text-white"
               }`}
             >
               <User className="w-4 h-4" />
@@ -140,8 +140,8 @@ export function LoginPage() {
               onClick={() => setRole("business")}
               className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${
                 role === "business" 
-                  ? "bg-white text-indigo-600 shadow-sm" 
-                  : "text-neutral-500 hover:text-neutral-700"
+                  ? "bg-white dark:bg-neutral-600 text-indigo-600 dark:text-white shadow-sm" 
+                  : "text-neutral-500 dark:text-neutral-300 hover:text-neutral-700 dark:hover:text-white"
               }`}
             >
               <Building2 className="w-4 h-4" />
@@ -178,7 +178,7 @@ export function LoginPage() {
 
           <form onSubmit={handleLogin} className="space-y-5">
             <div className="space-y-2">
-              <label className="text-sm font-bold text-neutral-700 ml-1">Email Address</label>
+              <label className="text-sm font-bold text-neutral-700 dark:text-neutral-300 ml-1">Email Address</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-indigo-400" />
                 <input

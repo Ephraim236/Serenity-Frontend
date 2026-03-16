@@ -148,7 +148,7 @@ export function ClientHome() {
 
       {/* Stats/Info */}
       <section className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8 bg-white rounded-3xl shadow-xl -mt-24 relative z-20 border border-neutral-100">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8 bg-white dark:bg-neutral-800 rounded-3xl shadow-xl -mt-24 relative z-20 border border-neutral-100 dark:border-neutral-700">
           <div className="flex items-start gap-4 p-4">
             <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 shrink-0">
               <Star className="w-6 h-6" />
@@ -183,8 +183,8 @@ export function ClientHome() {
       <section className="container mx-auto px-4">
         <div className="flex items-end justify-between mb-12">
           <div>
-            <h2 className="text-3xl font-bold mb-4">Featured Services</h2>
-            <p className="text-neutral-500 max-w-xl">
+            <h2 className="text-3xl font-bold mb-4 text-neutral-900 dark:text-white">Featured Services</h2>
+            <p className="text-neutral-500 dark:text-neutral-400 max-w-xl">
               Choose from our most popular treatments designed to enhance your natural beauty.
             </p>
           </div>
@@ -201,7 +201,7 @@ export function ClientHome() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="group bg-white rounded-3xl overflow-hidden border border-neutral-100 shadow-sm hover:shadow-xl transition-all duration-300"
+              className="group bg-white dark:bg-neutral-800 rounded-3xl overflow-hidden border border-neutral-100 dark:border-neutral-700 shadow-sm hover:shadow-xl transition-all duration-300"
             >
               <div className="relative h-64 overflow-hidden">
                 <ImageWithFallback
@@ -223,8 +223,8 @@ export function ClientHome() {
                     <span>{service.duration}</span>
                   </div>
                 </div>
-                <h3 className="text-xl font-bold mb-2">{service.name}</h3>
-                <p className="text-neutral-500 text-sm mb-6">{service.description}</p>
+                <h3 className="text-xl font-bold mb-2 text-neutral-900 dark:text-white">{service.name}</h3>
+                <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">{service.description}</p>
                 <Link to="/book">
                   <Button className="w-full bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl">
                     Book This

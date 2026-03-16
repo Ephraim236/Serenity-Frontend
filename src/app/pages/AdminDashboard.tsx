@@ -225,12 +225,12 @@ export function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
           <div>
-            <h1 className="text-3xl font-bold text-neutral-900">Business Overview</h1>
-            <p className="text-neutral-500">Welcome back!</p>
+            <h1 className="text-3xl font-bold text-neutral-900 dark:text-white">Business Overview</h1>
+            <p className="text-neutral-500 dark:text-neutral-400">Welcome back!</p>
           </div>
           <div className="flex items-center gap-3">
             <Button variant="outline" className="rounded-xl bg-white/60 backdrop-blur-sm border-white/20 shadow-sm hover:bg-white/80">Export Report</Button>
@@ -250,8 +250,8 @@ export function AdminDashboard() {
                   +{stats.growth}%
                 </span>
               </div>
-              <h3 className="text-neutral-500 text-sm font-medium mb-1">Total Revenue</h3>
-              <p className="text-2xl font-bold text-neutral-900">{formatCurrency(stats.totalRevenue)}</p>
+              <h3 className="text-neutral-500 dark:text-neutral-400 text-sm font-medium mb-1">Total Revenue</h3>
+              <p className="text-2xl font-bold text-neutral-900 dark:text-white">{formatCurrency(stats.totalRevenue)}</p>
             </div>
           </div>
 
@@ -266,8 +266,8 @@ export function AdminDashboard() {
                   +{stats.growth / 2}%
                 </span>
               </div>
-              <h3 className="text-neutral-500 text-sm font-medium mb-1">Bookings</h3>
-              <p className="text-2xl font-bold text-neutral-900">{stats.totalAppointments}</p>
+              <h3 className="text-neutral-500 dark:text-neutral-400 text-sm font-medium mb-1">Bookings</h3>
+              <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.totalAppointments}</p>
             </div>
           </div>
 
@@ -282,8 +282,8 @@ export function AdminDashboard() {
                   +{stats.growth / 3}%
                 </span>
               </div>
-              <h3 className="text-neutral-500 text-sm font-medium mb-1">Active Clients</h3>
-              <p className="text-2xl font-bold text-neutral-900">{stats.activeClients}</p>
+              <h3 className="text-neutral-500 dark:text-neutral-400 text-sm font-medium mb-1">Active Clients</h3>
+              <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.activeClients}</p>
             </div>
           </div>
 
@@ -298,17 +298,17 @@ export function AdminDashboard() {
                   +{stats.growth / 4}%
                 </span>
               </div>
-              <h3 className="text-neutral-500 text-sm font-medium mb-1">Today's Appointments</h3>
-              <p className="text-2xl font-bold text-neutral-900">{stats.todayAppointments}</p>
+              <h3 className="text-neutral-500 dark:text-neutral-400 text-sm font-medium mb-1">Today's Appointments</h3>
+              <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.todayAppointments}</p>
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
           {/* Revenue Chart with Glass Effect */}
-          <div className="lg:col-span-2 p-8 border-none shadow-xl bg-white/70 backdrop-blur-xl rounded-3xl border border-white/20">
+          <div className="lg:col-span-2 p-8 border-none shadow-xl bg-white/70 backdrop-blur-xl rounded-3xl border border-white/20 dark:bg-neutral-800/70 dark:border-neutral-700/20">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-xl font-bold">Revenue Analytics</h3>
+              <h3 className="text-xl font-bold text-neutral-900 dark:text-white">Revenue Analytics</h3>
               <select 
                 value={period} 
                 onChange={(e) => setPeriod(e.target.value)}
@@ -359,8 +359,8 @@ export function AdminDashboard() {
           </div>
 
           {/* Staff Availability with Glass Effect */}
-          <div className="p-8 border-none shadow-xl bg-white/70 backdrop-blur-xl rounded-3xl border border-white/20">
-            <h3 className="text-xl font-bold mb-6">Staff Utilization</h3>
+          <div className="p-8 border-none shadow-xl bg-white/70 backdrop-blur-xl rounded-3xl border border-white/20 dark:bg-neutral-800/70 dark:border-neutral-700/20">
+            <h3 className="text-xl font-bold mb-6 text-neutral-900 dark:text-white">Staff Utilization</h3>
             <div className="space-y-6">
               {staff.map((member) => (
                 <div key={member.name} className="space-y-2">
@@ -392,7 +392,7 @@ export function AdminDashboard() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left text-neutral-400 text-sm border-b border-neutral-50">
+                <tr className="text-left text-neutral-400 text-sm border-b border-neutral-50 dark:border-neutral-700">
                   <th className="pb-4 font-medium">Client</th>
                   <th className="pb-4 font-medium">Service</th>
                   <th className="pb-4 font-medium">Time</th>
@@ -403,26 +403,26 @@ export function AdminDashboard() {
               </thead>
               <tbody>
                 {appointments.map((apt) => (
-                  <tr key={apt._id} className="border-b border-neutral-50 last:border-none group">
+                  <tr key={apt._id} className="border-b border-neutral-50 dark:border-neutral-700 last:border-none group">
                     <td className="py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
+                        <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-300 font-bold">
                           {apt.clientName.charAt(0)}
                         </div>
-                        <span className="font-bold">{apt.clientName}</span>
+                        <span className="font-bold text-neutral-900 dark:text-white">{apt.clientName}</span>
                       </div>
                     </td>
                     <td className="py-4">
-                      <span className="text-neutral-600">{apt.service}</span>
+                      <span className="text-neutral-600 dark:text-neutral-300">{apt.service}</span>
                     </td>
                     <td className="py-4">
-                      <div className="flex items-center gap-2 text-neutral-600">
+                      <div className="flex items-center gap-2 text-neutral-600 dark:text-neutral-300">
                         <Clock className="w-4 h-4 text-indigo-500" />
                         {apt.time}
                       </div>
                     </td>
                     <td className="py-4">
-                      <span className="text-neutral-600">{apt.specialist}</span>
+                      <span className="text-neutral-600 dark:text-neutral-300">{apt.specialist}</span>
                     </td>
                     <td className="py-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(apt.status)}`}>

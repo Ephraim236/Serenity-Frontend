@@ -88,15 +88,15 @@ export function BookingPage() {
             className="space-y-6"
           >
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold">Select a Service</h2>
-              <p className="text-neutral-500">Choose the treatment you'd like to book</p>
+              <h2 className="text-3xl font-bold text-neutral-900 dark:text-white">Select a Service</h2>
+              <p className="text-neutral-500 dark:text-neutral-400">Choose the treatment you'd like to book</p>
             </div>
             <div className="grid grid-cols-1 gap-4">
               {SERVICES.map((service) => (
                 <button
                   key={service.id}
                   onClick={() => handleServiceSelect(service)}
-                  className="flex items-center gap-4 p-4 bg-white border border-neutral-100 rounded-2xl shadow-sm hover:border-indigo-600 hover:shadow-md transition-all text-left group"
+                  className="flex items-center gap-4 p-4 bg-white dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-2xl shadow-sm hover:border-indigo-600 hover:shadow-md transition-all text-left group"
                 >
                   <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0">
                     <ImageWithFallback 
@@ -113,8 +113,8 @@ export function BookingPage() {
                         {service.category}
                       </span>
                     </div>
-                    <h4 className="font-bold text-lg text-neutral-900">{service.name}</h4>
-                    <p className="text-neutral-400 text-sm">{service.description}</p>
+                    <h4 className="font-bold text-lg text-neutral-900 dark:text-white">{service.name}</h4>
+                    <p className="text-neutral-400 dark:text-neutral-500 text-sm">{service.description}</p>
                     <div className="flex items-center gap-3 mt-2 text-neutral-500 text-sm">
                       <span className="flex items-center gap-1">
                         <Clock className="w-3 h-3" /> {service.duration}
