@@ -239,14 +239,11 @@ export function ClientHome() {
       {/* Mobile App Promo */}
       <section className="relative bg-neutral-900 py-24 overflow-hidden">
         {/* Ghana Map Background Image */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-40"
-          style={{ backgroundImage: 'url("/Serenity Pics/map-ghana-polygonal-mesh-line-map-flag-map.jpg")' }}
-        >
+        <div className="absolute inset-0">
           <ImageWithFallback
             src="/Serenity Pics/map-ghana-polygonal-mesh-line-map-flag-map.jpg"
             alt="Ghana map"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover opacity-40"
             loading="lazy"
             placeholder="skeleton"
           />

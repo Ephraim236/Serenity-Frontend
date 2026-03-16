@@ -159,7 +159,13 @@ export function BookingPage() {
                   className="p-6 bg-white border border-neutral-100 rounded-2xl shadow-sm hover:border-indigo-600 hover:shadow-md transition-all text-center flex flex-col items-center gap-3"
                 >
                   <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-indigo-100">
-                    <ImageWithFallback src={specialist.image} alt={specialist.name} className="w-full h-full object-cover" />
+                    <ImageWithFallback 
+                      src={specialist.image} 
+                      alt={specialist.name} 
+                      className="w-full h-full object-cover" 
+                      loading="lazy"
+                      placeholder="skeleton"
+                    />
                   </div>
                   <div>
                     <h4 className="font-bold text-lg">{specialist.name}</h4>

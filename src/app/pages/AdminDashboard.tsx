@@ -8,7 +8,6 @@ import {
   MoreVertical,
   Check,
   X,
-  Plus,
   Loader2
 } from "lucide-react";
 import { 
@@ -24,7 +23,6 @@ import {
 } from "recharts";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
-import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Link } from "react-router";
 import { getAuthToken } from "../contexts/AuthContext";
 
@@ -53,7 +51,6 @@ interface Staff {
   value: number;
 }
 
-// Default data for when API is not available
 const DEFAULT_STATS: DashboardStats = {
   totalRevenue: "12,840",
   totalAppointments: 156,
@@ -123,7 +120,6 @@ export function AdminDashboard() {
     const token = getAuthToken();
     
     try {
-      // Fetch stats
       const statsResponse = await fetch(`${API_URL}/api/dashboard/stats`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -136,7 +132,6 @@ export function AdminDashboard() {
         setAppointments(statsData.recentAppointments || DEFAULT_APPOINTMENTS);
       }
 
-      // Fetch revenue data
       const revenueResponse = await fetch(`${API_URL}/api/dashboard/revenue?period=${period}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -150,7 +145,6 @@ export function AdminDashboard() {
         }
       }
 
-      // Fetch staff data
       const staffResponse = await fetch(`${API_URL}/api/dashboard/staff`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -165,7 +159,6 @@ export function AdminDashboard() {
       }
     } catch (error) {
       console.error("Failed to fetch dashboard data:", error);
-      // Keep default data if API fails
     } finally {
       setIsLoading(false);
     }
@@ -232,230 +225,244 @@ export function AdminDashboard() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
-        <div>
-          <h1 className="text-3xl font-bold text-neutral-900">Business Overview</h1>
-          <p className="text-neutral-500">Welcome back!</p>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+          <div>
+            <h1 className="text-3xl font-bold text-neutral-900">Business Overview</h1>
+            <p className="text-neutral-500">Welcome back!</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" className="rounded-xl bg-white/60 backdrop-blur-sm border-white/20 shadow-sm hover:bg-white/80">Export Report</Button>
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Button variant="outline" className="rounded-xl">Export Report</Button>
-        </div>
-      </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        <Card className="p-6 border-none shadow-sm bg-white rounded-3xl">
-          <div className="flex items-start justify-between mb-4">
-            <div className="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center">
-              <DollarSign className="w-6 h-6" />
-            </div>
-            <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">
-              +{stats.growth}%
-            </span>
-          </div>
-          <h3 className="text-neutral-500 text-sm font-medium mb-1">Total Revenue</h3>
-          <p className="text-2xl font-bold text-neutral-900">{formatCurrency(stats.totalRevenue)}</p>
-        </Card>
-
-        <Card className="p-6 border-none shadow-sm bg-white rounded-3xl">
-          <div className="flex items-start justify-between mb-4">
-            <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center">
-              <CalendarIcon className="w-6 h-6" />
-            </div>
-            <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">
-              +{stats.growth / 2}%
-            </span>
-          </div>
-          <h3 className="text-neutral-500 text-sm font-medium mb-1">Bookings</h3>
-          <p className="text-2xl font-bold text-neutral-900">{stats.totalAppointments}</p>
-        </Card>
-
-        <Card className="p-6 border-none shadow-sm bg-white rounded-3xl">
-          <div className="flex items-start justify-between mb-4">
-            <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
-              <Users className="w-6 h-6" />
-            </div>
-            <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">
-              +{stats.growth / 3}%
-            </span>
-          </div>
-          <h3 className="text-neutral-500 text-sm font-medium mb-1">Active Clients</h3>
-          <p className="text-2xl font-bold text-neutral-900">{stats.activeClients}</p>
-        </Card>
-
-        <Card className="p-6 border-none shadow-sm bg-white rounded-3xl">
-          <div className="flex items-start justify-between mb-4">
-            <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center">
-              <TrendingUp className="w-6 h-6" />
-            </div>
-            <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">
-              +{stats.growth / 4}%
-            </span>
-          </div>
-          <h3 className="text-neutral-500 text-sm font-medium mb-1">Today's Appointments</h3>
-          <p className="text-2xl font-bold text-neutral-900">{stats.todayAppointments}</p>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
-        {/* Revenue Chart */}
-        <Card className="lg:col-span-2 p-8 border-none shadow-sm bg-white rounded-3xl">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-xl font-bold">Revenue Analytics</h3>
-            <select 
-              value={period} 
-              onChange={(e) => setPeriod(e.target.value)}
-              className="bg-neutral-50 border-none text-sm font-medium p-2 rounded-lg outline-none cursor-pointer"
-            >
-              <option value="7">Last 7 Days</option>
-              <option value="30">Last 30 Days</option>
-              <option value="365">This Year</option>
-            </select>
-          </div>
-          <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={revenueData}>
-                <defs>
-                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.1}/>
-                    <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f5f5f5" />
-                <XAxis 
-                  dataKey="name" 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fill: '#9ca3af', fontSize: 12 }} 
-                  dy={10}
-                />
-                <YAxis 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fill: '#9ca3af', fontSize: 12 }}
-                />
-                <Tooltip 
-                  contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                  formatter={(value: number) => [formatCurrency(value), 'Revenue']}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="revenue" 
-                  stroke="#4f46e5" 
-                  strokeWidth={3}
-                  fillOpacity={1} 
-                  fill="url(#colorRevenue)" 
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
-
-        {/* Staff Availability/Summary */}
-        <Card className="p-8 border-none shadow-sm bg-white rounded-3xl">
-          <h3 className="text-xl font-bold mb-6">Staff Utilization</h3>
-          <div className="space-y-6">
-            {staff.map((member) => (
-              <div key={member.name} className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="font-bold">{member.name}</span>
-                  <span className="text-neutral-500">{member.value}%</span>
+        {/* Stats Grid with Glass Effect */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+          <div className="relative overflow-hidden rounded-3xl bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-transparent" />
+            <div className="relative p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/30">
+                  <DollarSign className="w-6 h-6" />
                 </div>
-                <div className="h-2 w-full bg-neutral-100 rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full ${member.value >= 80 ? 'bg-indigo-600' : member.value >= 60 ? 'bg-blue-600' : 'bg-emerald-600'}`} 
-                    style={{ width: `${member.value}%` }} 
-                  />
-                </div>
+                <span className="text-xs font-bold text-green-600 bg-green-50/80 backdrop-blur-sm px-2 py-1 rounded-full">
+                  +{stats.growth}%
+                </span>
               </div>
-            ))}
+              <h3 className="text-neutral-500 text-sm font-medium mb-1">Total Revenue</h3>
+              <p className="text-2xl font-bold text-neutral-900">{formatCurrency(stats.totalRevenue)}</p>
+            </div>
           </div>
-          <Button variant="outline" className="w-full mt-8 rounded-xl">View Schedule</Button>
-        </Card>
-      </div>
 
-      {/* Recent Appointments */}
-      <Card className="p-8 border-none shadow-sm bg-white rounded-3xl">
-        <div className="flex items-center justify-between mb-8">
-          <h3 className="text-xl font-bold">Today's Appointments</h3>
-          <Link to="/admin/appointments">
-            <Button variant="link" className="text-indigo-600 font-bold p-0">View Calendar</Button>
-          </Link>
+          <div className="relative overflow-hidden rounded-3xl bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent" />
+            <div className="relative p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                  <CalendarIcon className="w-6 h-6" />
+                </div>
+                <span className="text-xs font-bold text-green-600 bg-green-50/80 backdrop-blur-sm px-2 py-1 rounded-full">
+                  +{stats.growth / 2}%
+                </span>
+              </div>
+              <h3 className="text-neutral-500 text-sm font-medium mb-1">Bookings</h3>
+              <p className="text-2xl font-bold text-neutral-900">{stats.totalAppointments}</p>
+            </div>
+          </div>
+
+          <div className="relative overflow-hidden rounded-3xl bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent" />
+            <div className="relative p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                  <Users className="w-6 h-6" />
+                </div>
+                <span className="text-xs font-bold text-green-600 bg-green-50/80 backdrop-blur-sm px-2 py-1 rounded-full">
+                  +{stats.growth / 3}%
+                </span>
+              </div>
+              <h3 className="text-neutral-500 text-sm font-medium mb-1">Active Clients</h3>
+              <p className="text-2xl font-bold text-neutral-900">{stats.activeClients}</p>
+            </div>
+          </div>
+
+          <div className="relative overflow-hidden rounded-3xl bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent" />
+            <div className="relative p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30">
+                  <TrendingUp className="w-6 h-6" />
+                </div>
+                <span className="text-xs font-bold text-green-600 bg-green-50/80 backdrop-blur-sm px-2 py-1 rounded-full">
+                  +{stats.growth / 4}%
+                </span>
+              </div>
+              <h3 className="text-neutral-500 text-sm font-medium mb-1">Today's Appointments</h3>
+              <p className="text-2xl font-bold text-neutral-900">{stats.todayAppointments}</p>
+            </div>
+          </div>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="text-left text-neutral-400 text-sm border-b border-neutral-50">
-                <th className="pb-4 font-medium">Client</th>
-                <th className="pb-4 font-medium">Service</th>
-                <th className="pb-4 font-medium">Time</th>
-                <th className="pb-4 font-medium">Specialist</th>
-                <th className="pb-4 font-medium">Status</th>
-                <th className="pb-4 font-medium text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {appointments.map((apt) => (
-                <tr key={apt._id} className="border-b border-neutral-50 last:border-none group">
-                  <td className="py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
-                        {apt.clientName.charAt(0)}
-                      </div>
-                      <span className="font-bold">{apt.clientName}</span>
-                    </div>
-                  </td>
-                  <td className="py-4">
-                    <span className="text-neutral-600">{apt.service}</span>
-                  </td>
-                  <td className="py-4">
-                    <div className="flex items-center gap-2 text-neutral-600">
-                      <Clock className="w-4 h-4 text-indigo-500" />
-                      {apt.time}
-                    </div>
-                  </td>
-                  <td className="py-4">
-                    <span className="text-neutral-600">{apt.specialist}</span>
-                  </td>
-                  <td className="py-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(apt.status)}`}>
-                      {formatStatus(apt.status)}
-                    </span>
-                  </td>
-                  <td className="py-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      {apt.status === 'pending' && (
-                        <>
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-8 w-8 rounded-lg text-green-600 hover:bg-green-50"
-                            onClick={() => handleUpdateStatus(apt._id, 'confirmed')}
-                          >
-                            <Check className="w-4 h-4" />
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-8 w-8 rounded-lg text-red-600 hover:bg-red-50"
-                            onClick={() => handleUpdateStatus(apt._id, 'cancelled')}
-                          >
-                            <X className="w-4 h-4" />
-                          </Button>
-                        </>
-                      )}
-                      <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
-                        <MoreVertical className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+          {/* Revenue Chart with Glass Effect */}
+          <div className="lg:col-span-2 p-8 border-none shadow-xl bg-white/70 backdrop-blur-xl rounded-3xl border border-white/20">
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-xl font-bold">Revenue Analytics</h3>
+              <select 
+                value={period} 
+                onChange={(e) => setPeriod(e.target.value)}
+                className="bg-neutral-50/80 backdrop-blur-sm border border-neutral-200 text-sm font-medium p-2 rounded-lg outline-none cursor-pointer"
+              >
+                <option value="7">Last 7 Days</option>
+                <option value="30">Last 30 Days</option>
+                <option value="365">This Year</option>
+              </select>
+            </div>
+            <div className="h-[300px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={revenueData}>
+                  <defs>
+                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f5f5f5" />
+                  <XAxis 
+                    dataKey="name" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: '#9ca3af', fontSize: 12 }} 
+                    dy={10}
+                  />
+                  <YAxis 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: '#9ca3af', fontSize: 12 }}
+                  />
+                  <Tooltip 
+                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}
+                    formatter={(value: number) => [formatCurrency(value), 'Revenue']}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="revenue" 
+                    stroke="#4f46e5" 
+                    strokeWidth={3}
+                    fillOpacity={1} 
+                    fill="url(#colorRevenue)" 
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Staff Availability with Glass Effect */}
+          <div className="p-8 border-none shadow-xl bg-white/70 backdrop-blur-xl rounded-3xl border border-white/20">
+            <h3 className="text-xl font-bold mb-6">Staff Utilization</h3>
+            <div className="space-y-6">
+              {staff.map((member) => (
+                <div key={member.name} className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="font-bold">{member.name}</span>
+                    <span className="text-neutral-500">{member.value}%</span>
+                  </div>
+                  <div className="h-2 w-full bg-neutral-100/80 backdrop-blur-sm rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full ${member.value >= 80 ? 'bg-indigo-600' : member.value >= 60 ? 'bg-blue-600' : 'bg-emerald-600'}`} 
+                      style={{ width: `${member.value}%` }} 
+                    />
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+            <Button variant="outline" className="w-full mt-8 rounded-xl bg-white/60 backdrop-blur-sm border-white/20 hover:bg-white/80">View Schedule</Button>
+          </div>
         </div>
-      </Card>
+
+        {/* Recent Appointments with Glass Effect */}
+        <div className="p-8 border-none shadow-xl bg-white/70 backdrop-blur-xl rounded-3xl border border-white/20">
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="text-xl font-bold">Today's Appointments</h3>
+            <Link to="/admin/appointments">
+              <Button variant="link" className="text-indigo-600 font-bold p-0">View Calendar</Button>
+            </Link>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="text-left text-neutral-400 text-sm border-b border-neutral-50">
+                  <th className="pb-4 font-medium">Client</th>
+                  <th className="pb-4 font-medium">Service</th>
+                  <th className="pb-4 font-medium">Time</th>
+                  <th className="pb-4 font-medium">Specialist</th>
+                  <th className="pb-4 font-medium">Status</th>
+                  <th className="pb-4 font-medium text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {appointments.map((apt) => (
+                  <tr key={apt._id} className="border-b border-neutral-50 last:border-none group">
+                    <td className="py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
+                          {apt.clientName.charAt(0)}
+                        </div>
+                        <span className="font-bold">{apt.clientName}</span>
+                      </div>
+                    </td>
+                    <td className="py-4">
+                      <span className="text-neutral-600">{apt.service}</span>
+                    </td>
+                    <td className="py-4">
+                      <div className="flex items-center gap-2 text-neutral-600">
+                        <Clock className="w-4 h-4 text-indigo-500" />
+                        {apt.time}
+                      </div>
+                    </td>
+                    <td className="py-4">
+                      <span className="text-neutral-600">{apt.specialist}</span>
+                    </td>
+                    <td className="py-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(apt.status)}`}>
+                        {formatStatus(apt.status)}
+                      </span>
+                    </td>
+                    <td className="py-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        {apt.status === 'pending' && (
+                          <>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-8 w-8 rounded-lg text-green-600 hover:bg-green-50"
+                              onClick={() => handleUpdateStatus(apt._id, 'confirmed')}
+                            >
+                              <Check className="w-4 h-4" />
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-8 w-8 rounded-lg text-red-600 hover:bg-red-50"
+                              onClick={() => handleUpdateStatus(apt._id, 'cancelled')}
+                            >
+                              <X className="w-4 h-4" />
+                            </Button>
+                          </>
+                        )}
+                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
+                          <MoreVertical className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
