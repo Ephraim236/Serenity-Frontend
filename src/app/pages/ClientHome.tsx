@@ -234,7 +234,7 @@ export function ClientHome() {
         <section className="container mx-auto px-4">
           <div className="flex items-end justify-between mb-12">
             <div>
-              <h2 className="text-3xl font-bold mb-4 text-neutral-900 dark:text-white">Our Partner Businesses</h2>
+              <h2 className="text-3xl font-bold mb-4 text-neutral-900 dark:text-white">Featured Businesses</h2>
               <p className="text-neutral-500 dark:text-neutral-400 max-w-xl">
                 Choose a business below to view their services and book an appointment.
               </p>
