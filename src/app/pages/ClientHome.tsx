@@ -29,6 +29,7 @@ interface Business {
   businessName?: string;
   businessEmail?: string;
   businessPhone?: string;
+  image?: string;
   location?: {
     address?: string;
     city?: string;
@@ -250,42 +251,60 @@ export function ClientHome() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => handleBusinessClick(business._id)}
-                className="group bg-white dark:bg-neutral-800 rounded-3xl p-8 border border-neutral-100 dark:border-neutral-700 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer"
+                className="group bg-white dark:bg-neutral-800 rounded-3xl overflow-hidden border border-neutral-100 dark:border-neutral-700 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer"
               >
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-violet-600 to-purple-600 rounded-2xl flex items-center justify-center text-white shrink-0">
-                    <Building2 className="w-7 h-7" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-neutral-900 dark:text-white">
-                      {business.businessName || business.name}
-                    </h3>
-                    <p className="text-neutral-500 text-sm">{business.name}</p>
-                  </div>
-                </div>
-                
-                <div className="space-y-3">
-                  {business.location?.address && (
-                    <div className="flex items-center gap-2 text-neutral-500 text-sm">
-                      <MapPin className="w-4 h-4 text-violet-600" />
-                      <span>{business.location.address}, {business.location.city}</span>
+                {/* Business Image */}
+                <div className="h-48 overflow-hidden relative">
+                  {business.image ? (
+                    <img 
+                      src={business.image} 
+                      alt={business.businessName || business.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center">
+                      <Building2 className="w-16 h-16 text-white/50" />
                     </div>
                   )}
-                  {business.businessPhone && (
-                    <div className="flex items-center gap-2 text-neutral-500 text-sm">
-                      <Phone className="w-4 h-4 text-violet-600" />
-                      <span>{business.businessPhone}</span>
-                    </div>
-                  )}
-                  <div className="flex items-center gap-2 text-neutral-500 text-sm">
-                    <Mail className="w-4 h-4 text-violet-600" />
-                    <span>{business.email}</span>
-                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 </div>
 
-                <Button className="w-full mt-6 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-xl">
-                  View Services & Book
-                </Button>
+                <div className="p-6">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-purple-600 rounded-xl flex items-center justify-center text-white shrink-0">
+                      <Building2 className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-neutral-900 dark:text-white">
+                        {business.businessName || business.name}
+                      </h3>
+                      <p className="text-neutral-500 text-sm">{business.name}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {business.location?.address && (
+                      <div className="flex items-center gap-2 text-neutral-500 text-sm">
+                        <MapPin className="w-4 h-4 text-violet-600" />
+                        <span>{business.location.address}, {business.location.city}</span>
+                      </div>
+                    )}
+                    {business.businessPhone && (
+                      <div className="flex items-center gap-2 text-neutral-500 text-sm">
+                        <Phone className="w-4 h-4 text-violet-600" />
+                        <span>{business.businessPhone}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2 text-neutral-500 text-sm">
+                      <Mail className="w-4 h-4 text-violet-600" />
+                      <span>{business.email}</span>
+                    </div>
+                  </div>
+
+                  <Button className="w-full mt-6 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-xl">
+                    View Services & Book
+                  </Button>
+                </div>
               </motion.div>
             ))}
           </div>

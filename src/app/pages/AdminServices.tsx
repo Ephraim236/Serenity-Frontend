@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Plus, 
   Search, 
@@ -8,43 +8,225 @@ import {
   DollarSign,
   Tag,
   Grid,
-  List as ListIcon
+  List as ListIcon,
+  X,
+  Upload
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "../components/ui/dialog";
+import { getAuthToken } from "../contexts/AuthContext";
 
-const INITIAL_SERVICES = [
-  { id: 1, name: "Luxury Facial", category: "Skin Care", duration: "60 min", price: 85, active: true },
-  { id: 2, name: "Deep Tissue Massage", category: "Massage", duration: "90 min", price: 120, active: true },
-  { id: 3, name: "Designer Haircut", category: "Hair", duration: "45 min", price: 65, active: true },
-  { id: 4, name: "Manicure & Pedicure", category: "Nails", duration: "75 min", price: 75, active: true },
-  { id: 5, name: "Hot Stone Therapy", category: "Massage", duration: "90 min", price: 140, active: true },
-  { id: 6, name: "Beard Trim & Shape", category: "Grooming", duration: "30 min", price: 35, active: true },
+// API URL helper
+const getApiUrl = () => {
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:3000';
+  }
+  return 'https://serenity-5zku.onrender.com';
+};
+
+interface Service {
+  _id: string;
+  name: string;
+  description?: string;
+  category: string;
+  duration: number;
+  price: number;
+  image?: string;
+  isActive: boolean;
+}
+
+const CATEGORIES = [
+  { value: 'spa', label: 'Spa' },
+  { value: 'hair', label: 'Hair' },
+  { value: 'nails', label: 'Nails' },
+  { value: 'massage', label: 'Massage' },
+  { value: 'skin', label: 'Skin Care' },
 ];
 
 export function AdminServices() {
-  const [services, setServices] = useState(INITIAL_SERVICES);
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingService, setEditingService] = useState<Service | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    category: 'spa',
+    duration: 60,
+    price: 0,
+    image: ''
+  });
+
+  // Fetch services on mount
+  useEffect(() => {
+    fetchServices();
+  }, []);
+
+  const fetchServices = async () => {
+    try {
+      const token = getAuthToken();
+      const response = await fetch(`${getApiUrl()}/api/services`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setServices(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch services:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredServices = services.filter(s => 
     s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     s.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleDelete = (id: number) => {
-    if (confirm("Are you sure you want to delete this service?")) {
-      setServices(services.filter(s => s.id !== id));
-      toast.success("Service deleted successfully");
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this service?")) return;
+    
+    try {
+      const token = getAuthToken();
+      const response = await fetch(`${getApiUrl()}/api/services/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        setServices(services.filter(s => s._id !== id));
+        toast.success("Service deleted successfully");
+      } else {
+        toast.error("Failed to delete service");
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      toast.error("Failed to delete service");
     }
   };
 
-  const toggleStatus = (id: number) => {
-    setServices(services.map(s => 
-      s.id === id ? { ...s, active: !s.active } : s
-    ));
-    toast.info("Service status updated");
+  const toggleStatus = async (service: Service) => {
+    const newStatus = !service.isActive;
+    
+    try {
+      const token = getAuthToken();
+      const response = await fetch(`${getApiUrl()}/api/services/${service._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ isActive: newStatus })
+      });
+      
+      if (response.ok) {
+        setServices(services.map(s => 
+          s._id === service._id ? { ...s, isActive: newStatus } : s
+        ));
+        toast.success(newStatus ? "Service enabled" : "Service disabled");
+      } else {
+        toast.error("Failed to update service status");
+      }
+    } catch (error) {
+      console.error('Toggle error:', error);
+      toast.error("Failed to update service status");
+    }
+  };
+
+  const openAddModal = () => {
+    setEditingService(null);
+    setFormData({
+      name: '',
+      description: '',
+      category: 'spa',
+      duration: 60,
+      price: 0,
+      image: ''
+    });
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (service: Service) => {
+    setEditingService(service);
+    setFormData({
+      name: service.name,
+      description: service.description || '',
+      category: service.category,
+      duration: service.duration,
+      price: service.price,
+      image: service.image || ''
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const token = getAuthToken();
+      const url = editingService 
+        ? `${getApiUrl()}/api/services/${editingService._id}`
+        : `${getApiUrl()}/api/services`;
+      
+      const method = editingService ? 'PUT' : 'POST';
+      
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        const savedService = await response.json();
+        
+        if (editingService) {
+          setServices(services.map(s => 
+            s._id === editingService._id ? savedService : s
+          ));
+          toast.success("Service updated successfully");
+        } else {
+          setServices([...services, savedService]);
+          toast.success("Service added successfully");
+        }
+        
+        setIsModalOpen(false);
+      } else {
+        const error = await response.json();
+        toast.error(error.error || "Failed to save service");
+      }
+    } catch (error) {
+      console.error('Submit error:', error);
+      toast.error("Failed to save service");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -58,18 +240,21 @@ export function AdminServices() {
           <div className="flex bg-neutral-100 p-1 rounded-xl mr-2">
             <button 
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-white shadow-sm text-indigo-600' : 'text-neutral-500'}`}
+              className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-white shadow-sm text-violet-600' : 'text-neutral-500'}`}
             >
               <Grid className="w-4 h-4" />
             </button>
             <button 
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-white shadow-sm text-indigo-600' : 'text-neutral-500'}`}
+              className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-white shadow-sm text-violet-600' : 'text-neutral-500'}`}
             >
               <ListIcon className="w-4 h-4" />
             </button>
           </div>
-          <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl flex items-center gap-2">
+          <Button 
+            onClick={openAddModal}
+            className="bg-violet-600 hover:bg-violet-700 text-white rounded-xl flex items-center gap-2"
+          >
             <Plus className="w-4 h-4" /> Add Service
           </Button>
         </div>
@@ -81,38 +266,45 @@ export function AdminServices() {
           <input 
             type="text" 
             placeholder="Search services by name or category..." 
-            className="w-full pl-12 pr-4 py-3 bg-white border border-neutral-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full pl-12 pr-4 py-3 bg-white border border-neutral-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-violet-500"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <select className="px-6 py-3 bg-white border border-neutral-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium">
+        <select className="px-6 py-3 bg-white border border-neutral-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-violet-500 font-medium">
           <option>All Categories</option>
-          <option>Skin Care</option>
-          <option>Massage</option>
-          <option>Hair</option>
-          <option>Nails</option>
-          <option>Grooming</option>
+          {CATEGORIES.map(cat => (
+            <option key={cat.value} value={cat.value}>{cat.label}</option>
+          ))}
         </select>
       </div>
 
-      {viewMode === 'grid' ? (
+      {loading ? (
+        <div className="text-center py-12">
+          <p className="text-neutral-500">Loading services...</p>
+        </div>
+      ) : viewMode === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredServices.map((service) => (
-            <Card key={service.id} className="p-6 border-none shadow-sm bg-white rounded-[32px] hover:shadow-xl transition-all group overflow-hidden relative">
+            <Card key={service._id} className="p-6 border-none shadow-sm bg-white rounded-[32px] hover:shadow-xl transition-all group overflow-hidden relative">
               <div className="flex justify-between items-start mb-6">
-                <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600">
+                <div className="w-14 h-14 bg-violet-50 rounded-2xl flex items-center justify-center text-violet-600">
                   <Tag className="w-7 h-7" />
                 </div>
                 <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl text-neutral-400 hover:text-indigo-600 hover:bg-indigo-50">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-9 w-9 rounded-xl text-neutral-400 hover:text-violet-600 hover:bg-violet-50"
+                    onClick={() => openEditModal(service)}
+                  >
                     <Edit2 className="w-4 h-4" />
                   </Button>
                   <Button 
                     variant="ghost" 
                     size="icon" 
                     className="h-9 w-9 rounded-xl text-neutral-400 hover:text-red-600 hover:bg-red-50"
-                    onClick={() => handleDelete(service.id)}
+                    onClick={() => handleDelete(service._id)}
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
@@ -121,30 +313,33 @@ export function AdminServices() {
 
               <div className="space-y-2 mb-6">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold uppercase text-indigo-400 tracking-wider">{service.category}</span>
-                  <div className={`w-2 h-2 rounded-full ${service.active ? 'bg-green-500' : 'bg-neutral-300'}`} />
+                  <span className="text-xs font-bold uppercase text-violet-400 tracking-wider">{service.category}</span>
+                  <div className={`w-2 h-2 rounded-full ${service.isActive ? 'bg-green-500' : 'bg-neutral-300'}`} />
                 </div>
                 <h3 className="text-xl font-bold text-neutral-900">{service.name}</h3>
+                {service.description && (
+                  <p className="text-sm text-neutral-500 line-clamp-2">{service.description}</p>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4 pt-6 border-t border-neutral-50">
                 <div className="flex items-center gap-2 text-neutral-500">
                   <Clock className="w-4 h-4" />
-                  <span className="text-sm font-medium">{service.duration}</span>
+                  <span className="text-sm font-medium">{service.duration} min</span>
                 </div>
                 <div className="flex items-center gap-1 text-neutral-900 justify-end">
                   <DollarSign className="w-4 h-4 text-neutral-400" />
-                  <span className="text-lg font-bold">{service.price}</span>
+                  <span className="text-lg font-bold">₵{service.price}</span>
                 </div>
               </div>
 
               <div className="mt-6">
                 <Button 
                   variant="outline" 
-                  className={`w-full rounded-xl h-11 text-sm font-bold ${service.active ? 'border-neutral-200 text-neutral-600' : 'border-indigo-600 text-indigo-600'}`}
-                  onClick={() => toggleStatus(service.id)}
+                  className={`w-full rounded-xl h-11 text-sm font-bold ${service.isActive ? 'border-neutral-200 text-neutral-600' : 'border-violet-600 text-violet-600'}`}
+                  onClick={() => toggleStatus(service)}
                 >
-                  {service.active ? "Disable Service" : "Enable Service"}
+                  {service.isActive ? "Disable Service" : "Enable Service"}
                 </Button>
               </div>
             </Card>
@@ -165,22 +360,32 @@ export function AdminServices() {
             </thead>
             <tbody>
               {filteredServices.map((service) => (
-                <tr key={service.id} className="border-b border-neutral-50 last:border-none group hover:bg-neutral-50/50 transition-colors">
+                <tr key={service._id} className="border-b border-neutral-50 last:border-none group hover:bg-neutral-50/50 transition-colors">
                   <td className="px-8 py-4 font-bold text-neutral-900">{service.name}</td>
-                  <td className="px-8 py-4 text-neutral-500">{service.category}</td>
-                  <td className="px-8 py-4 text-neutral-500">{service.duration}</td>
-                  <td className="px-8 py-4 font-bold text-indigo-600">${service.price}</td>
+                  <td className="px-8 py-4 text-neutral-500 capitalize">{service.category}</td>
+                  <td className="px-8 py-4 text-neutral-500">{service.duration} min</td>
+                  <td className="px-8 py-4 font-bold text-violet-600">₵{service.price}</td>
                   <td className="px-8 py-4">
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${service.active ? 'bg-green-50 text-green-600' : 'bg-neutral-100 text-neutral-400'}`}>
-                      {service.active ? 'Active' : 'Disabled'}
+                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${service.isActive ? 'bg-green-50 text-green-600' : 'bg-neutral-100 text-neutral-400'}`}>
+                      {service.isActive ? 'Active' : 'Disabled'}
                     </span>
                   </td>
                   <td className="px-8 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl text-neutral-400 hover:text-indigo-600">
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-9 w-9 rounded-xl text-neutral-400 hover:text-violet-600"
+                        onClick={() => openEditModal(service)}
+                      >
                         <Edit2 className="w-4 h-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl text-neutral-400 hover:text-red-600" onClick={() => handleDelete(service.id)}>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-9 w-9 rounded-xl text-neutral-400 hover:text-red-600" 
+                        onClick={() => handleDelete(service._id)}
+                      >
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
@@ -191,6 +396,111 @@ export function AdminServices() {
           </table>
         </Card>
       )}
+
+      {/* Add/Edit Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>
+              {editingService ? 'Edit Service' : 'Add New Service'}
+            </DialogTitle>
+          </DialogHeader>
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Service Name *</Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="e.g., Luxury Facial"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Describe the service..."
+                className="w-full px-3 py-2 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 min-h-[80px]"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="category">Category *</Label>
+                <select
+                  id="category"
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  className="w-full px-3 py-2 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  required
+                >
+                  {CATEGORIES.map(cat => (
+                    <option key={cat.value} value={cat.value}>{cat.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="duration">Duration (minutes) *</Label>
+                <Input
+                  id="duration"
+                  type="number"
+                  min="15"
+                  step="15"
+                  value={formData.duration}
+                  onChange={(e) => setFormData({ ...formData, duration: parseInt(e.target.value) })}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="price">Price (₵) *</Label>
+              <Input
+                id="price"
+                type="number"
+                min="0"
+                value={formData.price}
+                onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
+                placeholder="0"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="image">Image URL</Label>
+              <Input
+                id="image"
+                value={formData.image}
+                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                placeholder="https://example.com/image.jpg"
+              />
+            </div>
+
+            <DialogFooter>
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setIsModalOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                className="bg-violet-600 hover:bg-violet-700"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Saving...' : editingService ? 'Update Service' : 'Add Service'}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
