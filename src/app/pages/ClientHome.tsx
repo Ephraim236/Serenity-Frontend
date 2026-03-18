@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "../components/ui/button";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { 
@@ -10,7 +10,9 @@ import {
   MapPin,
   Phone,
   Building2,
-  Mail
+  Mail,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -113,6 +115,18 @@ export function ClientHome() {
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const businessesRef = useRef<HTMLDivElement>(null);
+
+  const scrollBusinesses = (direction: "left" | "right") => {
+    if (businessesRef.current) {
+      const container = businessesRef.current;
+      const scrollAmount = container.clientWidth * 0.85;
+      container.scrollBy({
+        left: direction === "right" ? scrollAmount : -scrollAmount,
+        behavior: "smooth"
+      });
+    }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -240,9 +254,31 @@ export function ClientHome() {
                 Choose a business below to view their services and book an appointment.
               </p>
             </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-full"
+                onClick={() => scrollBusinesses("left")}
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-full"
+                onClick={() => scrollBusinesses("right")}
+              >
+                <ChevronRight className="w-5 h-5" />
+              </Button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div 
+            ref={businessesRef}
+            className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory scroll-smooth"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
             {businesses.map((business, index) => (
               <motion.div
                 key={business._id}
@@ -251,7 +287,7 @@ export function ClientHome() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => handleBusinessClick(business._id)}
-                className="group bg-white dark:bg-neutral-800 rounded-3xl overflow-hidden border border-neutral-100 dark:border-neutral-700 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer"
+                className="flex-shrink-0 w-[85%] sm:w-[45%] md:w-[30%] snap-start cursor-pointer group"
               >
                 {/* Business Image */}
                 <div className="h-48 overflow-hidden relative">

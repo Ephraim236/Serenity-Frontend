@@ -36,7 +36,7 @@ interface Appointment {
   time: string;
   status: string;
   specialist: string;
-  price?: string;
+  price?: number | string;
   email?: string;
   phone?: string;
   date?: string;
@@ -68,7 +68,8 @@ export function AdminAppointments() {
     const token = getAuthToken();
     
     try {
-      const response = await fetch(`${API_URL}/api/dashboard/appointments/today`, {
+      // Fetch all appointments (not just today's)
+      const response = await fetch(`${API_URL}/api/dashboard/appointments/all`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
