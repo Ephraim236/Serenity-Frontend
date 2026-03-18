@@ -116,10 +116,22 @@ export function ClientHome() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const businessesRef = useRef<HTMLDivElement>(null);
+  const servicesRef = useRef<HTMLDivElement>(null);
 
   const scrollBusinesses = (direction: "left" | "right") => {
     if (businessesRef.current) {
       const container = businessesRef.current;
+      const scrollAmount = container.clientWidth * 0.85;
+      container.scrollBy({
+        left: direction === "right" ? scrollAmount : -scrollAmount,
+        behavior: "smooth"
+      });
+    }
+  };
+
+  const scrollServices = (direction: "left" | "right") => {
+    if (servicesRef.current) {
+      const container = servicesRef.current;
       const scrollAmount = container.clientWidth * 0.85;
       container.scrollBy({
         left: direction === "right" ? scrollAmount : -scrollAmount,
@@ -356,12 +368,31 @@ export function ClientHome() {
               Choose from our most popular treatments designed to enhance your natural beauty.
             </p>
           </div>
-          <Button variant="ghost" className="hidden md:flex items-center gap-2 text-indigo-600">
-            View All Services <ArrowRight className="w-4 h-4" />
-          </Button>
+          <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-full"
+                onClick={() => scrollServices("left")}
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-full"
+                onClick={() => scrollServices("right")}
+              >
+                <ChevronRight className="w-5 h-5" />
+              </Button>
+            </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div 
+          ref={servicesRef}
+          className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory scroll-smooth"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        >
           {SERVICES.map((service, index) => (
             <motion.div
               key={service.id}
@@ -369,7 +400,7 @@ export function ClientHome() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="group bg-white dark:bg-neutral-800 rounded-3xl overflow-hidden border border-neutral-100 dark:border-neutral-700 shadow-sm hover:shadow-xl transition-all duration-300"
+              className="flex-shrink-0 w-[85%] sm:w-[45%] md:w-[30%] snap-start group bg-white dark:bg-neutral-800 rounded-3xl overflow-hidden border border-neutral-100 dark:border-neutral-700 shadow-sm hover:shadow-xl transition-all duration-300"
             >
               <div className="relative h-64 overflow-hidden">
                 <ImageWithFallback
