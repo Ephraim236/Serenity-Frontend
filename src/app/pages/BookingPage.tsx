@@ -12,9 +12,7 @@ import {
   ArrowLeft, 
   ArrowRight,
   CheckCircle2,
-  Smile,
-  ChevronLeft,
-  ChevronRight
+  Smile
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Calendar } from "../components/ui/calendar";
@@ -125,17 +123,6 @@ export function BookingPage() {
     fetchBusinessData();
   }, [businessId]);
 
-  const scrollServices = (direction: "left" | "right") => {
-    if (servicesRef.current) {
-      const container = servicesRef.current;
-      const scrollAmount = container.clientWidth * 0.85;
-      container.scrollBy({
-        left: direction === "right" ? scrollAmount : -scrollAmount,
-        behavior: "smooth"
-      });
-    }
-  };
-
   // Check if time slot is disabled (past time for today)
   const isTimeDisabled = (time: string) => {
     if (!selectedDate) return false;
@@ -222,7 +209,7 @@ export function BookingPage() {
     }
     
     setStep(4);
-    toast.success("Booking confirmed!");
+    toast.success("Booking successful! Waiting for admin approval");
   };
 
   const renderStep = () => {
@@ -238,35 +225,14 @@ export function BookingPage() {
               <h2 className="text-3xl font-bold text-neutral-900 dark:text-white">Select a Service</h2>
               <p className="text-neutral-500 dark:text-neutral-400">Choose the treatment you'd like to book</p>
             </div>
-            <div className="flex gap-2 mb-4">
-              <Button
-                variant="outline"
-                size="icon"
-                className="rounded-full flex-shrink-0"
-                onClick={() => scrollServices("left")}
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </Button>
-              <div className="flex-1" />
-              <Button
-                variant="outline"
-                size="icon"
-                className="rounded-full flex-shrink-0"
-                onClick={() => scrollServices("right")}
-              >
-                <ChevronRight className="w-5 h-5" />
-              </Button>
-            </div>
             <div 
-              ref={servicesRef}
-              className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory scroll-smooth"
-              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
             >
               {(services.length > 0 ? services : SERVICES).map((service: any) => (
                 <button
                   key={service.id || service._id}
                   onClick={() => handleServiceSelect(service)}
-                  className="flex-shrink-0 w-[70%] sm:w-[45%] md:w-[30%] snap-start flex items-center gap-4 p-4 bg-white dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-2xl shadow-sm hover:border-indigo-600 hover:shadow-md transition-all text-left group"
+                  className="flex items-center gap-4 p-4 bg-white dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-2xl shadow-sm hover:border-indigo-600 hover:shadow-md transition-all text-left group"
                 >
                   <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0">
                     <ImageWithFallback 
@@ -430,9 +396,12 @@ export function BookingPage() {
             <div className="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-8">
               <CheckCircle2 className="w-12 h-12" />
             </div>
-            <h2 className="text-4xl font-bold mb-4">You're All Set!</h2>
-            <p className="text-neutral-500 mb-12 max-w-md mx-auto">
-              Your appointment for <span className="font-bold text-neutral-900">{selectedService?.name}</span> with <span className="font-bold text-neutral-900">{selectedSpecialist?.name}</span> is confirmed for <span className="font-bold text-neutral-900">{selectedDate ? format(selectedDate, 'PPP') : ''}</span> at <span className="font-bold text-neutral-900">{selectedTime}</span>.
+            <h2 className="text-4xl font-bold mb-4">Booking Successful!</h2>
+            <p className="text-neutral-500 mb-2 max-w-md mx-auto">
+              Your appointment for <span className="font-bold text-neutral-900">{selectedService?.name}</span> with <span className="font-bold text-neutral-900">{selectedSpecialist?.name}</span> is scheduled for <span className="font-bold text-neutral-900">{selectedDate ? format(selectedDate, 'PPP') : ''}</span> at <span className="font-bold text-neutral-900">{selectedTime}</span>.
+            </p>
+            <p className="text-amber-600 font-medium mb-8 max-w-md mx-auto">
+              ⏳ Waiting for admin approval
             </p>
             
             <Card className="max-w-md mx-auto p-6 mb-8 bg-neutral-50 border-dashed">

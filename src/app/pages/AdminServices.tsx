@@ -9,7 +9,8 @@ import {
   Grid,
   List as ListIcon,
   X,
-  Upload
+  Upload,
+  Loader2
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
@@ -28,9 +29,9 @@ import { getAuthToken } from "../contexts/AuthContext";
 // API URL helper
 const getApiUrl = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return 'http://localhost:3000';
+    return 'http://localhost:5000';
   }
-  return 'https://serenity-5zku.onrender.com';
+  return 'https://serenity-api-2txb.onrender.com';
 };
 
 interface Service {
@@ -72,11 +73,70 @@ export function AdminServices() {
     price: 0,
     image: ''
   });
+  
+  // Image upload state
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   // Fetch services on mount
   useEffect(() => {
     fetchServices();
   }, []);
+
+  // Handle image file upload
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image must be less than 5MB');
+      return;
+    }
+
+    setUploadingImage(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const token = getAuthToken();
+      const response = await fetch(`${getApiUrl()}/api/upload/image`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFormData(prev => ({ ...prev, image: data.url }));
+        setImagePreview(`${getApiUrl()}${data.url}`);
+        toast.success('Image uploaded successfully');
+      } else {
+        const error = await response.json();
+        toast.error(error.error || 'Failed to upload image');
+      }
+    } catch (error) {
+      console.error('Image upload error:', error);
+      toast.error('Failed to upload image');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  // Clear uploaded image
+  const handleClearImage = () => {
+    setFormData(prev => ({ ...prev, image: '' }));
+    setImagePreview(null);
+  };
 
   const fetchServices = async () => {
     try {
@@ -165,6 +225,7 @@ export function AdminServices() {
       price: 0,
       image: ''
     });
+    setImagePreview(null);
     setIsModalOpen(true);
   };
 
@@ -178,6 +239,17 @@ export function AdminServices() {
       price: service.price,
       image: service.image || ''
     });
+    // Set image preview if the service has an image
+    if (service.image) {
+      // Check if it's a URL or a local upload path
+      if (service.image.startsWith('http') || service.image.startsWith('/uploads')) {
+        setImagePreview(`${getApiUrl()}${service.image}`);
+      } else {
+        setImagePreview(service.image);
+      }
+    } else {
+      setImagePreview(null);
+    }
     setIsModalOpen(true);
   };
 
@@ -471,13 +543,65 @@ export function AdminServices() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="image">Image URL</Label>
-              <Input
-                id="image"
-                value={formData.image}
-                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                placeholder="https://example.com/image.jpg"
-              />
+              <Label htmlFor="image">Service Image</Label>
+              
+              {/* Image Preview */}
+              {(imagePreview || formData.image) ? (
+                <div className="relative w-full h-40 bg-neutral-100 rounded-lg overflow-hidden">
+                  <img 
+                    src={imagePreview || formData.image} 
+                    alt="Service preview" 
+                    className="w-full h-full object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleClearImage}
+                    className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                /* File Upload Area */
+                <div className="border-2 border-dashed border-neutral-300 rounded-lg p-6 text-center hover:border-violet-500 transition-colors">
+                  <input
+                    type="file"
+                    id="image-upload"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    disabled={uploadingImage}
+                    className="hidden"
+                  />
+                  <label htmlFor="image-upload" className="cursor-pointer">
+                    {uploadingImage ? (
+                      <div className="flex flex-col items-center">
+                        <div className="w-8 h-8 border-2 border-violet-600 border-t-transparent rounded-full animate-spin mb-2" />
+                        <span className="text-sm text-neutral-500">Uploading...</span>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center">
+                        <Upload className="w-8 h-8 text-neutral-400 mb-2" />
+                        <span className="text-sm text-neutral-500">Click to upload image</span>
+                        <span className="text-xs text-neutral-400 mt-1">PNG, JPG, GIF, WEBP (max 5MB)</span>
+                      </div>
+                    )}
+                  </label>
+                </div>
+              )}
+              
+              {/* URL Input as fallback */}
+              <div className="mt-2">
+                <Label htmlFor="image-url" className="text-xs text-neutral-500">Or paste image URL:</Label>
+                <Input
+                  id="image-url"
+                  value={formData.image}
+                  onChange={(e) => {
+                    setFormData({ ...formData, image: e.target.value });
+                    setImagePreview(null);
+                  }}
+                  placeholder="https://example.com/image.jpg"
+                />
+              </div>
             </div>
 
             <DialogFooter>
