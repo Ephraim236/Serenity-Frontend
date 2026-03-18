@@ -21,7 +21,7 @@ const MY_BOOKINGS = [
     time: "10:30 AM",
     specialist: "Sarah J.",
     status: "upcoming",
-    price: "$85",
+    price: "₵85",
     location: "Downtown Serenity Spa"
   },
   {
@@ -31,7 +31,7 @@ const MY_BOOKINGS = [
     time: "02:15 PM",
     specialist: "Emma W.",
     status: "completed",
-    price: "$65",
+    price: "₵65",
     location: "Downtown Serenity Spa"
   },
   {
@@ -41,7 +41,7 @@ const MY_BOOKINGS = [
     time: "11:00 AM",
     specialist: "Michael C.",
     status: "cancelled",
-    price: "$95",
+    price: "₵95",
     location: "Uptown Serenity Express"
   }
 ];

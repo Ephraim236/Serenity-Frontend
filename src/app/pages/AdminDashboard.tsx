@@ -3,7 +3,6 @@ import {
   Users, 
   Calendar as CalendarIcon, 
   TrendingUp, 
-  DollarSign,
   Clock,
   MoreVertical,
   Check,
@@ -52,56 +51,26 @@ interface Staff {
 }
 
 const DEFAULT_STATS: DashboardStats = {
-  totalRevenue: "12,840",
-  totalAppointments: 156,
-  activeClients: 842,
-  todayAppointments: 12,
-  growth: 12.5
+  totalRevenue: "0",
+  totalAppointments: 0,
+  activeClients: 0,
+  todayAppointments: 0,
+  growth: 0
 };
 
 const DEFAULT_REVENUE_DATA = [
-  { name: "Mon", revenue: 4000 },
-  { name: "Tue", revenue: 3000 },
-  { name: "Wed", revenue: 5000 },
-  { name: "Thu", revenue: 2780 },
-  { name: "Fri", revenue: 6890 },
-  { name: "Sat", revenue: 8390 },
-  { name: "Sun", revenue: 4490 },
+  { name: "Mon", revenue: 0 },
+  { name: "Tue", revenue: 0 },
+  { name: "Wed", revenue: 0 },
+  { name: "Thu", revenue: 0 },
+  { name: "Fri", revenue: 0 },
+  { name: "Sat", revenue: 0 },
+  { name: "Sun", revenue: 0 },
 ];
 
-const DEFAULT_STAFF: Staff[] = [
-  { name: "Sarah J.", role: "Skin", value: 85 },
-  { name: "Michael C.", role: "Massage", value: 65 },
-  { name: "Emma W.", role: "Hair", value: 92 },
-  { name: "David L.", role: "Nails", value: 45 },
-];
+const DEFAULT_STAFF: Staff[] = [];
 
-const DEFAULT_APPOINTMENTS: Appointment[] = [
-  {
-    _id: "1",
-    clientName: "Jessica Reed",
-    service: "Luxury Facial",
-    time: "10:30 AM",
-    status: "confirmed",
-    specialist: "Sarah J."
-  },
-  {
-    _id: "2",
-    clientName: "Marcus Smith",
-    service: "Deep Tissue",
-    time: "12:00 PM",
-    status: "pending",
-    specialist: "Michael C."
-  },
-  {
-    _id: "3",
-    clientName: "Elena Gilbert",
-    service: "Designer Haircut",
-    time: "02:15 PM",
-    status: "in_progress",
-    specialist: "Emma W."
-  }
-];
+const DEFAULT_APPOINTMENTS: Appointment[] = [];
 
 export function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats>(DEFAULT_STATS);
@@ -191,7 +160,7 @@ export function AdminDashboard() {
     const num = typeof value === 'string' ? parseFloat(value) : value;
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'GHS',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(num);
@@ -244,7 +213,7 @@ export function AdminDashboard() {
             <div className="relative p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/30">
-                  <DollarSign className="w-6 h-6" />
+                  <span className="text-xl font-bold">₵</span>
                 </div>
                 <span className="text-xs font-bold text-green-600 bg-green-50/80 backdrop-blur-sm px-2 py-1 rounded-full">
                   +{stats.growth}%

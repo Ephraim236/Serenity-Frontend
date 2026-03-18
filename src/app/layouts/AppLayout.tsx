@@ -20,6 +20,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useTheme } from "../contexts/ThemeContext";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Chatbot } from "../components/Chatbot";
+import { MobileBackButton } from "../components/MobileBackButton";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -258,6 +259,7 @@ export function AppLayout() {
       </AnimatePresence>
 
       <main className="flex-1">
+        <MobileBackButton />
         <Outlet />
       </main>
 

@@ -43,14 +43,7 @@ interface Appointment {
 }
 
 // Default data for when API is not available
-const DEFAULT_APPOINTMENTS: Appointment[] = [
-  { _id: "1", clientName: "Alice Freeman", service: "Luxury Facial", time: "09:00 AM", specialist: "Sarah J.", status: "completed", price: "$85", email: "alice@example.com", phone: "(555) 001-2233" },
-  { _id: "2", clientName: "John Doe", service: "Designer Haircut", time: "10:30 AM", specialist: "Emma W.", status: "confirmed", price: "$65", email: "john@example.com", phone: "(555) 001-4455" },
-  { _id: "3", clientName: "Samanta Smith", service: "Deep Tissue", time: "11:45 AM", specialist: "Michael C.", status: "confirmed", price: "$120", email: "sam@example.com", phone: "(555) 001-6677" },
-  { _id: "4", clientName: "Robert Pattinson", service: "Hot Stone Therapy", time: "01:30 PM", specialist: "Michael C.", status: "pending", price: "$140", email: "rob@example.com", phone: "(555) 001-8899" },
-  { _id: "5", clientName: "Emily Blunt", service: "Manicure", time: "03:00 PM", specialist: "David L.", status: "confirmed", price: "$45", email: "emily@example.com", phone: "(555) 002-1122" },
-  { _id: "6", clientName: "Tom Hardy", service: "Beard Trim", time: "04:15 PM", specialist: "Emma W.", status: "cancelled", price: "$35", email: "tom@example.com", phone: "(555) 002-3344" },
-];
+const DEFAULT_APPOINTMENTS: Appointment[] = [];
 
 export function AdminAppointments() {
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -317,7 +310,7 @@ export function AdminAppointments() {
                         <div>
                           <p className="text-[10px] uppercase font-bold text-neutral-400 mb-1">Service</p>
                           <p className="font-bold text-sm">{apt.service}</p>
-                          {apt.price && <p className="text-neutral-500 text-xs">{apt.price}</p>}
+                          {apt.price && <p className="text-neutral-500 text-xs">{typeof apt.price === 'number' ? `₵${apt.price}` : apt.price}</p>}
                         </div>
                         <div>
                           <p className="text-[10px] uppercase font-bold text-neutral-400 mb-1">Specialist</p>

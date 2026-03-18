@@ -5,7 +5,6 @@ import {
   Edit2, 
   Trash2, 
   Clock, 
-  DollarSign,
   Tag,
   Grid,
   List as ListIcon,
@@ -328,7 +327,6 @@ export function AdminServices() {
                   <span className="text-sm font-medium">{service.duration} min</span>
                 </div>
                 <div className="flex items-center gap-1 text-neutral-900 justify-end">
-                  <DollarSign className="w-4 h-4 text-neutral-400" />
                   <span className="text-lg font-bold">₵{service.price}</span>
                 </div>
               </div>
