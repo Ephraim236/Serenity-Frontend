@@ -259,36 +259,16 @@ export function ClientHome() {
       {/* Businesses Section */}
       {businesses.length > 0 && (
         <section className="container mx-auto px-4">
-          <div className="flex items-end justify-between mb-12">
-            <div>
-              <h2 className="text-3xl font-bold mb-4 text-neutral-900 dark:text-white">Featured Businesses</h2>
-              <p className="text-neutral-500 dark:text-neutral-400 max-w-xl">
-                Choose a business below to view their services and book an appointment.
-              </p>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                className="rounded-full"
-                onClick={() => scrollBusinesses("left")}
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="rounded-full"
-                onClick={() => scrollBusinesses("right")}
-              >
-                <ChevronRight className="w-5 h-5" />
-              </Button>
-            </div>
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold mb-4 text-neutral-900 dark:text-white">Featured Businesses</h2>
+            <p className="text-neutral-500 dark:text-neutral-400 max-w-xl">
+              Choose a business below to view their services and book an appointment.
+            </p>
           </div>
 
           <div 
             ref={businessesRef}
-            className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory scroll-smooth"
+            className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory scroll-smooth -mx-4 px-4"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {businesses.map((business, index) => (
@@ -299,7 +279,7 @@ export function ClientHome() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => handleBusinessClick(business._id)}
-                className="flex-shrink-0 w-[85%] sm:w-[45%] md:w-[30%] snap-start cursor-pointer group"
+                className="flex-shrink-0 w-[70%] sm:w-[45%] md:w-[30%] snap-start cursor-pointer group"
               >
                 {/* Business Image */}
                 <div className="h-48 overflow-hidden relative">
@@ -361,36 +341,16 @@ export function ClientHome() {
 
       {/* Featured Services */}
       <section className="container mx-auto px-4">
-        <div className="flex items-end justify-between mb-12">
-          <div>
-            <h2 className="text-3xl font-bold mb-4 text-neutral-900 dark:text-white">Featured Services</h2>
-            <p className="text-neutral-500 dark:text-neutral-400 max-w-xl">
-              Choose from our most popular treatments designed to enhance your natural beauty.
-            </p>
-          </div>
-          <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                className="rounded-full"
-                onClick={() => scrollServices("left")}
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="rounded-full"
-                onClick={() => scrollServices("right")}
-              >
-                <ChevronRight className="w-5 h-5" />
-              </Button>
-            </div>
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold mb-4 text-neutral-900 dark:text-white">Featured Services</h2>
+          <p className="text-neutral-500 dark:text-neutral-400 max-w-xl">
+            Choose from our most popular treatments designed to enhance your natural beauty.
+          </p>
         </div>
 
         <div 
           ref={servicesRef}
-          className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory scroll-smooth"
+          className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory scroll-smooth -mx-4 px-4"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {SERVICES.map((service, index) => (
@@ -400,7 +360,7 @@ export function ClientHome() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="flex-shrink-0 w-[85%] sm:w-[45%] md:w-[30%] snap-start group bg-white dark:bg-neutral-800 rounded-3xl overflow-hidden border border-neutral-100 dark:border-neutral-700 shadow-sm hover:shadow-xl transition-all duration-300"
+              className="flex-shrink-0 w-[70%] sm:w-[45%] md:w-[30%] snap-start group bg-white dark:bg-neutral-800 rounded-3xl overflow-hidden border border-neutral-100 dark:border-neutral-700 shadow-sm hover:shadow-xl transition-all duration-300"
             >
               <div className="relative h-64 overflow-hidden">
                 <ImageWithFallback

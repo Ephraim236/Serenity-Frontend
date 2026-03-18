@@ -266,7 +266,7 @@ export function BookingPage() {
                 <button
                   key={service.id || service._id}
                   onClick={() => handleServiceSelect(service)}
-                  className="flex-shrink-0 w-[85%] sm:w-[45%] md:w-[30%] snap-start flex items-center gap-4 p-4 bg-white dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-2xl shadow-sm hover:border-indigo-600 hover:shadow-md transition-all text-left group"
+                  className="flex-shrink-0 w-[70%] sm:w-[45%] md:w-[30%] snap-start flex items-center gap-4 p-4 bg-white dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-2xl shadow-sm hover:border-indigo-600 hover:shadow-md transition-all text-left group"
                 >
                   <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0">
                     <ImageWithFallback 
