@@ -38,7 +38,7 @@ const getApiUrl = () => {
 };
 
 const getAuthToken = () => {
-  return localStorage.getItem('token');
+  return localStorage.getItem('serenity_auth_token');
 };
 
 export function MyBookings() {
