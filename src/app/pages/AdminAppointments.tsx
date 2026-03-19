@@ -69,11 +69,29 @@ export function AdminAppointments() {
     const token = getAuthToken();
     
     try {
-      // Fetch appointments filtered by date
-      const url = selectedDate 
-        ? `${API_URL}/api/dashboard/appointments/by-date?date=${selectedDate}`
-        : `${API_URL}/api/dashboard/appointments/all`;
-        
+      let url = `${API_URL}/api/dashboard/appointments/all`;
+      
+      // If a specific date is selected, try to fetch by date
+      if (selectedDate) {
+        try {
+          const dateResponse = await fetch(
+            `${API_URL}/api/dashboard/appointments/by-date?date=${selectedDate}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          if (dateResponse.ok) {
+            const data = await dateResponse.json();
+            setAppointments(data);
+            setIsLoading(false);
+            return;
+          }
+        } catch (e) {
+          // Fall back to all appointments
+        }
+      }
+      
+      // Fetch all appointments
       const response = await fetch(url, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -82,7 +100,16 @@ export function AdminAppointments() {
       
       if (response.ok) {
         const data = await response.json();
-        setAppointments(data);
+        // Filter by date if selected
+        if (selectedDate) {
+          const filtered = data.filter((apt: any) => {
+            const aptDate = new Date(apt.date).toISOString().split('T')[0];
+            return aptDate === selectedDate;
+          });
+          setAppointments(filtered);
+        } else {
+          setAppointments(data);
+        }
       }
     } catch (error) {
       console.error("Failed to fetch appointments:", error);
