@@ -341,11 +341,32 @@ export function ClientHome() {
 
       {/* Featured Services */}
       <section className="container mx-auto px-4">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-4 text-neutral-900 dark:text-white">Featured Services</h2>
-          <p className="text-neutral-500 dark:text-neutral-400 max-w-xl">
-            Choose from our most popular treatments designed to enhance your natural beauty.
-          </p>
+        <div className="flex items-end justify-between mb-8">
+          <div>
+            <h2 className="text-3xl font-bold mb-4 text-neutral-900 dark:text-white">Featured Services</h2>
+            <p className="text-neutral-500 dark:text-neutral-400 max-w-xl">
+              Choose from our most popular treatments designed to enhance your natural beauty.
+            </p>
+          </div>
+          {/* Navigation Arrows */}
+          <div className="hidden md:flex gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full"
+              onClick={() => scrollServices("left")}
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full"
+              onClick={() => scrollServices("right")}
+            >
+              <ChevronRight className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
 
         <div 

@@ -242,9 +242,10 @@ export function BookingPage() {
                 <button
                   key={service.id || service._id}
                   onClick={() => handleServiceSelect(service)}
-                  className="flex items-center gap-4 p-4 bg-white dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-2xl shadow-sm hover:border-indigo-600 hover:shadow-md transition-all text-left group"
+                  className="bg-white dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all text-left group"
                 >
-                  <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0">
+                  {/* Image at top */}
+                  <div className="relative h-48 overflow-hidden">
                     <ImageWithFallback 
                       src={service.image} 
                       alt={service.name}
@@ -252,23 +253,23 @@ export function BookingPage() {
                       loading="lazy"
                       placeholder="skeleton"
                     />
+                    <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full font-bold text-indigo-600">
+                      {typeof service.price === 'number' ? `₵${service.price.toLocaleString()}` : service.price}
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-semibold px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-full">
+                  {/* Content below */}
+                  <div className="p-5">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xs font-semibold px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full">
                         {service.category}
                       </span>
+                      <div className="flex items-center gap-1 text-neutral-400 text-xs">
+                        <Clock className="w-3 h-3" />
+                        <span>{typeof service.duration === 'number' ? `${service.duration} min` : service.duration}</span>
+                      </div>
                     </div>
-                    <h4 className="font-bold text-lg text-neutral-900 dark:text-white">{service.name}</h4>
-                    <p className="text-neutral-400 dark:text-neutral-500 text-sm">{service.description}</p>
-                    <div className="flex items-center gap-3 mt-2 text-neutral-500 text-sm">
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" /> {typeof service.duration === 'number' ? `${service.duration} min` : service.duration}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="text-xl font-bold text-indigo-600 flex-shrink-0">
-                    {typeof service.price === 'number' ? `₵${service.price.toLocaleString()}` : service.price}
+                    <h4 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">{service.name}</h4>
+                    <p className="text-neutral-500 dark:text-neutral-400 text-sm line-clamp-2">{service.description}</p>
                   </div>
                 </button>
               ))}
