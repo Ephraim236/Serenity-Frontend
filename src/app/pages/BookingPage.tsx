@@ -165,58 +165,61 @@ export function BookingPage() {
     setSelectedTime(time);
   };
 
-  const handleBooking = async () => {
-    if (!selectedTime) return toast.error("Please select a time slot");
+  const handleBooking = () => {
+    if (!selectedTime) {
+      toast.error("Please select a time slot");
+      return;
+    }
     
     // Save booking to database
     const token = getAuthToken();
     
-    try {
-      const bookingData = {
-        service: selectedService?.name,
-        specialist: selectedSpecialist?.name,
-        date: selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '',
-        time: selectedTime,
-        price: typeof selectedService?.price === 'string' 
-          ? selectedService.price.replace(/[^0-9]/g, '') 
-          : selectedService?.price,
-        clientName: user?.name || 'Guest',
-        clientEmail: user?.email || 'guest@example.com',
-        clientPhone: '',
-        businessId: businessId || 'demo-business-1'
-      };
+    // Show confirmation page first
+    setStep(4);
+    
+    // Then save to database in background
+    const saveBooking = async () => {
+      try {
+        const bookingData = {
+          service: selectedService?.name,
+          specialist: selectedSpecialist?.name,
+          date: selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '',
+          time: selectedTime,
+          price: typeof selectedService?.price === 'string' 
+            ? selectedService.price.replace(/[^0-9]/g, '') 
+            : selectedService?.price,
+          clientName: user?.name || 'Guest',
+          clientEmail: user?.email || 'guest@example.com',
+          clientPhone: '',
+          businessId: businessId || 'demo-business-1'
+        };
 
-      // Only try to save if we have a token
-      if (token) {
-        const response = await fetch(`${getApiUrl()}/api/dashboard/appointments`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify(bookingData)
-        });
+        if (token) {
+          const response = await fetch(`${getApiUrl()}/api/dashboard/appointments`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(bookingData)
+          });
 
-        if (response.ok) {
-          const data = await response.json();
-          setBookingId(data.appointment?._id || `SPA-${Date.now()}`);
-          console.log('Booking saved successfully:', data);
+          if (response.ok) {
+            const data = await response.json();
+            setBookingId(data.appointment?._id || `SPA-${Date.now()}`);
+          } else {
+            setBookingId(`SPA-${Date.now()}`);
+          }
         } else {
-          console.error('Booking save failed:', response.status);
           setBookingId(`SPA-${Date.now()}`);
         }
-      } else {
-        // No token, use demo ID
+      } catch (error) {
+        console.error('Failed to save booking:', error);
         setBookingId(`SPA-${Date.now()}`);
       }
-    } catch (error) {
-      console.error('Failed to save booking:', error);
-      // Still allow booking to proceed with demo ID
-      setBookingId(`SPA-${Date.now()}`);
-    }
+    };
     
-    // Always show confirmation step
-    setStep(4);
+    saveBooking();
   };
 
   const renderStep = () => {
