@@ -27,7 +27,7 @@ import { format } from "date-fns";
 import { getAuthToken } from "../contexts/AuthContext";
 import { toast } from "sonner";
 
-const API_URL = "https://serenity-5zku.onrender.com";
+const API_URL = "https://serenity-api-2txb.onrender.com";
 
 interface Appointment {
   _id: string;
@@ -105,7 +105,8 @@ export function AdminAppointments() {
         setAppointments(appointments.map(apt => 
           apt._id === appointmentId ? { ...apt, status: newStatus } : apt
         ));
-        toast.success(`Appointment ${newStatus} successfully`);
+        const statusMessage = newStatus === 'confirmed' ? 'Booking confirmed!' : newStatus === 'cancelled' ? 'Booking cancelled!' : `Appointment ${newStatus} successfully`;
+        toast.success(statusMessage);
       }
     } catch (error) {
       console.error("Failed to update appointment:", error);

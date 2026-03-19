@@ -25,7 +25,7 @@ const getApiUrl = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:3000';
   }
-  return 'https://serenity-5zku.onrender.com';
+  return 'https://serenity-api-2txb.onrender.com';
 };
 
 interface BusinessService {
@@ -186,20 +186,27 @@ export function BookingPage() {
         businessId: businessId || 'demo-business-1'
       };
 
-      const response = await fetch(`${getApiUrl()}/api/dashboard/appointments`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(bookingData)
-      });
+      // Only try to save if we have a token
+      if (token) {
+        const response = await fetch(`${getApiUrl()}/api/dashboard/appointments`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(bookingData)
+        });
 
-      if (response.ok) {
-        const data = await response.json();
-        setBookingId(data.appointment?._id || `SPA-${Date.now()}`);
+        if (response.ok) {
+          const data = await response.json();
+          setBookingId(data.appointment?._id || `SPA-${Date.now()}`);
+          console.log('Booking saved successfully:', data);
+        } else {
+          console.error('Booking save failed:', response.status);
+          setBookingId(`SPA-${Date.now()}`);
+        }
       } else {
-        // Use demo ID if API fails
+        // No token, use demo ID
         setBookingId(`SPA-${Date.now()}`);
       }
     } catch (error) {
@@ -208,6 +215,7 @@ export function BookingPage() {
       setBookingId(`SPA-${Date.now()}`);
     }
     
+    // Always show confirmation step
     setStep(4);
     toast.success("Booking successful! Waiting for admin approval");
   };
@@ -371,13 +379,14 @@ export function BookingPage() {
                 
                 <div className="pt-8 space-y-4">
                   <Button 
+                    type="button"
                     className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-lg flex items-center justify-center gap-2"
                     onClick={handleBooking}
                     disabled={!selectedTime}
                   >
                     Confirm Booking <ArrowRight className="w-5 h-5" />
                   </Button>
-                  <Button variant="ghost" onClick={() => setStep(2)} className="w-full flex items-center gap-2">
+                  <Button type="button" variant="ghost" onClick={() => setStep(2)} className="w-full flex items-center gap-2">
                     <ArrowLeft className="w-4 h-4" /> Back to Specialist
                   </Button>
                 </div>

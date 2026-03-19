@@ -26,11 +26,9 @@ import {
 } from "../components/ui/dialog";
 import { getAuthToken } from "../contexts/AuthContext";
 
-// API URL helper
+// API URL helper - always use deployed API for reliability
 const getApiUrl = () => {
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return 'http://localhost:5000';
-  }
+  // For image uploads, always use the deployed backend to ensure mobile compatibility
   return 'https://serenity-api-2txb.onrender.com';
 };
 
