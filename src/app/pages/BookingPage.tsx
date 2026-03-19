@@ -217,7 +217,6 @@ export function BookingPage() {
     
     // Always show confirmation step
     setStep(4);
-    toast.success("Booking successful! Waiting for admin approval");
   };
 
   const renderStep = () => {
