@@ -29,9 +29,25 @@ export function MobileBackButton({ className = "" }: MobileBackButtonProps) {
     return null;
   }
 
+  // Handle back navigation - use history back if available, otherwise go to home
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      // Check if we can go back to a page in our app
+      const from = document.referrer;
+      if (from && (from.includes(window.location.host) || from.includes('serenity'))) {
+        navigate(-1);
+      } else {
+        // No valid history, go to home
+        navigate('/');
+      }
+    } else {
+      navigate('/');
+    }
+  };
+
   return (
     <button
-      onClick={() => navigate(-1)}
+      onClick={handleBack}
       className={`fixed top-20 left-4 z-40 p-2 bg-white dark:bg-neutral-800 rounded-full shadow-lg border border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors ${className}`}
       aria-label="Go back"
     >

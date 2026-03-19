@@ -12,7 +12,8 @@ import {
   ArrowLeft, 
   ArrowRight,
   CheckCircle2,
-  Smile
+  Smile,
+  Loader2
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Calendar } from "../components/ui/calendar";
@@ -88,6 +89,7 @@ export function BookingPage() {
   const { user } = useAuth();
   
   const [step, setStep] = useState(1);
+  const [saving, setSaving] = useState(false);
   const [selectedService, setSelectedService] = useState<any>(null);
   const [selectedSpecialist, setSelectedSpecialist] = useState<any>(null);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -165,7 +167,7 @@ export function BookingPage() {
     setSelectedTime(time);
   };
 
-  const handleBooking = () => {
+  const handleBooking = async () => {
     if (!selectedTime) {
       toast.error("Please select a time slot");
       return;
@@ -176,50 +178,59 @@ export function BookingPage() {
     
     // Show confirmation page first
     setStep(4);
+    setSaving(true);
     
-    // Then save to database in background
-    const saveBooking = async () => {
-      try {
-        const bookingData = {
-          service: selectedService?.name,
-          specialist: selectedSpecialist?.name,
-          date: selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '',
-          time: selectedTime,
-          price: typeof selectedService?.price === 'string' 
-            ? selectedService.price.replace(/[^0-9]/g, '') 
-            : selectedService?.price,
-          clientName: user?.name || 'Guest',
-          clientEmail: user?.email || 'guest@example.com',
-          clientPhone: '',
-          businessId: businessId || 'demo-business-1'
-        };
+    // Save to database
+    try {
+      const bookingData = {
+        service: selectedService?.name,
+        specialist: selectedSpecialist?.name,
+        date: selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '',
+        time: selectedTime,
+        price: typeof selectedService?.price === 'string' 
+          ? selectedService.price.replace(/[^0-9]/g, '') 
+          : selectedService?.price,
+        clientName: user?.name || 'Guest',
+        clientEmail: user?.email || 'guest@example.com',
+        clientPhone: '',
+        businessId: businessId || 'demo-business-1'
+      };
 
-        if (token) {
-          const response = await fetch(`${getApiUrl()}/api/dashboard/appointments`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify(bookingData)
-          });
+      if (token) {
+        console.log('Saving booking to:', `${getApiUrl()}/api/dashboard/appointments`);
+        const response = await fetch(`${getApiUrl()}/api/dashboard/appointments`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(bookingData)
+        });
 
-          if (response.ok) {
-            const data = await response.json();
-            setBookingId(data.appointment?._id || `SPA-${Date.now()}`);
-          } else {
-            setBookingId(`SPA-${Date.now()}`);
-          }
+        console.log('Booking response:', response.status);
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Booking saved:', data);
+          setBookingId(data.appointment?._id || `SPA-${Date.now()}`);
+          toast.success('Booking confirmed!');
         } else {
+          const errorData = await response.json();
+          console.error('Booking error:', errorData);
+          toast.error('Failed to save booking. Please try again.');
           setBookingId(`SPA-${Date.now()}`);
         }
-      } catch (error) {
-        console.error('Failed to save booking:', error);
+      } else {
+        console.warn('No auth token found');
+        toast.error('Please log in to book an appointment');
         setBookingId(`SPA-${Date.now()}`);
       }
-    };
-    
-    saveBooking();
+    } catch (error) {
+      console.error('Failed to save booking:', error);
+      toast.error('Failed to save booking. Please try again.');
+      setBookingId(`SPA-${Date.now()}`);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const renderStep = () => {
@@ -385,9 +396,17 @@ export function BookingPage() {
                     type="button"
                     className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-lg flex items-center justify-center gap-2"
                     onClick={handleBooking}
-                    disabled={!selectedTime}
+                    disabled={!selectedTime || saving}
                   >
-                    Confirm Booking <ArrowRight className="w-5 h-5" />
+                    {saving ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" /> Saving...
+                      </>
+                    ) : (
+                      <>
+                        Confirm Booking <ArrowRight className="w-5 h-5" />
+                      </>
+                    )}
                   </Button>
                   <Button type="button" variant="ghost" onClick={() => setStep(2)} className="w-full flex items-center gap-2">
                     <ArrowLeft className="w-4 h-4" /> Back to Specialist
