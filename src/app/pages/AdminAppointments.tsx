@@ -105,7 +105,14 @@ export function AdminAppointments() {
         setAppointments(appointments.map(apt => 
           apt._id === appointmentId ? { ...apt, status: newStatus } : apt
         ));
-        const statusMessage = newStatus === 'confirmed' ? 'Booking confirmed!' : newStatus === 'cancelled' ? 'Booking cancelled!' : `Appointment ${newStatus} successfully`;
+        let statusMessage = '';
+        if (newStatus === 'confirmed') {
+          statusMessage = 'Booking confirmed! The client has been notified.';
+        } else if (newStatus === 'cancelled') {
+          statusMessage = 'Booking cancelled! The client has been notified.';
+        } else {
+          statusMessage = `Appointment ${newStatus} successfully`;
+        }
         toast.success(statusMessage);
       }
     } catch (error) {

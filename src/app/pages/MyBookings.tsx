@@ -80,6 +80,39 @@ export function MyBookings() {
     fetchAppointments();
   }, [user?.email]);
 
+  // Refresh appointments when page comes into focus
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && user?.email) {
+        // Refresh data when page becomes visible
+        const fetchAppointments = async () => {
+          try {
+            const token = getAuthToken();
+            const response = await fetch(
+              `${getApiUrl()}/api/dashboard/appointments/client?email=${encodeURIComponent(user.email)}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`
+                }
+              }
+            );
+
+            if (response.ok) {
+              const data = await response.json();
+              setAppointments(data);
+            }
+          } catch (error) {
+            console.error('Failed to fetch appointments:', error);
+          }
+        };
+        fetchAppointments();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [user?.email]);
+
   const handleCancel = async (id: string) => {
     if (!confirm("Are you sure you want to cancel this booking?")) {
       return;
