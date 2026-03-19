@@ -58,6 +58,7 @@ export function AdminAppointments() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [actionType, setActionType] = useState<string>("");
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     fetchAppointments();
@@ -68,8 +69,12 @@ export function AdminAppointments() {
     const token = getAuthToken();
     
     try {
-      // Fetch all appointments (not just today's)
-      const response = await fetch(`${API_URL}/api/dashboard/appointments/all`, {
+      // Fetch appointments filtered by date
+      const url = selectedDate 
+        ? `${API_URL}/api/dashboard/appointments/by-date?date=${selectedDate}`
+        : `${API_URL}/api/dashboard/appointments/all`;
+        
+      const response = await fetch(url, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -77,9 +82,7 @@ export function AdminAppointments() {
       
       if (response.ok) {
         const data = await response.json();
-        if (data.length > 0) {
-          setAppointments(data);
-        }
+        setAppointments(data);
       }
     } catch (error) {
       console.error("Failed to fetch appointments:", error);
@@ -180,20 +183,30 @@ export function AdminAppointments() {
     setDeleteDialogOpen(true);
   };
 
-  const handleConfirmAction = () => {
-    if (selectedAppointment) {
-      handleUpdateStatus(selectedAppointment._id, 'confirmed');
+  const handleConfirmAction = async () => {
+    if (!selectedAppointment) return;
+    
+    setActionLoading(true);
+    try {
+      await handleUpdateStatus(selectedAppointment._id, 'confirmed');
+    } finally {
+      setActionLoading(false);
+      setConfirmDialogOpen(false);
+      setSelectedAppointment(null);
     }
-    setConfirmDialogOpen(false);
-    setSelectedAppointment(null);
   };
 
-  const handleCancelAction = () => {
-    if (selectedAppointment) {
-      handleUpdateStatus(selectedAppointment._id, 'cancelled');
+  const handleCancelAction = async () => {
+    if (!selectedAppointment) return;
+    
+    setActionLoading(true);
+    try {
+      await handleUpdateStatus(selectedAppointment._id, 'cancelled');
+    } finally {
+      setActionLoading(false);
+      setCancelDialogOpen(false);
+      setSelectedAppointment(null);
     }
-    setCancelDialogOpen(false);
-    setSelectedAppointment(null);
   };
 
   const handleDeleteAction = () => {
@@ -414,12 +427,20 @@ export function AdminAppointments() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="rounded-xl" disabled={actionLoading}>Cancel</AlertDialogCancel>
             <AlertDialogAction 
               onClick={handleConfirmAction}
               className="bg-green-600 hover:bg-green-700 rounded-xl"
+              disabled={actionLoading}
             >
-              Yes, Confirm
+              {actionLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  Confirming...
+                </>
+              ) : (
+                'Yes, Confirm'
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -436,12 +457,20 @@ export function AdminAppointments() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="rounded-xl">Keep Appointment</AlertDialogCancel>
+            <AlertDialogCancel className="rounded-xl" disabled={actionLoading}>Keep Appointment</AlertDialogCancel>
             <AlertDialogAction 
               onClick={handleCancelAction}
               className="bg-red-600 hover:bg-red-700 rounded-xl"
+              disabled={actionLoading}
             >
-              Yes, Cancel
+              {actionLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  Cancelling...
+                </>
+              ) : (
+                'Yes, Cancel'
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -98,6 +98,7 @@ export function BookingPage() {
   const [services, setServices] = useState<BusinessService[]>([]);
   const [loading, setLoading] = useState(true);
   const [bookingId, setBookingId] = useState<string>('');
+  const [bookedSlots, setBookedSlots] = useState<string[]>([]);
   const servicesRef = useRef<HTMLDivElement>(null);
 
   // Fetch business details and services
@@ -125,8 +126,47 @@ export function BookingPage() {
     fetchBusinessData();
   }, [businessId]);
 
-  // Check if time slot is disabled (past time for today)
+  // Fetch booked appointments when date changes
+  useEffect(() => {
+    const fetchBookedSlots = async () => {
+      if (!selectedDate || !businessId) {
+        setBookedSlots([]);
+        return;
+      }
+
+      try {
+        const token = getAuthToken();
+        const dateStr = format(selectedDate, 'yyyy-MM-dd');
+        const response = await fetch(
+          `${getApiUrl()}/api/dashboard/appointments/booked?businessId=${businessId}&date=${dateStr}`,
+          {
+            headers: token ? { Authorization: `Bearer ${token}` } : {}
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          // Extract time slots from confirmed appointments
+          const times = data
+            .filter((apt: any) => apt.status === 'confirmed')
+            .map((apt: any) => apt.time);
+          setBookedSlots(times);
+        }
+      } catch (error) {
+        console.error('Failed to fetch booked slots:', error);
+      }
+    };
+
+    fetchBookedSlots();
+  }, [selectedDate, businessId]);
+
+  // Check if time slot is disabled (past time for today or already booked)
   const isTimeDisabled = (time: string) => {
+    // Check if already booked
+    if (bookedSlots.includes(time)) {
+      return true;
+    }
+
     if (!selectedDate) return false;
     
     const today = new Date();
@@ -135,7 +175,7 @@ export function BookingPage() {
     const selectedDay = new Date(selectedDate);
     selectedDay.setHours(0, 0, 0, 0);
     
-    // If selected date is not today, all times are available
+    // If selected date is not today, all times are available (except booked ones)
     if (selectedDay.getTime() !== today.getTime()) return false;
     
     // Parse the time and check if it's past
