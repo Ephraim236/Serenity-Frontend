@@ -34,7 +34,7 @@ const getApiUrl = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:5000';
   }
-  return 'https://serenity-api-2txb.onrender.com';
+  return 'https://serenity-5zku.onrender.com';
 };
 
 const getAuthToken = () => {
