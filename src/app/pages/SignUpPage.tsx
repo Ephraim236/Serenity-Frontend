@@ -264,7 +264,7 @@ export function SignUpPage() {
             <UserPlus className="w-10 h-10" />
           </div>
           <h1 className="text-4xl font-bold text-white drop-shadow-lg">Create Account</h1>
-          <p className="text-white/70 mt-2">Join Serenity Spa & Wellness</p>
+          <p className="text-white/70 mt-2">Join Booqlly</p>
         </div>
 
         <Card className="p-8 border-none shadow-2xl bg-white/95 backdrop-blur-md rounded-[40px]">
@@ -328,7 +328,7 @@ export function SignUpPage() {
                   required
                   type="text"
                   name="businessName"
-                  placeholder="Serenity Spa Central"
+                  placeholder="Booqlly Studio Central"
                   value={formData.businessName}
                   onChange={handleChange}
                   className="w-full px-5 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"

@@ -22,7 +22,7 @@ const API_URL = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:3000';
   }
-  return 'https://serenity-5zku.onrender.com';
+  return 'https://serenity-gamma-two.vercel.app';
 };
 
 export function Chatbot() {
@@ -40,7 +40,7 @@ export function Chatbot() {
         {
           id: "1",
           role: "assistant",
-          content: `Hello! 👋 Welcome to Serenity Salon!
+          content: `Hello! 👋 Welcome to Booqlly!
 
 I'm your AI assistant and I'm here to help you with:
 • 📅 Booking appointments
@@ -158,7 +158,7 @@ What would you like to know?`,
                 </div>
                 <div>
                   <h3 className="font-bold text-white">AI Assistant</h3>
-                  <p className="text-xs text-white/80">Serenity Salon</p>
+                  <p className="text-xs text-white/80">Booqlly</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">

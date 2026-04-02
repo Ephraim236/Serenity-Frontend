@@ -29,7 +29,7 @@ import { getAuthToken } from "../contexts/AuthContext";
 // API URL helper - always use deployed API for reliability
 const getApiUrl = () => {
   // For image uploads, use the deployed backend
-  return 'https://serenity-5zku.onrender.com';
+  return 'https://serenity-gamma-two.vercel.app';
 };
 
 interface Service {

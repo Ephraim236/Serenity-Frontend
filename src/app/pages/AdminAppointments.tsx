@@ -27,7 +27,7 @@ import { format } from "date-fns";
 import { getAuthToken } from "../contexts/AuthContext";
 import { toast } from "sonner";
 
-const API_URL = "https://serenity-5zku.onrender.com";
+const API_URL = "https://serenity-gamma-two.vercel.app";
 
 interface Appointment {
   _id: string;
@@ -152,8 +152,6 @@ export function AdminAppointments() {
   };
 
   const handleDeleteAppointment = async (appointmentId: string) => {
-    if (!confirm("Are you sure you want to delete this appointment?")) return;
-    
     const token = getAuthToken();
     
     try {

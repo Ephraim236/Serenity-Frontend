@@ -117,7 +117,7 @@ export function LoginPage() {
             <Scissors className="w-10 h-10" />
           </div>
           <h1 className="text-4xl font-bold text-white drop-shadow-lg">Welcome Back</h1>
-          <p className="text-white/70 mt-2">Sign in to your Serenity account</p>
+          <p className="text-white/70 mt-2">Sign in to your Booqlly account</p>
         </div>
 
         <Card className="p-8 border-none shadow-2xl bg-white/95 dark:bg-neutral-800/95 backdrop-blur-md rounded-[32px]">

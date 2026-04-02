@@ -21,7 +21,7 @@ const getApiUrl = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:3000';
   }
-  return 'https://serenity-5zku.onrender.com';
+  return 'https://serenity-gamma-two.vercel.app';
 };
 
 interface Business {
@@ -201,7 +201,7 @@ export function ClientHome() {
             className="max-w-2xl"
           >
             <span className="inline-block py-1 px-3 rounded-full bg-indigo-600 text-xs font-bold uppercase tracking-wider mb-6">
-              Welcome to Serenity
+              Welcome to Booqlly
             </span>
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
               Luxury <span className="text-indigo-400">Self-Care</span> Effortlessly Booked

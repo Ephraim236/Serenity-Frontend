@@ -30,7 +30,7 @@ const getApiUrl = () => {
     return 'http://localhost:5000';
   }
   // Use production backend URL
-  return 'https://serenity-5zku.onrender.com';
+  return 'https://serenity-gamma-two.vercel.app';
 };
 
 const API_URL = getApiUrl();

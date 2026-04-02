@@ -90,7 +90,7 @@ export function PreloadScreen({ children, images = COMMON_IMAGES }: PreloadScree
                   <Scissors className="w-12 h-12 text-white" />
                 </div>
                 <h1 className="text-4xl font-bold text-white tracking-tight">
-                  Serenity
+                  Booqlly
                 </h1>
               </motion.div>
 
