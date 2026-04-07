@@ -10,17 +10,17 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/Serenity Pics/ic_launcher-web.png",
+      "src": "/ic_launcher-web.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/Serenity Pics/ic_launcher-web.png",
+      "src": "/ic_launcher-web.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "/Serenity Pics/ic_launcher-web.png",
+      "src": "/ic_launcher-web.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
