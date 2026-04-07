@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { 
   Star, 
@@ -12,7 +13,8 @@ import {
   Building2,
   Mail,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Search
 } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -113,7 +115,9 @@ const HERO_IMAGES = [
 export function ClientHome() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [businesses, setBusinesses] = useState<Business[]>([]);
+  const [filteredBusinesses, setFilteredBusinesses] = useState<Business[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const businessesRef = useRef<HTMLDivElement>(null);
   const servicesRef = useRef<HTMLDivElement>(null);
@@ -155,6 +159,7 @@ export function ClientHome() {
         if (response.ok) {
           const data = await response.json();
           setBusinesses(data);
+          setFilteredBusinesses(data);
         }
       } catch (error) {
         console.error('Failed to fetch businesses:', error);
@@ -165,6 +170,27 @@ export function ClientHome() {
 
     fetchBusinesses();
   }, []);
+
+  // Filter businesses based on search query
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setFilteredBusinesses(businesses);
+    } else {
+      const query = searchQuery.toLowerCase();
+      const filtered = businesses.filter(business => {
+        const businessName = (business.businessName || business.name).toLowerCase();
+        const email = business.email.toLowerCase();
+        const city = business.location?.city?.toLowerCase() || "";
+        const address = business.location?.address?.toLowerCase() || "";
+        
+        return businessName.includes(query) || 
+               email.includes(query) || 
+               city.includes(query) || 
+               address.includes(query);
+      });
+      setFilteredBusinesses(filtered);
+    }
+  }, [searchQuery, businesses]);
 
   const handleBusinessClick = (businessId: string) => {
     navigate(`/book?business=${businessId}`);
@@ -223,8 +249,34 @@ export function ClientHome() {
         </div>
       </section>
 
+        {/* Search Section */}
+      <section className="container mx-auto px-4 -mt-24 relative z-20">
+        <div className="bg-white dark:bg-neutral-800 rounded-3xl shadow-xl p-6 border border-neutral-100 dark:border-neutral-700">
+          <div className="max-w-2xl mx-auto">
+            <label className="text-lg font-bold text-neutral-900 dark:text-white mb-4 block">
+              Search for Businesses
+            </label>
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
+              <Input
+                type="text"
+                placeholder="Search by business name, email, city, or address..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-12 h-14 text-base rounded-2xl border-neutral-200 dark:border-neutral-600 bg-neutral-50 dark:bg-neutral-700 focus-visible:ring-indigo-500"
+              />
+            </div>
+            {searchQuery && (
+              <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-3">
+                {filteredBusinesses.length} business{filteredBusinesses.length !== 1 ? 'es' : ''} found
+              </p>
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* Stats/Info */}
-      <section className="container mx-auto px-4">
+      <section className="container mx-auto px-4 mt-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8 bg-white dark:bg-neutral-800 rounded-3xl shadow-xl -mt-24 relative z-20 border border-neutral-100 dark:border-neutral-700">
           <div className="flex items-start gap-4 p-4">
             <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 shrink-0">
@@ -232,7 +284,7 @@ export function ClientHome() {
             </div>
             <div>
               <h3 className="font-bold text-lg mb-1">5-Star Rated</h3>
-              <p className="text-neutral-500 text-sm">Consistently rated best service in the city.</p>
+              <p className="text-neutral-500 text-sm">Best rated service in the city.</p>
             </div>
           </div>
           <div className="flex items-start gap-4 p-4 border-l border-neutral-100">
@@ -241,7 +293,7 @@ export function ClientHome() {
             </div>
             <div>
               <h3 className="font-bold text-lg mb-1">Flexible Hours</h3>
-              <p className="text-neutral-500 text-sm">Open 7 days a week, the best available time that suits your prefernce.</p>
+              <p className="text-neutral-500 text-sm">Choose the best available time that suits your prefernce.</p>
             </div>
           </div>
           <div className="flex items-start gap-4 p-4 border-l border-neutral-100">
@@ -249,8 +301,8 @@ export function ClientHome() {
               <CheckCircle2 className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-bold text-lg mb-1">Expert Staff</h3>
-              <p className="text-neutral-500 text-sm">All our Staffs are certified with excellent experience.</p>
+              <h3 className="font-bold text-lg mb-1">Trusted Businesses</h3>
+              <p className="text-neutral-500 text-sm">All our Businesses are trusted with excellent experience.</p>
             </div>
           </div>
         </div>
@@ -266,12 +318,12 @@ export function ClientHome() {
             </p>
           </div>
 
-          <div 
+           <div 
             ref={businessesRef}
             className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory scroll-smooth -mx-4 px-4"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            {businesses.map((business, index) => (
+            {filteredBusinesses.map((business, index) => (
               <motion.div
                 key={business._id}
                 initial={{ opacity: 0, y: 20 }}

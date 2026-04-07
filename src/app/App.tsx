@@ -4,6 +4,7 @@ import { Toaster } from "./components/ui/sonner";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { PreloadScreen } from "./components/PreloadScreen";
+import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
         <PreloadScreen>
           <RouterProvider router={router} />
           <Toaster position="top-center" />
+          <PWAInstallPrompt />
         </PreloadScreen>
       </AuthProvider>
     </ThemeProvider>
