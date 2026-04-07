@@ -11,8 +11,10 @@ import {
   X,
   LogOut,
   Sun,
-  Moon
+  Moon,
+  Download
 } from "lucide-react";
+import { usePWAInstall } from "../hooks/usePWAInstall";
 import { useState } from "react";
 import { Button } from "../components/ui/button";
 import { motion, AnimatePresence } from "motion/react";
@@ -34,6 +36,7 @@ export function AppLayout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { isInstallable, isInstalled, promptInstall } = usePWAInstall();
 
   // Check if user is a business owner (for showing admin portal)
   const isBusinessOwner = user?.role === "business";
@@ -142,6 +145,15 @@ export function AppLayout() {
               </DropdownMenu>
             ) : (
               <div className="flex items-center gap-2">
+                {isInstallable && !isInstalled && (
+                  <button
+                    onClick={promptInstall}
+                    className="hidden md:flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:text-indigo-300 dark:hover:bg-indigo-950/30 rounded-lg transition-colors"
+                  >
+                    <Download className="w-4 h-4" />
+                    Install
+                  </button>
+                )}
                 <Link to="/login">
                   <Button variant="ghost" size="sm" className="font-semibold text-violet-700 dark:text-violet-300 hover:text-violet-800 dark:hover:text-violet-200 hover:bg-violet-100 dark:hover:bg-violet-900/30">Login</Button>
                 </Link>
