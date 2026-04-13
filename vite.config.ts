@@ -7,9 +7,7 @@ export default defineConfig({
   plugins: [
     // The React and Tailwind plugins are both required for Make, even if
     // Tailwind is not being actively used – do not remove 
-    react({
-      jsxRuntime: 'classic',
-    }),
+    react(),
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
@@ -78,20 +76,8 @@ export default defineConfig({
   resolve: {
     alias: {
       // Alias @ to the src directory
-      '@': new URL('./src', import.meta.url).pathname,
-      'react/jsx-runtime': 'react/jsx-runtime.js',
-      'react-dom/client': 'react-dom/client.js'
+      '@': new URL('./src', import.meta.url).pathname
     },
-  },
-
-  optimizeDeps: {
-    include: ['react', 'react-dom', 'react/jsx-runtime', 'react-dom/client']
-  },
-
-  build: {
-    commonjsOptions: {
-      include: [/node_modules/]
-    }
   },
 
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
