@@ -78,8 +78,13 @@ export default defineConfig({
   resolve: {
     alias: {
       // Alias @ to the src directory
-      '@': new URL('./src', import.meta.url).pathname
+      '@': new URL('./src', import.meta.url).pathname,
+      'react/jsx-runtime': 'react/jsx-runtime.js'
     },
+  },
+
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react/jsx-runtime']
   },
 
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
