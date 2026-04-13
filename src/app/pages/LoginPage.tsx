@@ -56,21 +56,16 @@ export function LoginPage() {
         }
       }
       
-      // Show welcome animation briefly before navigating
-      setWelcomeName(response.user.name || response.user.email?.split('@')[0] || 'User');
-      setShowWelcome(true);
-      
+      login(response.user, response.token);
       toast.success(`Logged in successfully`);
       
-      // Navigate after a short delay to show welcome animation
-      setTimeout(() => {
-        const userRole = response.user.role;
-        if (userRole === "business") {
-          navigate("/admin", { replace: true });
-        } else {
-          navigate("/", { replace: true });
-        }
-      }, 500);
+      // Navigate based on actual user role from response
+      const userRole = response.user.role;
+      if (userRole === "business") {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Login failed");
     } finally {

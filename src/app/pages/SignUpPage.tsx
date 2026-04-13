@@ -202,22 +202,16 @@ export function SignUpPage() {
         businessImages: role === "business" ? formData.businessImages : undefined
       });
       
-      // Show welcome animation briefly before navigating
-      setWelcomeName(response.user.name || response.user.email?.split('@')[0] || 'User');
-      setShowWelcome(true);
-      
       login(response.user, response.token);
       toast.success("Account created successfully!");
       
-      // Navigate after a short delay to show welcome animation
-      setTimeout(() => {
-        const from = location.state?.from || "/";
-        if (role === "business") {
-          navigate("/admin", { replace: true });
-        } else {
-          navigate(from === "/login" || from === "/signup" ? "/" : from, { replace: true });
-        }
-      }, 500);
+      // Navigate based on role
+      const from = location.state?.from || "/";
+      if (role === "business") {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate(from === "/login" || from === "/signup" ? "/" : from, { replace: true });
+      }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Registration failed");
     } finally {
