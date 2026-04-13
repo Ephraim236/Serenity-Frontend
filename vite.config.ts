@@ -11,7 +11,35 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      selfDestroying: true,
+      manifest: {
+        name: 'Booqlly',
+        short_name: 'Booqlly',
+        description: 'Book Your Experience - Luxury Self-Care Effortlessly Booked',
+        theme_color: '#4F46E5',
+        background_color: '#ffffff',
+        display: 'standalone',
+        scope: '/',
+        start_url: '/',
+        orientation: 'portrait-primary',
+        icons: [
+          {
+            src: '/ic_launcher-web.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: '/ic_launcher-web.png',
+            sizes: '512x512',
+            type: 'image/png'
+          },
+          {
+            src: '/ic_launcher-web.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable'
+          }
+        ]
+      },
       workbox: {
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB limit
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg}'],
