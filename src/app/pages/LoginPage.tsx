@@ -61,10 +61,13 @@ export function LoginPage() {
       
       // Navigate based on actual user role from response
       const userRole = response.user.role;
-      if (userRole === "business") {
-        navigate("/admin", { replace: true });
+      const targetPath = userRole === "business" ? "/admin" : "/";
+      
+      // Use window.location for PWA in standalone mode
+      if (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: minimal-ui)').matches) {
+        window.location.href = targetPath;
       } else {
-        navigate("/", { replace: true });
+        navigate(targetPath, { replace: true });
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Login failed");

@@ -137,7 +137,7 @@ function DefaultDesign() {
       <mesh ref={meshRef} position={[2, 1, 0]} scale={0.8}>
         <icosahedronGeometry args={[1, 1]} />
         <MeshDistortMaterial
-          color="#6366F1"
+          color="#2563EB"
           attach="material"
           distort={0.3}
           speed={2}
@@ -247,9 +247,9 @@ function WelcomeAnimation({ show, name }: { show: boolean; name: string }) {
 }
 
 function Scene({ theme = 'default', showWelcome = false, userName = '' }: { theme?: 'salon' | 'spa' | 'default', showWelcome?: boolean, userName?: string }) {
-  const particleColor = theme === 'salon' ? '#F9A8D4' : theme === 'spa' ? '#6EE7B7' : '#818CF8'
-  const accentColor = theme === 'salon' ? '#EC4899' : theme === 'spa' ? '#34D399' : '#8B5CF6'
-  const mainColor = theme === 'salon' ? '#F472B6' : theme === 'spa' ? '#10B981' : '#6366F1'
+  const particleColor = theme === 'salon' ? '#60A5FA' : theme === 'spa' ? '#6EE7B7' : '#60A5FA'
+  const accentColor = theme === 'salon' ? '#3B82F6' : theme === 'spa' ? '#34D399' : '#3B82F6'
+  const mainColor = theme === 'salon' ? '#2563EB' : theme === 'spa' ? '#10B981' : '#2563EB'
   
   return (
     <>

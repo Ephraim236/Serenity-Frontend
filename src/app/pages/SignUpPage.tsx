@@ -207,10 +207,13 @@ export function SignUpPage() {
       
       // Navigate based on role
       const from = location.state?.from || "/";
-      if (role === "business") {
-        navigate("/admin", { replace: true });
+      const targetPath = role === "business" ? "/admin" : (from === "/login" || from === "/signup" ? "/" : from);
+      
+      // Use window.location for PWA in standalone mode
+      if (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: minimal-ui)').matches) {
+        window.location.href = targetPath;
       } else {
-        navigate(from === "/login" || from === "/signup" ? "/" : from, { replace: true });
+        navigate(targetPath, { replace: true });
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Registration failed");
