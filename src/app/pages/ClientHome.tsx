@@ -128,7 +128,25 @@ export function ClientHome() {
     // Check if running in standalone mode (PWA installed)
     const standalone = window.matchMedia('(display-mode: standalone)').matches;
     const inMinimalUi = window.matchMedia('(display-mode: minimal-ui)').matches;
+    
+    // Also check localStorage for dismissed state
+    const installDismissed = localStorage.getItem('booqlly_install_dismissed');
+    const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+    const dismissedTime = installDismissed ? parseInt(installDismissed) : 0;
+    const isExpired = dismissedTime > 0 && dismissedTime < thirtyDaysAgo;
+    
+    // Clear expired dismissal or update status
+    if (isExpired) {
+      localStorage.removeItem('booqlly_install_dismissed');
+    }
+    
+    // Set installed if either standalone or NOT dismissed
     setIsAppInstalled(standalone || inMinimalUi);
+    
+    // Store dismissal with expiry
+    if (installDismissed && !isExpired && !standalone && !inMinimalUi) {
+      setIsAppInstalled(true); // Treat as installed if dismissed recently
+    }
     
     // Detect iOS Safari
     const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && 
@@ -534,7 +552,7 @@ export function ClientHome() {
                   <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
                 </svg>
               </div>
-              <div className="text-white">
+              <div className="text-white flex-1">
                 <p className="text-xl font-bold">How to Install</p>
                 {isIOS ? (
                   <p className="text-sm text-neutral-400 mt-1">Tap <span className="font-semibold text-white">Share</span> button → Tap <span className="font-semibold text-white">Add to Home Screen</span></p>
@@ -542,6 +560,18 @@ export function ClientHome() {
                   <p className="text-sm text-neutral-400 mt-1">Tap <span className="font-semibold text-white">⋮</span> menu → Tap <span className="font-semibold text-white">Add to Home Screen</span></p>
                 )}
               </div>
+              <button 
+                onClick={() => {
+                  localStorage.setItem('booqlly_install_dismissed', Date.now().toString());
+                  setIsAppInstalled(true);
+                }}
+                className="shrink-0 text-neutral-400 hover:text-white"
+                aria-label="Dismiss"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
           </div>)}
         </div>
