@@ -2,20 +2,20 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
-import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import { 
-  Scissors, 
-  Mail, 
-  Lock, 
-  ArrowRight, 
-  User, 
-  Building2, 
+import {
+  Scissors,
+  Mail,
+  Lock,
+  ArrowRight,
+  User,
+  Building2,
   ChevronLeft,
   Chrome
 } from "lucide-react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import { useAuth, authApi } from "../contexts/AuthContext";
+import Auth3DBackground from "../components/Auth3DBackground";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -75,21 +75,8 @@ export function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background Image with Overlay */}
-      <div className="absolute inset-0 z-0">
-        <ImageWithFallback 
-          src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYWxvbiUyMHNwYSUyMGludGVyaW9yJTIwZGVzaWdufGVufDF8fHx8MTc3NDQwNzgwMHww&ixlib=rb-4.1.0&q=80&w=2070" 
-          alt="Spa background" 
-          className="w-full h-full object-cover"
-          loading="eager"
-          placeholder="skeleton"
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/80 via-purple-900/70 to-neutral-900/60" />
-        {/* Animated decorative circles */}
-        <div className="absolute top-20 left-10 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-pink-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-      </div>
+      {/* 3D Immersive Background */}
+      <Auth3DBackground />
 
       <div className="absolute top-4 left-4 z-10">
         <button 
@@ -120,7 +107,7 @@ export function LoginPage() {
           <p className="text-white/70 mt-2">Sign in to your Booqlly account</p>
         </div>
 
-        <Card className="p-8 border-none shadow-2xl bg-white/95 dark:bg-neutral-800/95 backdrop-blur-md rounded-[32px]">
+        <Card className="p-8 border-none shadow-2xl bg-white/10 backdrop-blur-2xl rounded-[32px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.37)]">
           {/* Role Selector */}
           <div className="flex bg-neutral-100 dark:bg-neutral-700 p-1 rounded-2xl mb-8">
             <button

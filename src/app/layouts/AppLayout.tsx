@@ -286,9 +286,51 @@ export function AppLayout() {
 
       <Chatbot />
 
-      <footer className="border-t bg-white py-8">
-        <div className="container mx-auto px-4 text-center text-neutral-500 text-sm">
-          <p>© 2026 Booqlly. All rights reserved.</p>
+      <footer className="border-t bg-white py-8 dark:bg-neutral-900 dark:border-neutral-800">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h3 className="text-lg font-semibold text-center text-neutral-800 dark:text-neutral-200 mb-6">Install Booqlly App</h3>
+            
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              {/* Android Instructions */}
+              <div className="bg-neutral-50 dark:bg-neutral-800/50 rounded-xl p-5">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                    <svg className="w-5 h-5 text-green-600 dark:text-green-400" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M17.523 15.3414L12.4751 19.7066C12.2431 19.9039 11.8962 19.8899 11.6806 19.6743L6.58985 14.5836C6.15254 14.1463 6.46406 13.4288 7.08363 13.4288H10.0002V3.00012C10.0002 2.44784 10.4479 2.00012 11.0002 2.00012H13.0002C13.5525 2.00012 14.0002 2.44784 14.0002 3.00012V13.4288H16.9167C17.5363 13.4288 17.8478 14.1463 17.523 15.3414Z"/>
+                    </svg>
+                  </div>
+                  <h4 className="font-semibold text-neutral-800 dark:text-neutral-200">Android / Chrome</h4>
+                </div>
+                <ol className="space-y-2 text-sm text-neutral-600 dark:text-neutral-400">
+                  <li className="flex gap-2"><span className="text-indigo-600 dark:text-indigo-400 font-medium">1.</span> Tap the menu button ⋮ in Chrome</li>
+                  <li className="flex gap-2"><span className="text-indigo-600 dark:text-indigo-400 font-medium">2.</span> Select <strong>Install app</strong> from menu</li>
+                  <li className="flex gap-2"><span className="text-indigo-600 dark:text-indigo-400 font-medium">3.</span> Confirm with <strong>Install</strong> when prompted</li>
+                  <li className="flex gap-2"><span className="text-indigo-600 dark:text-indigo-400 font-medium">4.</span> Booqlly will be added to your home screen</li>
+                </ol>
+              </div>
+
+              {/* iOS Instructions */}
+              <div className="bg-neutral-50 dark:bg-neutral-800/50 rounded-xl p-5">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center">
+                    <svg className="w-5 h-5 text-slate-700 dark:text-slate-300" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H17C18.1046 3 19 3.89543 19 5V19C19 20.1046 18.1046 21 17 21ZM12 17C12.5523 17 13 16.5523 13 16H11C11 16.5523 11.4477 17 12 17Z"/>
+                    </svg>
+                  </div>
+                  <h4 className="font-semibold text-neutral-800 dark:text-neutral-200">iPhone / Safari</h4>
+                </div>
+                <ol className="space-y-2 text-sm text-neutral-600 dark:text-neutral-400">
+                  <li className="flex gap-2"><span className="text-indigo-600 dark:text-indigo-400 font-medium">1.</span> Tap the share button <svg className="inline w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg> at bottom</li>
+                  <li className="flex gap-2"><span className="text-indigo-600 dark:text-indigo-400 font-medium">2.</span> Scroll and tap <strong>Add to Home Screen</strong></li>
+                  <li className="flex gap-2"><span className="text-indigo-600 dark:text-indigo-400 font-medium">3.</span> Tap <strong>Add</strong> in the top right corner</li>
+                  <li className="flex gap-2"><span className="text-indigo-600 dark:text-indigo-400 font-medium">4.</span> App icon will appear on your home screen</li>
+                </ol>
+              </div>
+            </div>
+
+            <p className="text-center text-neutral-500 dark:text-neutral-400 text-sm">© 2026 Booqlly. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </div>

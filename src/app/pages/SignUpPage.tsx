@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import Auth3DBackground from "../components/Auth3DBackground";
 import { 
   Scissors, 
   Mail, 
@@ -222,21 +223,8 @@ export function SignUpPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 py-12 relative overflow-hidden">
-      {/* Background Image with Overlay */}
-      <div className="absolute inset-0 z-0">
-        <ImageWithFallback 
-          src="https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYWxvbiUyMHNhbG9uJTIwYXV0aG9yJTIwaW50ZXJpb3J8ZW58MXx8fHwxNzc0NDA3ODAwfDA&ixlib=rb-4.1.0&q=80&w=2070" 
-          alt="Spa background" 
-          className="w-full h-full object-cover"
-          loading="eager"
-          placeholder="skeleton"
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-rose-900/80 via-purple-900/70 to-indigo-900/60" />
-        {/* Animated decorative circles */}
-        <div className="absolute top-20 right-10 w-64 h-64 bg-rose-500/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 left-10 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-      </div>
+      {/* 3D Immersive Background */}
+      <Auth3DBackground />
 
       <div className="absolute top-4 left-4 z-10">
         <button 
@@ -267,7 +255,7 @@ export function SignUpPage() {
           <p className="text-white/70 mt-2">Join Booqlly</p>
         </div>
 
-        <Card className="p-8 border-none shadow-2xl bg-white/95 backdrop-blur-md rounded-[40px]">
+        <Card className="p-8 border-none shadow-2xl bg-white/10 backdrop-blur-2xl rounded-[40px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.37)]">
           {/* Role Selector */}
           {currentStep === 1 && (
             <div className="mb-8">
