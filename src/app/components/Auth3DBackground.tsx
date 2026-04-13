@@ -238,7 +238,6 @@ function WelcomeAnimation({ show, name }: { show: boolean; name: string }) {
           color="#FFFFFF"
           anchorX="center"
           anchorY="middle"
-          font="/fonts/inter-bold.ttf"
         >
           Welcome{name ? `, ${name}` : ''}!
         </Text>
