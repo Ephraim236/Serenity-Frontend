@@ -27,6 +27,11 @@ export function LoginPage() {
   const [googleAuthAvailable, setGoogleAuthAvailable] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [welcomeName, setWelcomeName] = useState("");
+  
+  // Theme is always salon for login page
+  const theme = 'salon';
 
   useEffect(() => {
     // Check if Google OAuth is configured
@@ -51,16 +56,22 @@ export function LoginPage() {
         }
       }
       
-      login(response.user, response.token);
+      // Show welcome animation before navigating
+      setWelcomeName(response.user.name || response.user.email?.split('@')[0] || 'User');
+      setShowWelcome(true);
+      
       toast.success(`Logged in successfully`);
       
-      // Redirect based on actual user role from response
-      const userRole = response.user.role;
-      if (userRole === "business") {
-        navigate("/admin");
-      } else {
-        navigate("/");
-      }
+      // Add delay to show welcome animation
+      setTimeout(() => {
+        // Redirect based on actual user role from response
+        const userRole = response.user.role;
+        if (userRole === "business") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
+      }, 2000);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Login failed");
     } finally {
@@ -76,21 +87,16 @@ export function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
       {/* 3D Immersive Background */}
-      <Auth3DBackground />
+      <Auth3DBackground theme={theme} showWelcome={showWelcome} userName={welcomeName} />
 
       <div className="absolute top-4 left-4 z-10">
         <button 
-          onClick={() => {
-            if (window.history.length > 1) {
-              navigate(-1);
-            } else {
-              navigate('/');
-            }
-          }} 
-          className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors backdrop-blur-sm bg-white/10 px-3 py-1.5 rounded-full"
+          onClick={() => navigate('/')} 
+          className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors backdrop-blur-sm bg-white/10 px-3 py-2 rounded-full touch-manipulation"
+          aria-label="Go to home"
         >
-          <ChevronLeft className="w-4 h-4" />
-          <span className="text-xs font-medium hidden sm:inline">Back</span>
+          <ChevronLeft className="w-5 h-5" />
+          <span className="text-sm font-medium hidden sm:inline">Back</span>
         </button>
       </div>
 

@@ -63,11 +63,16 @@ interface Location {
 export function SignUpPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, loginWithGoogle } = useAuth();
+  const { login, loginWithGoogle, user } = useAuth();
   const [role, setRole] = useState<"client" | "business">("client");
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [welcomeName, setWelcomeName] = useState("");
+  
+  // Theme is always salon for signup page
+  const theme = 'salon';
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -197,15 +202,22 @@ export function SignUpPage() {
         businessImages: role === "business" ? formData.businessImages : undefined
       });
       
+      // Show welcome animation before navigating
+      setWelcomeName(response.user.name || response.user.email?.split('@')[0] || 'User');
+      setShowWelcome(true);
+      
       login(response.user, response.token);
       toast.success("Account created successfully!");
       
-      const from = location.state?.from || "/";
-      if (role === "business") {
-        navigate("/admin");
-      } else {
-        navigate(from === "/login" || from === "/signup" ? "/" : from);
-      }
+      // Add delay to show welcome animation
+      setTimeout(() => {
+        const from = location.state?.from || "/";
+        if (role === "business") {
+          navigate("/admin");
+        } else {
+          navigate(from === "/login" || from === "/signup" ? "/" : from);
+        }
+      }, 2000);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Registration failed");
     } finally {
@@ -224,21 +236,16 @@ export function SignUpPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 py-12 relative overflow-hidden">
       {/* 3D Immersive Background */}
-      <Auth3DBackground />
+      <Auth3DBackground theme={theme} showWelcome={showWelcome} userName={welcomeName} />
 
       <div className="absolute top-4 left-4 z-10">
         <button 
-          onClick={() => {
-            if (window.history.length > 1) {
-              navigate(-1);
-            } else {
-              navigate('/');
-            }
-          }} 
-          className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors backdrop-blur-sm bg-white/10 px-3 py-1.5 rounded-full"
+          onClick={() => navigate('/')} 
+          className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors backdrop-blur-sm bg-white/10 px-3 py-2 rounded-full touch-manipulation"
+          aria-label="Go to home"
         >
-          <ChevronLeft className="w-4 h-4" />
-          <span className="text-xs font-medium hidden sm:inline">Back</span>
+          <ChevronLeft className="w-5 h-5" />
+          <span className="text-sm font-medium hidden sm:inline">Back</span>
         </button>
       </div>
 
