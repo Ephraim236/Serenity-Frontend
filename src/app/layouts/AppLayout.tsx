@@ -287,6 +287,7 @@ export function AppLayout() {
       <Chatbot />
 
       <footer className="border-t bg-white py-8 dark:bg-neutral-900 dark:border-neutral-800">
+        {location.pathname === "/" && (
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h3 className="text-lg font-semibold text-center text-neutral-800 dark:text-neutral-200 mb-6">Install Booqlly App</h3>
@@ -332,6 +333,12 @@ export function AppLayout() {
             <p className="text-center text-neutral-500 dark:text-neutral-400 text-sm">© 2026 Booqlly. All rights reserved.</p>
           </div>
         </div>
+        )}
+        {location.pathname !== "/" && (
+        <div className="container mx-auto px-4">
+          <p className="text-center text-neutral-500 dark:text-neutral-400 text-sm">© 2026 Booqlly. All rights reserved.</p>
+        </div>
+        )}
       </footer>
     </div>
   );

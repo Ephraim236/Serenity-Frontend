@@ -284,32 +284,6 @@ export function ClientHome() {
         </div>
       </section>
 
-        {/* Search Section */}
-      <section className="container mx-auto px-4 -mt-24 relative z-20">
-        <div className="bg-white dark:bg-neutral-800 rounded-3xl shadow-xl p-6 border border-neutral-100 dark:border-neutral-700">
-          <div className="max-w-2xl mx-auto">
-            <label className="text-lg font-bold text-neutral-900 dark:text-white mb-4 block">
-              Search for Businesses
-            </label>
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
-              <Input
-                type="text"
-                placeholder="Search by business name, email, city, or address..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 h-14 text-base rounded-2xl border-neutral-200 dark:border-neutral-600 bg-neutral-50 dark:bg-neutral-700 focus-visible:ring-indigo-500"
-              />
-            </div>
-            {searchQuery && (
-              <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-3">
-                {filteredBusinesses.length} business{filteredBusinesses.length !== 1 ? 'es' : ''} found
-              </p>
-            )}
-          </div>
-        </div>
-      </section>
-
       {/* Stats/Info */}
       <section className="container mx-auto px-4 mt-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8 bg-white dark:bg-neutral-800 rounded-3xl shadow-xl -mt-24 relative z-20 border border-neutral-100 dark:border-neutral-700">
@@ -343,9 +317,35 @@ export function ClientHome() {
         </div>
       </section>
 
+      {/* Search Bar */}
+      <section className="container mx-auto px-4 mt-8">
+        <div className="relative max-w-3xl mx-auto">
+          <div className="absolute left-5 top-1/2 -translate-y-1/2 z-10">
+            <Search className="w-6 h-6 text-neutral-400" />
+          </div>
+          <input
+            type="text"
+            placeholder="Search for salons, spas, or services..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full h-16 pl-14 pr-32 text-lg bg-white dark:bg-neutral-800 rounded-2xl border-2 border-neutral-100 dark:border-neutral-700 shadow-lg focus:border-blue-500 focus:ring-0 transition-all outline-none"
+          />
+          <div className="absolute right-4 top-1/2 -translate-y-1/2">
+            <button className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors">
+              Search
+            </button>
+          </div>
+        </div>
+        {searchQuery && (
+          <p className="text-center text-sm text-neutral-500 dark:text-neutral-400 mt-4">
+            {filteredBusinesses.length} result{filteredBusinesses.length !== 1 ? 's' : ''} found
+          </p>
+        )}
+      </section>
+
       {/* Businesses Section */}
       {businesses.length > 0 && (
-        <section className="container mx-auto px-4">
+        <section className="container mx-auto px-4 mt-12">
           <div className="mb-8">
             <h2 className="text-3xl font-bold mb-4 text-neutral-900 dark:text-white">Featured Businesses</h2>
             <p className="text-neutral-500 dark:text-neutral-400 max-w-xl">

@@ -15,7 +15,7 @@ export default defineConfig({
         name: 'Booqlly',
         short_name: 'Booqlly',
         description: 'Book Your Experience - Luxury Self-Care Effortlessly Booked',
-        theme_color: '#4F46E5',
+        theme_color: '#2563EB',
         background_color: '#ffffff',
         display: 'standalone',
         scope: '/',
