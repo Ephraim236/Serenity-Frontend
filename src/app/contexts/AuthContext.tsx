@@ -88,24 +88,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem(TOKEN_KEY);
   }, []);
 
-  // Handle browser back button to prevent unauthorized access
-  useEffect(() => {
-    const handlePopState = (event: PopStateEvent) => {
-      // Check if user is authenticated
-      const token = localStorage.getItem(TOKEN_KEY);
-      const storedUser = localStorage.getItem(STORAGE_KEY);
-      
-      if (token && storedUser) {
-        // User is authenticated, log them out
-        logout();
-        // Show logout message
-        toast.info("You have been logged out due to inactivity");
-      }
-    };
-
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
-  }, [logout]);
+  // Don't handle browser back button - allow natural navigation
+  // This was removed because it was interfering with the back button functionality
 
   const loginWithGoogle = () => {
     // Redirect to backend Google OAuth endpoint

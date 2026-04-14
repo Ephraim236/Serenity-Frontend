@@ -484,6 +484,7 @@ export function SignUpPage() {
                 <label className="text-sm font-bold text-neutral-700 ml-1 flex items-center gap-2">
                   <ImageIcon className="w-4 h-4" /> Business Images
                 </label>
+                <p className="text-xs text-neutral-500 ml-1">Upload your business image</p>
                 
                 {/* File Upload Area */}
                 <div className="border-2 border-dashed border-neutral-200 rounded-2xl p-6 text-center hover:border-blue-400 transition-colors">
@@ -526,7 +527,7 @@ export function SignUpPage() {
                         <button
                           type="button"
                           onClick={() => handleImageUrlRemove(index)}
-                          className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full transition-opacity hover:bg-red-600"
                         >
                           <X className="w-4 h-4" />
                         </button>

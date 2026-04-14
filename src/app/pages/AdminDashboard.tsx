@@ -350,15 +350,75 @@ export function AdminDashboard() {
           </div>
         </div>
 
-        {/* Recent Appointments with Glass Effect */}
-        <div className="p-8 border-none shadow-xl bg-white/70 backdrop-blur-xl rounded-3xl border border-white/20">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-xl font-bold">Today's Appointments</h3>
+        {/* Today's Appointments - Modern Mobile-Friendly Cards */}
+        <div className="p-4 sm:p-6 border-none shadow-xl bg-white/70 backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-white/20">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <h3 className="text-lg sm:text-xl font-bold">Today's Appointments</h3>
             <Link to="/admin/appointments">
-              <Button variant="link" className="text-indigo-600 font-bold p-0">View Calendar</Button>
+              <Button variant="link" className="text-blue-600 font-bold p-0 text-sm">View Calendar</Button>
             </Link>
           </div>
-          <div className="overflow-x-auto">
+          
+          {/* Mobile Card View */}
+          <div className="space-y-3 sm:hidden">
+            {appointments.slice(0, 5).map((apt) => (
+              <div key={apt._id} className="bg-white dark:bg-neutral-800 rounded-xl p-4 shadow-sm border border-neutral-100 dark:border-neutral-700">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-300 font-bold text-sm">
+                      {apt.clientName.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="font-bold text-neutral-900 dark:text-white text-sm">{apt.clientName}</p>
+                      <p className="text-xs text-neutral-500 dark:text-neutral-400">{apt.service}</p>
+                    </div>
+                  </div>
+                  <span className={`px-2 py-1 rounded-full text-xs font-bold ${getStatusColor(apt.status)}`}>
+                    {formatStatus(apt.status)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3 text-sm text-neutral-600 dark:text-neutral-300">
+                    <div className="flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5 text-blue-500" />
+                      <span>{apt.time}</span>
+                    </div>
+                    <span className="text-neutral-400">•</span>
+                    <span>{apt.specialist}</span>
+                  </div>
+                  {apt.status === 'pending' && (
+                    <div className="flex items-center gap-1">
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-7 w-7 rounded-lg text-green-600 hover:bg-green-50"
+                        onClick={() => handleUpdateStatus(apt._id, 'confirmed')}
+                      >
+                        <Check className="w-3.5 h-3.5" />
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-7 w-7 rounded-lg text-red-600 hover:bg-red-50"
+                        onClick={() => handleUpdateStatus(apt._id, 'cancelled')}
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+            {appointments.length === 0 && (
+              <div className="text-center py-8">
+                <CalendarIcon className="w-12 h-12 text-neutral-300 dark:text-neutral-600 mx-auto mb-2" />
+                <p className="text-neutral-500 dark:text-neutral-400">No appointments today</p>
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden sm:block overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="text-left text-neutral-400 text-sm border-b border-neutral-50 dark:border-neutral-700">
@@ -375,7 +435,7 @@ export function AdminDashboard() {
                   <tr key={apt._id} className="border-b border-neutral-50 dark:border-neutral-700 last:border-none group">
                     <td className="py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-indigo-600 dark:text-indigo-300 font-bold">
+                        <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-300 font-bold">
                           {apt.clientName.charAt(0)}
                         </div>
                         <span className="font-bold text-neutral-900 dark:text-white">{apt.clientName}</span>

@@ -6,6 +6,7 @@ import { MyBookings } from "./pages/MyBookings";
 import { AdminDashboard } from "./pages/AdminDashboard";
 import { AdminAppointments } from "./pages/AdminAppointments";
 import { AdminServices } from "./pages/AdminServices";
+import { AdminProfile } from "./pages/AdminProfile";
 import { LoginPage } from "./pages/LoginPage";
 import { SignUpPage } from "./pages/SignUpPage";
 import { NotFound } from "./pages/NotFound";
@@ -90,6 +91,14 @@ export const router = createBrowserRouter([
             Component: () => (
               <ProtectedRoute requiredRole="business">
                 <AdminServices />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "profile",
+            Component: () => (
+              <ProtectedRoute requiredRole="business">
+                <AdminProfile />
               </ProtectedRoute>
             ),
           },

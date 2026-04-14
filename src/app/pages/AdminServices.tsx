@@ -81,7 +81,7 @@ export function AdminServices() {
     fetchServices();
   }, []);
 
-  // Handle image file upload
+  // Handle image file upload - use base64 for local preview and storage
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -101,30 +101,28 @@ export function AdminServices() {
     setUploadingImage(true);
 
     try {
-      const formData = new FormData();
-      formData.append('image', file);
-
-      const token = getAuthToken();
-      const response = await fetch(`${getApiUrl()}/api/upload/image`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: formData
+      // Use FileReader to read the file as a data URL (base64)
+      const reader = new FileReader();
+      
+      await new Promise<void>((resolve, reject) => {
+        reader.onload = (event) => {
+          const result = event.target?.result as string;
+          // Store the base64 data URL directly
+          setFormData(prev => ({ ...prev, image: result }));
+          setImagePreview(result);
+          toast.success('Image added successfully');
+          resolve();
+        };
+        
+        reader.onerror = () => {
+          reject(new Error('Failed to read file'));
+        };
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        setFormData(prev => ({ ...prev, image: data.url }));
-        setImagePreview(`${getApiUrl()}${data.url}`);
-        toast.success('Image uploaded successfully');
-      } else {
-        const error = await response.json();
-        toast.error(error.error || 'Failed to upload image');
-      }
+      
+      reader.readAsDataURL(file);
     } catch (error) {
       console.error('Image upload error:', error);
-      toast.error('Failed to upload image');
+      toast.error('Failed to add image');
     } finally {
       setUploadingImage(false);
     }
