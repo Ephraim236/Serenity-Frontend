@@ -354,6 +354,21 @@ export function AdminServices() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredServices.map((service) => (
             <Card key={service._id} className="p-6 border-none shadow-sm bg-white rounded-[32px] hover:shadow-xl transition-all group overflow-hidden relative">
+              {/* Service Image */}
+              <div className="relative h-40 -mx-6 -mt-6 mb-4 overflow-hidden bg-neutral-100">
+                {service.image ? (
+                  <img 
+                    src={service.image} 
+                    alt={service.name} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Tag className="w-12 h-12 text-neutral-300" />
+                  </div>
+                )}
+              </div>
+              
               <div className="flex justify-between items-start mb-6">
                 <div className="w-14 h-14 bg-violet-50 rounded-2xl flex items-center justify-center text-violet-600">
                   <Tag className="w-7 h-7" />
@@ -427,7 +442,18 @@ export function AdminServices() {
             <tbody>
               {filteredServices.map((service) => (
                 <tr key={service._id} className="border-b border-neutral-50 last:border-none group hover:bg-neutral-50/50 transition-colors">
-                  <td className="px-8 py-4 font-bold text-neutral-900">{service.name}</td>
+                  <td className="px-8 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-lg bg-neutral-100 overflow-hidden flex-shrink-0">
+                        {service.image ? (
+                          <img src={service.image} alt={service.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <Tag className="w-6 h-6 text-neutral-300 m-auto" />
+                        )}
+                      </div>
+                      <span className="font-bold text-neutral-900">{service.name}</span>
+                    </div>
+                  </td>
                   <td className="px-8 py-4 text-neutral-500 capitalize">{service.category}</td>
                   <td className="px-8 py-4 text-neutral-500">{service.duration} min</td>
                   <td className="px-8 py-4 font-bold text-violet-600">₵{service.price}</td>
