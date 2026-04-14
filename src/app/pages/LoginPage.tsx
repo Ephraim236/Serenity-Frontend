@@ -203,7 +203,7 @@ export function LoginPage() {
             <Button 
               type="submit" 
               disabled={isLoading}
-              className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-lg font-bold shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 mt-4"
+              className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-lg font-bold shadow-lg shadow-blue-200 flex items-center justify-center gap-2 mt-4"
             >
               {isLoading ? "Signing in..." : (
                 <>
@@ -216,7 +216,7 @@ export function LoginPage() {
           <div className="mt-8 pt-8 border-t border-neutral-50 text-center">
             <p className="text-neutral-500 text-sm">
               Don't have an account?{" "}
-              <Link to="/signup" className="text-indigo-600 font-bold hover:underline">
+              <Link to="/signup" className="text-blue-600 font-bold hover:underline">
                 Create one now
               </Link>
             </p>

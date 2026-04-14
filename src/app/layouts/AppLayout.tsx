@@ -57,14 +57,14 @@ export function AppLayout() {
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 flex flex-col">
-      <header className="sticky top-0 z-50 w-full border-b border-violet-100 dark:border-violet-900/30 bg-gradient-to-r from-violet-50/90 via-white/90 to-purple-50/90 dark:from-violet-950/40 dark:via-neutral-900/90 dark:to-purple-950/40 backdrop-blur-md shadow-sm">
+      <header className="sticky top-0 z-50 w-full border-b border-blue-100 dark:border-blue-900/30 bg-gradient-to-r from-blue-50/90 via-white/90 to-blue-50/90 dark:from-blue-950/40 dark:via-neutral-900/90 dark:to-blue-950/40 backdrop-blur-md shadow-sm">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
               <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-violet-500/25">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-violet-500/25">
                   <Scissors className="w-5 h-5" />
                 </div>
-                <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-violet-700 to-purple-700 dark:from-violet-300 dark:to-purple-300 bg-clip-text text-transparent">Booqlly</span>
+                <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-blue-700 to-blue-700 dark:from-blue-300 dark:to-blue-300 bg-clip-text text-transparent">Booqlly</span>
               </div>
             </div>
 
@@ -77,8 +77,8 @@ export function AppLayout() {
                 to={item.href}
                 className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-violet-100 dark:hover:bg-violet-900/30 ${
                   location.pathname === item.href 
-                    ? "text-violet-700 dark:text-violet-300 bg-violet-100 dark:bg-violet-900/40" 
-                    : "text-neutral-600 dark:text-neutral-400 hover:text-violet-700 dark:hover:text-violet-300"
+                    ? "text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/40" 
+                    : "text-neutral-600 dark:text-neutral-400 hover:text-blue-700 dark:hover:text-blue-300"
                 }`}
               >
                 {item.label}
@@ -148,17 +148,17 @@ export function AppLayout() {
                 {isInstallable && !isInstalled && (
                   <button
                     onClick={promptInstall}
-                    className="hidden md:flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:text-indigo-300 dark:hover:bg-indigo-950/30 rounded-lg transition-colors"
+                    className="hidden md:flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-300 dark:hover:bg-blue-950/30 rounded-lg transition-colors"
                   >
                     <Download className="w-4 h-4" />
                     Install
                   </button>
                 )}
                 <Link to="/login">
-                  <Button variant="ghost" size="sm" className="font-semibold text-violet-700 dark:text-violet-300 hover:text-violet-800 dark:hover:text-violet-200 hover:bg-violet-100 dark:hover:bg-violet-900/30">Login</Button>
+                  <Button variant="ghost" size="sm" className="font-semibold text-blue-700 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-blue-100 dark:hover:bg-blue-900/30">Login</Button>
                 </Link>
                 <Link to="/signup">
-                  <Button size="sm" className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-xl font-semibold px-6 shadow-lg shadow-violet-500/25">Sign Up</Button>
+                  <Button size="sm" className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-xl font-semibold px-6 shadow-lg shadow-blue-500/25">Sign Up</Button>
                 </Link>
               </div>
             )}
@@ -166,7 +166,7 @@ export function AppLayout() {
 
           {/* Mobile Toggle */}
           <button 
-            className="md:hidden p-2 text-violet-700 dark:text-violet-300 hover:bg-violet-100 dark:hover:bg-violet-900/30 rounded-lg transition-colors"
+            className="md:hidden p-2 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -202,11 +202,11 @@ export function AppLayout() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`flex items-center gap-3 p-4 rounded-xl transition-colors text-lg font-medium ${
                     location.pathname === item.href
-                      ? "bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300"
+                      ? "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300"
                       : "text-neutral-700 dark:text-neutral-300 hover:bg-violet-50 dark:hover:bg-violet-900/20"
                   }`}
                 >
-                  <item.icon className="w-6 h-6 text-violet-600 dark:text-violet-400" />
+                  <item.icon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                   <span>{item.label}</span>
                 </Link>
               ))}
@@ -247,7 +247,7 @@ export function AppLayout() {
                 <Link
                   to="/admin"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-violet-100 to-purple-100 dark:from-violet-900/40 dark:to-purple-900/40 text-violet-700 dark:text-violet-300 font-medium text-lg"
+                  className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-blue-100 to-blue-100 dark:from-blue-900/40 dark:to-blue-900/40 text-blue-700 dark:text-blue-300 font-medium text-lg"
                 >
                   <LayoutDashboard className="w-6 h-6" />
                   <span>Admin Portal</span>
@@ -260,14 +260,14 @@ export function AppLayout() {
                   <Link
                     to="/login"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center justify-center p-4 rounded-xl border-2 border-violet-600 dark:border-violet-500 text-violet-700 dark:text-violet-300 font-medium text-lg hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors"
+                    className="flex items-center justify-center p-4 rounded-xl border-2 border-blue-600 dark:border-blue-500 text-blue-700 dark:text-blue-300 font-medium text-lg hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors"
                   >
                     Login
                   </Link>
                   <Link
                     to="/signup"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center justify-center p-4 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium text-lg hover:from-violet-700 hover:to-purple-700 transition-colors"
+                    className="flex items-center justify-center p-4 rounded-xl bg-gradient-to-r from-blue-600 to-blue-600 text-white font-medium text-lg hover:from-blue-700 hover:to-blue-700 transition-colors"
                   >
                     Sign Up
                   </Link>
@@ -304,10 +304,10 @@ export function AppLayout() {
                   <h4 className="font-semibold text-neutral-800 dark:text-neutral-200">Android / Chrome</h4>
                 </div>
                 <ol className="space-y-2 text-sm text-neutral-600 dark:text-neutral-400">
-                  <li className="flex gap-2"><span className="text-indigo-600 dark:text-indigo-400 font-medium">1.</span> Tap the menu button ⋮ in Chrome</li>
-                  <li className="flex gap-2"><span className="text-indigo-600 dark:text-indigo-400 font-medium">2.</span> Select <strong>Install app</strong> from menu</li>
-                  <li className="flex gap-2"><span className="text-indigo-600 dark:text-indigo-400 font-medium">3.</span> Confirm with <strong>Install</strong> when prompted</li>
-                  <li className="flex gap-2"><span className="text-indigo-600 dark:text-indigo-400 font-medium">4.</span> Booqlly will be added to your home screen</li>
+                  <li className="flex gap-2"><span className="text-blue-600 dark:text-blue-400 font-medium">1.</span> Tap the menu button ⋮ in Chrome</li>
+                  <li className="flex gap-2"><span className="text-blue-600 dark:text-blue-400 font-medium">2.</span> Select <strong>Install app</strong> from menu</li>
+                  <li className="flex gap-2"><span className="text-blue-600 dark:text-blue-400 font-medium">3.</span> Confirm with <strong>Install</strong> when prompted</li>
+                  <li className="flex gap-2"><span className="text-blue-600 dark:text-blue-400 font-medium">4.</span> Booqlly will be added to your home screen</li>
                 </ol>
               </div>
 
@@ -322,10 +322,10 @@ export function AppLayout() {
                   <h4 className="font-semibold text-neutral-800 dark:text-neutral-200">iPhone / Safari</h4>
                 </div>
                 <ol className="space-y-2 text-sm text-neutral-600 dark:text-neutral-400">
-                  <li className="flex gap-2"><span className="text-indigo-600 dark:text-indigo-400 font-medium">1.</span> Tap the share button <svg className="inline w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg> at bottom</li>
-                  <li className="flex gap-2"><span className="text-indigo-600 dark:text-indigo-400 font-medium">2.</span> Scroll and tap <strong>Add to Home Screen</strong></li>
-                  <li className="flex gap-2"><span className="text-indigo-600 dark:text-indigo-400 font-medium">3.</span> Tap <strong>Add</strong> in the top right corner</li>
-                  <li className="flex gap-2"><span className="text-indigo-600 dark:text-indigo-400 font-medium">4.</span> App icon will appear on your home screen</li>
+                  <li className="flex gap-2"><span className="text-blue-600 dark:text-blue-400 font-medium">1.</span> Tap the share button <svg className="inline w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg> at bottom</li>
+                  <li className="flex gap-2"><span className="text-blue-600 dark:text-blue-400 font-medium">2.</span> Scroll and tap <strong>Add to Home Screen</strong></li>
+                  <li className="flex gap-2"><span className="text-blue-600 dark:text-blue-400 font-medium">3.</span> Tap <strong>Add</strong> in the top right corner</li>
+                  <li className="flex gap-2"><span className="text-blue-600 dark:text-blue-400 font-medium">4.</span> App icon will appear on your home screen</li>
                 </ol>
               </div>
             </div>

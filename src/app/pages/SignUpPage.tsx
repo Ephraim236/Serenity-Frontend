@@ -270,11 +270,11 @@ export function SignUpPage() {
                   onClick={() => setRole("client")}
                   className={`flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all ${
                     role === "client" 
-                      ? "border-indigo-600 bg-indigo-50/50 text-indigo-700" 
+                      ? "border-blue-600 bg-blue-50/50 text-blue-700" 
                       : "border-neutral-100 hover:border-neutral-200 text-neutral-500"
                   }`}
                 >
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "client" ? "bg-indigo-600 text-white" : "bg-neutral-100"}`}>
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "client" ? "bg-blue-600 text-white" : "bg-neutral-100"}`}>
                     <User className="w-6 h-6" />
                   </div>
                   <div className="text-center">
@@ -287,11 +287,11 @@ export function SignUpPage() {
                   onClick={() => { setRole("business"); nextStep(); }}
                   className={`flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all ${
                     role === "business" 
-                      ? "border-indigo-600 bg-indigo-50/50 text-indigo-700" 
+                      ? "border-blue-600 bg-blue-50/50 text-blue-700" 
                       : "border-neutral-100 hover:border-neutral-200 text-neutral-500"
                   }`}
                 >
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "business" ? "bg-indigo-600 text-white" : "bg-neutral-100"}`}>
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "business" ? "bg-blue-600 text-white" : "bg-neutral-100"}`}>
                     <Briefcase className="w-6 h-6" />
                   </div>
                   <div className="text-center">
@@ -308,7 +308,7 @@ export function SignUpPage() {
             <div className="space-y-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-neutral-900">Business Profile</h2>
-                <button type="button" onClick={prevStep} className="text-sm text-indigo-600 font-medium hover:underline">
+                <button type="button" onClick={prevStep} className="text-sm text-blue-600 font-medium hover:underline">
                   Back
                 </button>
               </div>
@@ -332,7 +332,7 @@ export function SignUpPage() {
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-neutral-700 ml-1">Business Email *</label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-indigo-400" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-400" />
                     <input
                       required
                       type="email"
@@ -347,7 +347,7 @@ export function SignUpPage() {
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-neutral-700 ml-1">Business Phone *</label>
                   <div className="relative">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-indigo-400" />
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-400" />
                     <input
                       required
                       type="tel"
@@ -486,7 +486,7 @@ export function SignUpPage() {
                 </label>
                 
                 {/* File Upload Area */}
-                <div className="border-2 border-dashed border-neutral-200 rounded-2xl p-6 text-center hover:border-indigo-400 transition-colors">
+                <div className="border-2 border-dashed border-neutral-200 rounded-2xl p-6 text-center hover:border-blue-400 transition-colors">
                   <input
                     type="file"
                     id="business-images"
@@ -496,7 +496,7 @@ export function SignUpPage() {
                     className="hidden"
                   />
                   <label htmlFor="business-images" className="cursor-pointer">
-                    <div className="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-3">
                       <ImageIcon className="w-6 h-6 text-indigo-600" />
                     </div>
                     <p className="text-sm font-medium text-neutral-700">

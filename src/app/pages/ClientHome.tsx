@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import { SearchBackdrop3D } from "../components/SearchBackdrop3D";
 import { 
   Star, 
   Clock, 
@@ -265,7 +266,7 @@ export function ClientHome() {
               Welcome to Booqlly
             </span>
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              Luxury <span className="text-indigo-400">Self-Care</span> Effortlessly Booked
+              Luxury <span className="text-blue-400">Self-Care</span> Effortlessly Booked
             </h1>
             <p className="text-lg md:text-xl text-neutral-200 mb-8 max-w-lg">
               Connecting Clients and Services Effortlessly.
@@ -320,6 +321,7 @@ export function ClientHome() {
       {/* Search Bar */}
       <section className="container mx-auto px-4 mt-8">
         <div className="relative max-w-3xl mx-auto">
+          <SearchBackdrop3D />
           <div className="absolute left-5 top-1/2 -translate-y-1/2 z-10">
             <Search className="w-6 h-6 text-neutral-400" />
           </div>
@@ -328,9 +330,9 @@ export function ClientHome() {
             placeholder="Search for salons, spas, or services..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-16 pl-14 pr-32 text-lg bg-white dark:bg-neutral-800 rounded-2xl border-2 border-neutral-100 dark:border-neutral-700 shadow-lg focus:border-blue-500 focus:ring-0 transition-all outline-none"
+            className="relative w-full h-16 pl-14 pr-32 text-lg bg-transparent dark:bg-transparent rounded-2xl border-2 border-neutral-100 dark:border-neutral-700 shadow-lg focus:border-blue-500 focus:ring-0 transition-all outline-none"
           />
-          <div className="absolute right-4 top-1/2 -translate-y-1/2">
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 z-10">
             <button className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors">
               Search
             </button>
@@ -377,7 +379,7 @@ export function ClientHome() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center">
+                    <div className="w-full h-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center">
                       <Building2 className="w-16 h-16 text-white/50" />
                     </div>
                   )}
@@ -416,7 +418,7 @@ export function ClientHome() {
                     </div>
                   </div>
 
-                  <Button className="w-full mt-6 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-xl">
+                  <Button className="w-full mt-6 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-xl">
                     View Services & Book
                   </Button>
                 </div>
@@ -476,13 +478,13 @@ export function ClientHome() {
                   alt={service.name}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full font-bold text-indigo-600">
+                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full font-bold text-blue-600">
                   {service.price}
                 </div>
               </div>
               <div className="p-6">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xs font-semibold px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full">
+                  <span className="text-xs font-semibold px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
                     {service.category}
                   </span>
                   <div className="flex items-center gap-1 text-neutral-400 text-xs">
