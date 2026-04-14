@@ -173,13 +173,31 @@ export function AdminProfile() {
 
     try {
       const token = getAuthToken();
+      
+      // Prepare the profile data - ensure location is properly formatted
+      const profileData = {
+        businessName: profile.businessName,
+        businessEmail: profile.businessEmail,
+        businessPhone: profile.businessPhone,
+        location: {
+          address: profile.location?.address || '',
+          city: profile.location?.city || '',
+          state: profile.location?.state || '',
+          zipCode: profile.location?.zipCode || '',
+          country: profile.location?.country || ''
+        },
+        serviceHours: profile.serviceHours,
+        operatingDays: profile.operatingDays,
+        businessImages: profile.businessImages
+      };
+      
       const response = await fetch(`${getApiUrl()}/api/auth/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(profile)
+        body: JSON.stringify(profileData)
       });
 
       if (response.ok) {
@@ -188,7 +206,6 @@ export function AdminProfile() {
         
         // Update user in auth context if needed
         if (data.user) {
-          // Optionally update local storage
           const storedUser = localStorage.getItem('serenity_auth_user');
           if (storedUser) {
             const parsed = JSON.parse(storedUser);
@@ -197,8 +214,8 @@ export function AdminProfile() {
           }
         }
       } else {
-        const error = await response.json();
-        toast.error(error.error || 'Failed to update profile');
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        toast.error(errorData.error || 'Failed to update profile');
       }
     } catch (error) {
       console.error('Save profile error:', error);
