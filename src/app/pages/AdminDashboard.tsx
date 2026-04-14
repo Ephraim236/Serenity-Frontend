@@ -339,7 +339,7 @@ export function AdminDashboard() {
                   </div>
                   <div className="h-2 w-full bg-neutral-100/80 backdrop-blur-sm rounded-full overflow-hidden">
                     <div 
-                      className={`h-full ${member.value >= 80 ? 'bg-indigo-600' : member.value >= 60 ? 'bg-blue-600' : 'bg-emerald-600'}`} 
+                      className={`h-full ${member.value >= 80 ? 'bg-blue-600' : member.value >= 60 ? 'bg-blue-600' : 'bg-emerald-600'}`} 
                       style={{ width: `${member.value}%` }} 
                     />
                   </div>
@@ -375,7 +375,7 @@ export function AdminDashboard() {
                   <tr key={apt._id} className="border-b border-neutral-50 dark:border-neutral-700 last:border-none group">
                     <td className="py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-300 font-bold">
+                        <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-indigo-600 dark:text-indigo-300 font-bold">
                           {apt.clientName.charAt(0)}
                         </div>
                         <span className="font-bold text-neutral-900 dark:text-white">{apt.clientName}</span>
@@ -386,7 +386,7 @@ export function AdminDashboard() {
                     </td>
                     <td className="py-4">
                       <div className="flex items-center gap-2 text-neutral-600 dark:text-neutral-300">
-                        <Clock className="w-4 h-4 text-indigo-500" />
+                        <Clock className="w-4 h-4 text-blue-500" />
                         {apt.time}
                       </div>
                     </td>

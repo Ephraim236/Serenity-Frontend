@@ -76,7 +76,7 @@ export function PreloadScreen({ children, images = COMMON_IMAGES }: PreloadScree
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-violet-600 via-purple-600 to-violet-800"
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-blue-600 via-blue-600 to-blue-800"
           >
             <div className="text-center">
               {/* Logo Animation */}

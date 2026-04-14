@@ -106,7 +106,7 @@ export function SearchBackdrop3D() {
   return (
     <div className="absolute inset-0 -z-10 overflow-hidden rounded-2xl pointer-events-none">
       <div className="absolute inset-0 bg-gradient-to-r from-blue-50/50 via-sky-50/30 to-blue-50/50 dark:from-blue-950/30 dark:via-sky-950/20 dark:to-blue-950/30" />
-      <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+      <Canvas camera={{ position: [0, 0, 5], fov: 45 }} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
         <ambientLight intensity={0.5} />
         <Particles count={1500} />
         <FloatingShapes />

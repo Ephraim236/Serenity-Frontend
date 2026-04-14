@@ -321,7 +321,7 @@ export function AdminAppointments() {
                 <input 
                   type="text" 
                   placeholder="Search client..." 
-                  className="pl-10 pr-4 py-2 bg-white border border-neutral-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full md:w-64"
+                  className="pl-10 pr-4 py-2 bg-white border border-neutral-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-64"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -331,7 +331,7 @@ export function AdminAppointments() {
 
           {isLoading ? (
             <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+              <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
             </div>
           ) : (
             <div className="space-y-4">
@@ -340,9 +340,9 @@ export function AdminAppointments() {
                   <Card key={apt._id} className="p-6 border-none shadow-sm bg-white rounded-3xl group hover:ring-2 hover:ring-indigo-100 transition-all">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                       <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex flex-col items-center justify-center shrink-0">
+                        <div className="w-12 h-12 rounded-2xl bg-blue-50 flex flex-col items-center justify-center shrink-0">
                           <span className="text-[10px] uppercase font-bold text-indigo-400">Time</span>
-                          <span className="font-bold text-indigo-700 text-xs">{apt.time}</span>
+                          <span className="font-bold text-blue-700 text-xs">{apt.time}</span>
                         </div>
                         <div>
                           <h4 className="font-bold text-lg">{apt.clientName}</h4>

@@ -388,7 +388,7 @@ export function ClientHome() {
 
                 <div className="p-6">
                   <div className="flex items-start gap-4 mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-purple-600 rounded-xl flex items-center justify-center text-white shrink-0">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-600 rounded-xl flex items-center justify-center text-white shrink-0">
                       <Building2 className="w-6 h-6" />
                     </div>
                     <div>
@@ -418,7 +418,7 @@ export function ClientHome() {
                     </div>
                   </div>
 
-                  <Button className="w-full mt-6 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-xl">
+                  <Button className="w-full mt-6 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white rounded-xl">
                     View Services & Book
                   </Button>
                 </div>

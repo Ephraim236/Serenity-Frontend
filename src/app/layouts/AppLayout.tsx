@@ -88,7 +88,7 @@ export function AppLayout() {
             {!isAdmin && isBusinessOwner && (
               <Link
                 to="/admin"
-                className="px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 bg-gradient-to-r from-violet-600 to-purple-600 text-white hover:from-violet-700 hover:to-purple-700 shadow-lg shadow-violet-500/25"
+                className="px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 bg-gradient-to-r from-blue-600 to-blue-600 text-white hover:from-blue-700 hover:to-blue-700 shadow-lg shadow-blue-500/25"
               >
                 Admin Portal
               </Link>
@@ -158,7 +158,7 @@ export function AppLayout() {
                   <Button variant="ghost" size="sm" className="font-semibold text-blue-700 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-blue-100 dark:hover:bg-blue-900/30">Login</Button>
                 </Link>
                 <Link to="/signup">
-                  <Button size="sm" className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-xl font-semibold px-6 shadow-lg shadow-blue-500/25">Sign Up</Button>
+                  <Button size="sm" className="bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white rounded-xl font-semibold px-6 shadow-lg shadow-blue-500/25">Sign Up</Button>
                 </Link>
               </div>
             )}
@@ -223,7 +223,7 @@ export function AppLayout() {
                         loading="eager"
                       />
                     ) : (
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center text-white font-bold border-2 border-violet-200 dark:border-violet-700">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center text-white font-bold border-2 border-blue-200 dark:border-blue-700">
                         {user?.name?.charAt(0).toUpperCase()}
                       </div>
                     )}

@@ -311,7 +311,7 @@ export function BookingPage() {
                   {/* Content below */}
                   <div className="p-5">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs font-semibold px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full">
+                      <span className="text-xs font-semibold px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
                         {service.category}
                       </span>
                       <div className="flex items-center gap-1 text-neutral-400 text-xs">
@@ -358,7 +358,7 @@ export function BookingPage() {
                   onClick={() => handleSpecialistSelect(specialist)}
                   className="p-6 bg-white border border-neutral-100 rounded-2xl shadow-sm hover:border-indigo-600 hover:shadow-md transition-all text-center flex flex-col items-center gap-3"
                 >
-                  <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-indigo-100">
+                  <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-blue-100">
                     <ImageWithFallback 
                       src={specialist.image} 
                       alt={specialist.name} 
@@ -418,7 +418,7 @@ export function BookingPage() {
                         disabled={disabled}
                         className={`p-4 rounded-xl border font-medium transition-all ${
                           selectedTime === time 
-                            ? "bg-indigo-600 border-indigo-600 text-white shadow-lg" 
+                            ? "bg-blue-600 border-blue-600 text-white shadow-lg" 
                             : disabled
                               ? "bg-neutral-100 border-neutral-200 text-neutral-400 cursor-not-allowed"
                               : "bg-white border-neutral-200 text-neutral-600 hover:border-indigo-600"

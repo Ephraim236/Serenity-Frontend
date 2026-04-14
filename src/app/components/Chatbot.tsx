@@ -126,7 +126,7 @@ What would you like to know?`,
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-6 right-6 z-50 w-16 h-16 bg-gradient-to-br from-violet-600 to-purple-600 rounded-full shadow-lg shadow-violet-500/30 flex items-center justify-center text-white hover:shadow-xl transition-shadow ${
+        className={`fixed bottom-6 right-6 z-50 w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-600 rounded-full shadow-lg shadow-blue-500/30 flex items-center justify-center text-white hover:shadow-xl transition-shadow ${
           isOpen ? "hidden" : "flex"
         }`}
       >
@@ -151,7 +151,7 @@ What would you like to know?`,
             }`}
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-violet-600 to-purple-600 p-4 flex items-center justify-between shrink-0">
+            <div className="bg-gradient-to-r from-blue-600 to-blue-600 p-4 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
                   <Bot className="w-5 h-5 text-white" />
@@ -197,13 +197,13 @@ What would you like to know?`,
                       <div
                         className={`max-w-[80%] rounded-2xl px-4 py-3 ${
                           message.role === "user"
-                            ? "bg-violet-600 text-white rounded-br-md"
+                            ? "bg-blue-600 text-white rounded-br-md"
                             : "bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-bl-md shadow-sm border border-neutral-100 dark:border-neutral-700"
                         }`}
                       >
                         <div className="flex items-start gap-2">
                           {message.role === "assistant" && (
-                            <Sparkles className="w-4 h-4 text-violet-600 mt-1 shrink-0" />
+                            <Sparkles className="w-4 h-4 text-blue-600 mt-1 shrink-0" />
                           )}
                           <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                         </div>
@@ -237,7 +237,7 @@ What would you like to know?`,
                         <button
                           key={index}
                           onClick={() => handleQuickAction(action.action)}
-                          className="text-xs px-3 py-1.5 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded-full hover:bg-violet-200 dark:hover:bg-violet-900/50 transition-colors"
+                          className="text-xs px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
                         >
                           {action.label}
                         </button>
@@ -247,7 +247,7 @@ What would you like to know?`,
                 )}
 
                 {/* Input */}
-                <form onSubmit={handleSubmit} className="p-4 bg-white dark:bg-neutral-900 border-t border-violet-100 dark:border-violet-800/30 shrink-0">
+                <form onSubmit={handleSubmit} className="p-4 bg-white dark:bg-neutral-900 border-t border-blue-100 dark:border-blue-800/30 shrink-0">
                   <div className="flex items-center gap-2">
                     <input
                       type="text"
@@ -255,12 +255,12 @@ What would you like to know?`,
                       onChange={(e) => setInput(e.target.value)}
                       placeholder="Type your message..."
                       disabled={isLoading}
-                      className="flex-1 px-4 py-2.5 bg-neutral-100 dark:bg-neutral-800 border-0 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 disabled:opacity-50"
+                      className="flex-1 px-4 py-2.5 bg-neutral-100 dark:bg-neutral-800 border-0 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                     />
                     <button
                       type="submit"
                       disabled={!input.trim() || isLoading}
-                      className="w-10 h-10 bg-violet-600 hover:bg-violet-700 disabled:bg-neutral-300 dark:disabled:bg-neutral-700 rounded-xl flex items-center justify-center transition-colors"
+                      className="w-10 h-10 bg-blue-600 hover:bg-blue-700 disabled:bg-neutral-300 dark:disabled:bg-neutral-700 rounded-xl flex items-center justify-center transition-colors"
                     >
                       <Send className="w-4 h-4 text-white" />
                     </button>

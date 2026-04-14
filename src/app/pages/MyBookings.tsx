@@ -352,10 +352,10 @@ export function MyBookings() {
         </div>
       )}
 
-      <div className="mt-12 p-8 bg-indigo-50 rounded-[40px] flex items-center justify-between">
+      <div className="mt-12 p-8 bg-blue-50 rounded-[40px] flex items-center justify-between">
         <div className="max-w-md">
-          <h4 className="text-xl font-bold text-indigo-900 mb-2">Need help with your booking?</h4>
-          <p className="text-indigo-700/70 text-sm">Our support team is available 24/7 to assist you with any changes or questions.</p>
+          <h4 className="text-xl font-bold text-blue-900 mb-2">Need help with your booking?</h4>
+          <p className="text-blue-700/70 text-sm">Our support team is available 24/7 to assist you with any changes or questions.</p>
         </div>
         <Button className="bg-white text-indigo-600 hover:bg-white/90 rounded-2xl h-12 px-6 font-bold shadow-sm">
           Contact Support
