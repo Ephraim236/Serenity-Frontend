@@ -374,9 +374,15 @@ export function ClientHome() {
                 <div className="h-48 overflow-hidden relative">
                   {business.image ? (
                     <img 
+                      key={business.image.substring(0, 50)} // Force re-render on image change
                       src={business.image} 
                       alt={business.businessName || business.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="eager"
+                      onError={(e) => {
+                        console.log('Image load error for business:', business._id);
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center">

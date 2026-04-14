@@ -25,9 +25,19 @@ export function ImageWithFallback(props: LazyImageProps) {
     ...rest 
   } = props
 
-  // Handle error state
+  // Check if src is a base64 data URL (should load eagerly)
+  const isBase64 = src && src.startsWith('data:');
+  
+  // For base64 images, load immediately; for URLs, use lazy loading
+  const shouldLoadImmediately = isBase64 || loading === 'eager';
+
+  // Handle error state - don't error on base64 images
   const handleError = () => {
-    setDidError(true)
+    // Base64 images rarely fail, but if they do we still want to show them
+    // Only set error for non-base64 images
+    if (!isBase64) {
+      setDidError(true)
+    }
   }
 
   // Handle image load
@@ -35,8 +45,13 @@ export function ImageWithFallback(props: LazyImageProps) {
     setIsLoaded(true)
   }
 
-  // Intersection Observer for lazy loading
+  // Intersection Observer for lazy loading (only for non-base64 images)
   useEffect(() => {
+    if (shouldLoadImmediately) {
+      setIsInView(true);
+      return;
+    }
+    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -57,7 +72,7 @@ export function ImageWithFallback(props: LazyImageProps) {
     }
 
     return () => observer.disconnect()
-  }, [])
+  }, [shouldLoadImmediately])
 
   // Don't render image if errored
   if (didError) {
@@ -89,14 +104,14 @@ export function ImageWithFallback(props: LazyImageProps) {
         />
       )}
       
-      {/* Actual image - only load when in view */}
+      {/* Actual image - only load when in view (unless it's base64) */}
       <img
         ref={imgRef}
-        src={isInView || loading === 'eager' ? src : undefined}
+        src={isInView || shouldLoadImmediately ? src : undefined}
         alt={alt}
         className={`${className ?? ''} ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
         style={style}
-        loading={loading}
+        loading={shouldLoadImmediately ? 'eager' : 'lazy'}
         onError={handleError}
         onLoad={handleLoad}
         {...rest}
