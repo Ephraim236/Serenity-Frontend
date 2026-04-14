@@ -102,24 +102,17 @@ export function AdminServices() {
 
     try {
       // Use FileReader to read the file as a data URL (base64)
-      const reader = new FileReader();
-      
-      await new Promise<void>((resolve, reject) => {
-        reader.onload = (event) => {
-          const result = event.target?.result as string;
-          // Store the base64 data URL directly
-          setFormData(prev => ({ ...prev, image: result }));
-          setImagePreview(result);
-          toast.success('Image added successfully');
-          resolve();
-        };
-        
-        reader.onerror = () => {
-          reject(new Error('Failed to read file'));
-        };
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => reject(new Error('Failed to read file'));
+        reader.readAsDataURL(file);
       });
       
-      reader.readAsDataURL(file);
+      // Store the base64 data URL directly
+      setFormData(prev => ({ ...prev, image: base64 }));
+      setImagePreview(base64);
+      toast.success('Image added successfully');
     } catch (error) {
       console.error('Image upload error:', error);
       toast.error('Failed to add image');

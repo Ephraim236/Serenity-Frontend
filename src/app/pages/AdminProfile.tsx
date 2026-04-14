@@ -140,26 +140,19 @@ export function AdminProfile() {
     setUploadingImage(true);
 
     try {
-      // Use FileReader for local preview
-      const reader = new FileReader();
-      
-      await new Promise<void>((resolve, reject) => {
-        reader.onload = (event) => {
-          const result = event.target?.result as string;
-          setProfile(prev => ({
-            ...prev,
-            businessImages: [...prev.businessImages, result]
-          }));
-          toast.success('Image added successfully');
-          resolve();
-        };
-        
-        reader.onerror = () => {
-          reject(new Error('Failed to read file'));
-        };
+      // Use FileReader to read file as base64
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => reject(new Error('Failed to read file'));
+        reader.readAsDataURL(file);
       });
       
-      reader.readAsDataURL(file);
+      setProfile(prev => ({
+        ...prev,
+        businessImages: [...prev.businessImages, base64]
+      }));
+      toast.success('Image added successfully');
     } catch (error) {
       console.error('Image upload error:', error);
       toast.error('Failed to add image');

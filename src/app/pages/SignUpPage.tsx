@@ -156,8 +156,7 @@ export function SignUpPage() {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    // For now, we'll use FileReader to create preview URLs
-    // In production, you'd upload to the server first
+    // Use FileReader to create preview URLs
     const newImages: string[] = [];
     
     for (let i = 0; i < files.length; i++) {
@@ -167,20 +166,23 @@ export function SignUpPage() {
         continue;
       }
       
-      const reader = new FileReader();
-      const imagePromise = new Promise<string>((resolve) => {
-        reader.onload = (e) => {
-          resolve(e.target?.result as string);
-        };
+      // Read file as base64 data URL
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => reject(new Error('Failed to read file'));
+        reader.readAsDataURL(file);
       });
-      reader.readAsDataURL(file);
-      newImages.push(await imagePromise);
+      
+      newImages.push(base64);
     }
 
     setFormData(prev => ({
       ...prev,
       businessImages: [...prev.businessImages, ...newImages]
     }));
+    
+    toast.success(`${newImages.length} image(s) added successfully`);
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
