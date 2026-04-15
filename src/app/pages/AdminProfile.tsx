@@ -99,6 +99,15 @@ export function AdminProfile() {
         
         // If user has business data, populate the form
         if (data.businessName || data.businessEmail || data.businessPhone || data.location || data.serviceHours) {
+          // Convert relative image paths to full URLs
+          const apiUrl = getApiUrl();
+          const businessImages = (data.businessImages || []).map((img: string) => {
+            if (img && img.startsWith('/uploads/')) {
+              return `${apiUrl}${img}`;
+            }
+            return img;
+          });
+
           setProfile({
             businessName: data.businessName || '',
             businessEmail: data.businessEmail || '',
@@ -112,7 +121,7 @@ export function AdminProfile() {
             },
             serviceHours: data.serviceHours || DEFAULT_SERVICE_HOURS,
             operatingDays: data.operatingDays || ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
-            businessImages: data.businessImages || []
+            businessImages: businessImages
           });
         }
       }
@@ -140,22 +149,41 @@ export function AdminProfile() {
     setUploadingImage(true);
 
     try {
-      // Use FileReader to read file as base64
-      const base64 = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = () => reject(new Error('Failed to read file'));
-        reader.readAsDataURL(file);
+      const token = getAuthToken();
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch(`${getApiUrl()}/api/upload/image`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: formData
       });
+
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+
+      const data = await response.json();
       
+      // Handle both full URLs and relative paths from backend
+      let imageUrl = data.url;
+      if (imageUrl && imageUrl.startsWith('/uploads/')) {
+        // Convert relative path to full URL for production
+        const apiUrl = getApiUrl();
+        imageUrl = `${apiUrl}${imageUrl}`;
+      }
+      
+      // Add the uploaded image URL to the profile
       setProfile(prev => ({
         ...prev,
-        businessImages: [...prev.businessImages, base64]
+        businessImages: [...prev.businessImages, imageUrl]
       }));
-      toast.success('Image added successfully');
+      toast.success('Image uploaded successfully');
     } catch (error) {
       console.error('Image upload error:', error);
-      toast.error('Failed to add image');
+      toast.error('Failed to upload image');
     } finally {
       setUploadingImage(false);
     }
@@ -173,6 +201,15 @@ export function AdminProfile() {
 
     try {
       const token = getAuthToken();
+      const apiUrl = getApiUrl();
+      
+      // Convert full image URLs back to relative paths for backend storage
+      const businessImages = profile.businessImages.map((img: string) => {
+        if (img && img.startsWith(apiUrl)) {
+          return img.replace(apiUrl, '');
+        }
+        return img;
+      });
       
       // Prepare the profile data - ensure location is properly formatted
       const profileData = {
@@ -188,7 +225,7 @@ export function AdminProfile() {
         },
         serviceHours: profile.serviceHours,
         operatingDays: profile.operatingDays,
-        businessImages: profile.businessImages
+        businessImages: businessImages
       };
       
       const response = await fetch(`${getApiUrl()}/api/auth/profile`, {
