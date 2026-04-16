@@ -27,7 +27,15 @@ import { format } from "date-fns";
 import { getAuthToken } from "../contexts/AuthContext";
 import { toast } from "sonner";
 
-const API_URL = "https://serenity-gamma-two.vercel.app";
+// Dynamic API URL based on environment
+const getApiUrl = () => {
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:3000';
+  }
+  return 'https://serenity-gamma-two.vercel.app';
+};
+
+const API_URL = getApiUrl();
 
 interface Appointment {
   _id: string;

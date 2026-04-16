@@ -29,6 +29,9 @@ import { getAuthToken } from "../contexts/AuthContext";
 // API URL helper - always use deployed API for reliability
 const getApiUrl = () => {
   // For image uploads, use the deployed backend
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:3000';
+  }
   return 'https://serenity-gamma-two.vercel.app';
 };
 

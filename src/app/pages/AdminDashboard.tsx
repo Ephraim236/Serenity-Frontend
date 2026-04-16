@@ -25,7 +25,15 @@ import { Card } from "../components/ui/card";
 import { Link } from "react-router";
 import { getAuthToken } from "../contexts/AuthContext";
 
-const API_URL = "https://serenity-gamma-two.vercel.app";
+// Dynamic API URL based on environment
+const getApiUrl = () => {
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:3000';
+  }
+  return 'https://serenity-gamma-two.vercel.app';
+};
+
+const API_URL = getApiUrl();
 
 interface DashboardStats {
   totalRevenue: string;
