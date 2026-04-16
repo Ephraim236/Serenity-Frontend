@@ -27,7 +27,7 @@ const TOKEN_KEY = "serenity_auth_token";
 const getApiUrl = () => {
   // Check if running locally
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return 'http://localhost:3000';
+    return 'http://localhost:5000';
   }
   // Use production backend URL
   return 'https://serenity-gamma-two.vercel.app';

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -17,14 +17,19 @@ import {
   Image as ImageIcon
 } from "lucide-react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import { useAuth, getAuthToken } from "../contexts/AuthContext";
-import { getApiUrl, uploadImageWithProgress } from "../lib/api";
+import { getAuthToken, useAuth } from "../contexts/AuthContext";
+
+const getApiUrl = () => {
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:5000';
+  }
+  return 'https://serenity-gamma-two.vercel.app';
+};
 
 export function AdminProfile() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const isMounted = useRef(true);
   const [profile, setProfile] = useState<BusinessProfile>({
     businessName: '',
     businessEmail: '',
@@ -46,10 +51,6 @@ export function AdminProfile() {
   // Fetch current profile on mount
   useEffect(() => {
     fetchProfile();
-    
-    return () => {
-      isMounted.current = false;
-    };
   }, []);
 
   const fetchProfile = async () => {
@@ -103,7 +104,6 @@ export function AdminProfile() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate
     if (!file.type.startsWith('image/')) {
       toast.error('Please select an image file');
       return;
@@ -117,28 +117,43 @@ export function AdminProfile() {
     setUploadingImage(true);
 
     try {
-      // Use the upload helper with progress
-      const result = await uploadImageWithProgress(file, undefined);
+      const token = getAuthToken();
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch(`${getApiUrl()}/api/upload/image`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+
+      const data = await response.json();
       
-      // Backend returns full URL for Vercel Blob or relative path for local
-      let imageUrl = result.url;
-      // Normalize: ensure we have absolute URL for frontend (handles local dev)
+      // Handle both full URLs and relative paths from backend
+      let imageUrl = data.url;
       if (imageUrl && imageUrl.startsWith('/uploads/')) {
-        imageUrl = `${getApiUrl()}${imageUrl}`;
+        // Convert relative path to full URL for production
+        const apiUrl = getApiUrl();
+        imageUrl = `${apiUrl}${imageUrl}`;
       }
       
+      // Add the uploaded image URL to the profile
       setProfile(prev => ({
         ...prev,
         businessImages: [...prev.businessImages, imageUrl]
       }));
       toast.success('Image uploaded successfully');
-    } catch (error: any) {
+    } catch (error) {
       console.error('Image upload error:', error);
-      toast.error(error.message || 'Failed to upload image');
+      toast.error('Failed to upload image');
     } finally {
       setUploadingImage(false);
-      // Reset input so same file can be selected again
-      e.target.value = '';
     }
   };
 
