@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -17,51 +17,14 @@ import {
   Image as ImageIcon
 } from "lucide-react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import { getAuthToken, useAuth } from "../contexts/AuthContext";
-
-const getApiUrl = () => {
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return 'http://localhost:3000';
-  }
-  return 'https://serenity-gamma-two.vercel.app';
-};
-
-interface BusinessProfile {
-  businessName: string;
-  businessEmail: string;
-  businessPhone: string;
-  location: {
-    address: string;
-    city: string;
-    state: string;
-    zipCode: string;
-    country: string;
-  };
-  serviceHours: {
-    [key: string]: { open: string; close: string; isClosed: boolean };
-  };
-  operatingDays: string[];
-  businessImages: string[];
-}
-
-const DAYS_OF_WEEK = [
-  'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'
-];
-
-const DEFAULT_SERVICE_HOURS: BusinessProfile['serviceHours'] = {
-  monday: { open: '09:00', close: '18:00', isClosed: false },
-  tuesday: { open: '09:00', close: '18:00', isClosed: false },
-  wednesday: { open: '09:00', close: '18:00', isClosed: false },
-  thursday: { open: '09:00', close: '18:00', isClosed: false },
-  friday: { open: '09:00', close: '18:00', isClosed: false },
-  saturday: { open: '09:00', close: '18:00', isClosed: false },
-  sunday: { open: '09:00', close: '18:00', isClosed: true }
-};
+import { useAuth, getAuthToken } from "../contexts/AuthContext";
+import { getApiUrl, uploadImageWithProgress } from "../lib/api";
 
 export function AdminProfile() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const isMounted = useRef(true);
   const [profile, setProfile] = useState<BusinessProfile>({
     businessName: '',
     businessEmail: '',
@@ -83,6 +46,10 @@ export function AdminProfile() {
   // Fetch current profile on mount
   useEffect(() => {
     fetchProfile();
+    
+    return () => {
+      isMounted.current = false;
+    };
   }, []);
 
   const fetchProfile = async () => {
@@ -136,6 +103,7 @@ export function AdminProfile() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Validate
     if (!file.type.startsWith('image/')) {
       toast.error('Please select an image file');
       return;
@@ -149,43 +117,28 @@ export function AdminProfile() {
     setUploadingImage(true);
 
     try {
-      const token = getAuthToken();
-      const formData = new FormData();
-      formData.append('image', file);
-
-      const response = await fetch(`${getApiUrl()}/api/upload/image`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: formData
-      });
-
-      if (!response.ok) {
-        throw new Error('Upload failed');
-      }
-
-      const data = await response.json();
+      // Use the upload helper with progress
+      const result = await uploadImageWithProgress(file, undefined);
       
-      // Handle both full URLs and relative paths from backend
-      let imageUrl = data.url;
+      // Backend returns full URL for Vercel Blob or relative path for local
+      let imageUrl = result.url;
+      // Normalize: ensure we have absolute URL for frontend (handles local dev)
       if (imageUrl && imageUrl.startsWith('/uploads/')) {
-        // Convert relative path to full URL for production
-        const apiUrl = getApiUrl();
-        imageUrl = `${apiUrl}${imageUrl}`;
+        imageUrl = `${getApiUrl()}${imageUrl}`;
       }
       
-      // Add the uploaded image URL to the profile
       setProfile(prev => ({
         ...prev,
         businessImages: [...prev.businessImages, imageUrl]
       }));
       toast.success('Image uploaded successfully');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Image upload error:', error);
-      toast.error('Failed to upload image');
+      toast.error(error.message || 'Failed to upload image');
     } finally {
       setUploadingImage(false);
+      // Reset input so same file can be selected again
+      e.target.value = '';
     }
   };
 
