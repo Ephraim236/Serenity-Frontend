@@ -4,6 +4,16 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card } from "../components/ui/card";
 import { toast } from "sonner";
+
+const DEFAULT_SERVICE_HOURS = {
+  monday: { open: '09:00', close: '18:00', isClosed: false },
+  tuesday: { open: '09:00', close: '18:00', isClosed: false },
+  wednesday: { open: '09:00', close: '18:00', isClosed: false },
+  thursday: { open: '09:00', close: '18:00', isClosed: false },
+  friday: { open: '09:00', close: '18:00', isClosed: false },
+  saturday: { open: '09:00', close: '18:00', isClosed: false },
+  sunday: { open: '09:00', close: '18:00', isClosed: true }
+};
 import { 
   Building2, 
   MapPin, 
@@ -135,13 +145,7 @@ export function AdminProfile() {
 
       const data = await response.json();
       
-      // Handle both full URLs and relative paths from backend
       let imageUrl = data.url;
-      if (imageUrl && imageUrl.startsWith('/uploads/')) {
-        // Convert relative path to full URL for production
-        const apiUrl = getApiUrl();
-        imageUrl = `${apiUrl}${imageUrl}`;
-      }
       
       // Add the uploaded image URL to the profile
       setProfile(prev => ({
