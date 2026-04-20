@@ -19,6 +19,26 @@ import {
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { getAuthToken, useAuth } from "../contexts/AuthContext";
 
+const DAYS_OF_WEEK = [
+  { key: 'monday', label: 'Mon' },
+  { key: 'tuesday', label: 'Tue' },
+  { key: 'wednesday', label: 'Wed' },
+  { key: 'thursday', label: 'Thu' },
+  { key: 'friday', label: 'Fri' },
+  { key: 'saturday', label: 'Sat' },
+  { key: 'sunday', label: 'Sun' },
+];
+
+const DEFAULT_SERVICE_HOURS = {
+  monday: { open: '09:00', close: '18:00', isClosed: false },
+  tuesday: { open: '09:00', close: '18:00', isClosed: false },
+  wednesday: { open: '09:00', close: '18:00', isClosed: false },
+  thursday: { open: '09:00', close: '18:00', isClosed: false },
+  friday: { open: '09:00', close: '18:00', isClosed: false },
+  saturday: { open: '09:00', close: '18:00', isClosed: false },
+  sunday: { open: '09:00', close: '18:00', isClosed: true }
+};
+
 const getApiUrl = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:5000';
