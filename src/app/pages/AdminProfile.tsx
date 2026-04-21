@@ -46,6 +46,18 @@ const getApiUrl = () => {
   return 'https://serenity-gamma-two.vercel.app';
 };
 
+const mergeServiceHours = (serverHours: any) => {
+  return {
+    monday: serverHours?.monday || DEFAULT_SERVICE_HOURS.monday,
+    tuesday: serverHours?.tuesday || DEFAULT_SERVICE_HOURS.tuesday,
+    wednesday: serverHours?.wednesday || DEFAULT_SERVICE_HOURS.wednesday,
+    thursday: serverHours?.thursday || DEFAULT_SERVICE_HOURS.thursday,
+    friday: serverHours?.friday || DEFAULT_SERVICE_HOURS.friday,
+    saturday: serverHours?.saturday || DEFAULT_SERVICE_HOURS.saturday,
+    sunday: serverHours?.sunday || DEFAULT_SERVICE_HOURS.sunday,
+  };
+};
+
 export function AdminProfile() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -107,7 +119,7 @@ export function AdminProfile() {
               zipCode: '',
               country: ''
             },
-            serviceHours: data.serviceHours || DEFAULT_SERVICE_HOURS,
+            serviceHours: mergeServiceHours(data.serviceHours),
             operatingDays: data.operatingDays || ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
             businessImages: businessImages
           });
@@ -250,7 +262,7 @@ export function AdminProfile() {
       serviceHours: {
         ...prev.serviceHours,
         [day]: {
-          ...prev.serviceHours[day],
+          ...(prev.serviceHours[day] || DEFAULT_SERVICE_HOURS[day]),
           [field]: value
         }
       }
@@ -463,7 +475,7 @@ export function AdminProfile() {
                   <input
                     type="checkbox"
                     id={`${day}-open`}
-                    checked={!profile.serviceHours[day].isClosed}
+                    checked={!profile.serviceHours[day]?.isClosed}
                     onChange={(e) => handleServiceHoursChange(day, 'isClosed', !e.target.checked)}
                     className="w-4 h-4 rounded border-neutral-300 text-indigo-600 focus:ring-indigo-500"
                   />
@@ -473,20 +485,20 @@ export function AdminProfile() {
                 </div>
                 
                 <div className="flex items-center gap-2 flex-1">
-                  {profile.serviceHours[day].isClosed ? (
+                  {profile.serviceHours[day]?.isClosed ? (
                     <span className="text-neutral-500">Closed</span>
                   ) : (
                     <>
                       <Input
                         type="time"
-                        value={profile.serviceHours[day].open}
+                        value={profile.serviceHours[day]?.open || ''}
                         onChange={(e) => handleServiceHoursChange(day, 'open', e.target.value)}
                         className="w-32"
                       />
                       <span className="text-neutral-400">to</span>
                       <Input
                         type="time"
-                        value={profile.serviceHours[day].close}
+                        value={profile.serviceHours[day]?.close || ''}
                         onChange={(e) => handleServiceHoursChange(day, 'close', e.target.value)}
                         className="w-32"
                       />
