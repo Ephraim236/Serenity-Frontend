@@ -3,7 +3,7 @@ import { Camera, Save, MapPin, Phone, Mail, Clock, Image as ImageIcon, Loader2 }
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { getAuthToken } from "../contexts/AuthContext";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 
 const API_URL = "https://serenity-5zku.onrender.com";
 
