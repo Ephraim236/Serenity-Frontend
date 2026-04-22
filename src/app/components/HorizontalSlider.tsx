@@ -1,4 +1,4 @@
-import { useRef, ReactNode, useState, useEffect } from "react";
+import { useRef, ReactNode, useState, useEffect, useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "../components/ui/button";
 
@@ -16,23 +16,26 @@ export function HorizontalSlider({
   className = "" 
 }: HorizontalSliderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isClient, setIsClient] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(1024);
 
-  // Fix #1: SSR safe - only use window after hydration
   useEffect(() => {
-    setIsClient(true);
+    setIsMounted(true);
+    setWindowWidth(window.innerWidth);
+    
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const itemsPerPage = useMemo(() => {
+    return isMounted && windowWidth < 768 ? itemsPerPageMobile : itemsPerPageDesktop;
+  }, [isMounted, windowWidth, itemsPerPageMobile, itemsPerPageDesktop]);
+
   const scroll = (direction: "left" | "right") => {
-    // Fix #2: Safe null checks for all property access
-    if (containerRef?.current) {
+    if (containerRef.current) {
       const container = containerRef.current;
-      const itemsPerPage = isClient && window?.innerWidth < 768 
-        ? itemsPerPageMobile 
-        : itemsPerPageDesktop;
-      
-      // Safely access clientWidth with optional chaining
-      const itemWidth = container?.clientWidth ? container.clientWidth / itemsPerPage : 0;
+      const itemWidth = container.clientWidth / itemsPerPage;
       
       container.scrollBy({
         left: direction === "right" ? itemWidth : -itemWidth,
@@ -40,11 +43,6 @@ export function HorizontalSlider({
       });
     }
   };
-
-  // Fix #3: Safe window access for width calculation
-  const itemsPerPage = isClient && window?.innerWidth < 768 
-    ? itemsPerPageMobile 
-    : itemsPerPageDesktop;
 
   return (
     <div className={`relative group ${className}`}>
@@ -68,9 +66,7 @@ export function HorizontalSlider({
           <div
             key={index}
             className="flex-shrink-0 snap-start"
-            style={{ 
-              width: isClient ? `calc(${100 / itemsPerPage}% - ${itemsPerPage - 1} * 1rem)` : "100%"
-            }}
+            style={{ width: isMounted ? `calc(${100 / itemsPerPage}%)` : "100%" }}
           >
             {child}
           </div>
