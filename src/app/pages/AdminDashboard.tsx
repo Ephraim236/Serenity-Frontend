@@ -25,7 +25,7 @@ import { Card } from "../components/ui/card";
 import { Link } from "react-router";
 import { getAuthToken } from "../contexts/AuthContext";
 
-const API_URL = "https://serenity-gamma-two.vercel.app";
+const API_URL = "https://serenity-5zku.onrender.com";
 
 interface DashboardStats {
   totalRevenue: string;

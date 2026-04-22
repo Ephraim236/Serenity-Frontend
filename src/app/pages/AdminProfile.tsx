@@ -5,7 +5,7 @@ import { Input } from "../components/ui/input";
 import { getAuthToken } from "../contexts/AuthContext";
 import { toast } from "react-hot-toast";
 
-const API_URL = "https://serenity-gamma-two.vercel.app";
+const API_URL = "https://serenity-5zku.onrender.com";
 
 interface Location {
   address: string;

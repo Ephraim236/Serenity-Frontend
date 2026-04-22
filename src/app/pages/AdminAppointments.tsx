@@ -27,7 +27,7 @@ import { format } from "date-fns";
 import { getAuthToken } from "../contexts/AuthContext";
 import { toast } from "sonner";
 
-const API_URL = "https://serenity-gamma-two.vercel.app";
+const API_URL = "https://serenity-5zku.onrender.com";
 
 interface Appointment {
   _id: string;

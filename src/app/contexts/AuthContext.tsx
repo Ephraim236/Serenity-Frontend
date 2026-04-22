@@ -29,8 +29,8 @@ const getApiUrl = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:5000';
   }
-  // Use production backend URL
-  return 'https://serenity-gamma-two.vercel.app';
+  // Use production backend URL (Render)
+  return 'https://serenity-5zku.onrender.com';
 };
 
 const API_URL = getApiUrl();

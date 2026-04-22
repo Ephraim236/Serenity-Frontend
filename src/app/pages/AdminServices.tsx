@@ -28,7 +28,7 @@ import { getAuthToken } from "../contexts/AuthContext";
 
 // API URL helper - always use deployed API for reliability
 const getApiUrl = () => {
-  return 'https://serenity-gamma-two.vercel.app';
+  return 'https://serenity-5zku.onrender.com';
 };
 
 interface Service {
