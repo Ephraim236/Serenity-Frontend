@@ -20,9 +20,9 @@ const QUICK_ACTIONS = [
 
 const API_URL = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return 'http://localhost:3000';
+    return 'http://localhost:5000';
   }
-  return 'https://serenity-5zku.onrender.com';
+  return 'https://booqlly.vercel.app';
 };
 
 export function Chatbot() {

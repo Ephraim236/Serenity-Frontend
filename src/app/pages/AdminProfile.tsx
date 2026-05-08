@@ -5,7 +5,7 @@ import { Input } from "../components/ui/input";
 import { getAuthToken } from "../contexts/AuthContext";
 import { toast } from "sonner";
 
-const API_URL = "https://serenity-5zku.onrender.com";
+const API_URL = "https://booqlly.vercel.app";
 
 interface Location {
   address: string;
@@ -13,6 +13,9 @@ interface Location {
   state: string;
   zipCode: string;
   country: string;
+  // GPS coordinates for maps
+  latitude?: number;
+  longitude?: number;
 }
 
 interface ServiceHours {
@@ -52,6 +55,9 @@ const DEFAULT_LOCATION: Location = {
   state: "",
   zipCode: "",
   country: "",
+  // GPS coordinates for maps
+  latitude: undefined,
+  longitude: undefined
 };
 
 const DEFAULT_PROFILE: BusinessProfile = {
@@ -86,25 +92,28 @@ export function AdminProfile() {
         },
       });
       
-      if (response.ok) {
-        const data = await response.json();
-        setProfile({
-          businessName: data.businessName || "",
-          businessEmail: data.businessEmail || "",
-          businessPhone: data.businessPhone || "",
-          businessImage: data.businessImage || "",
-          businessImages: data.businessImages || [],
-          location: {
-            address: data.location?.address || "",
-            city: data.location?.city || "",
-            state: data.location?.state || "",
-            zipCode: data.location?.zipCode || "",
-            country: data.location?.country || "",
-          },
-          serviceHours: data.serviceHours || DEFAULT_SERVICE_HOURS,
-          operatingDays: data.operatingDays || [],
-        });
-      }
+       if (response.ok) {
+         const data = await response.json();
+         setProfile({
+           businessName: data.businessName || "",
+           businessEmail: data.businessEmail || "",
+           businessPhone: data.businessPhone || "",
+           businessImage: data.businessImage || "",
+           businessImages: data.businessImages || [],
+           location: {
+             address: data.location?.address || "",
+             city: data.location?.city || "",
+             state: data.location?.state || "",
+             zipCode: data.location?.zipCode || "",
+             country: data.location?.country || "",
+             // GPS coordinates for maps
+             latitude: data.location?.latitude,
+             longitude: data.location?.longitude
+           },
+           serviceHours: data.serviceHours || DEFAULT_SERVICE_HOURS,
+           operatingDays: data.operatingDays || [],
+         });
+       }
     } catch (error) {
       console.error("Failed to fetch profile:", error);
     } finally {
@@ -147,22 +156,25 @@ export function AdminProfile() {
     setIsSaving(true);
     const token = getAuthToken();
 
-    try {
-      const profileData = {
-        businessName: profile.businessName,
-        businessEmail: profile.businessEmail,
-        businessPhone: profile.businessPhone,
-        businessImage: profile.businessImage,
-        location: {
-          address: profile.location?.address || "",
-          city: profile.location?.city || "",
-          state: profile.location?.state || "",
-          zipCode: profile.location?.zipCode || "",
-          country: profile.location?.country || "",
-        },
-        serviceHours: profile.serviceHours,
-        operatingDays: profile.operatingDays,
-      };
+     try {
+       const profileData = {
+         businessName: profile.businessName,
+         businessEmail: profile.businessEmail,
+         businessPhone: profile.businessPhone,
+         businessImage: profile.businessImage,
+         location: {
+           address: profile.location?.address || "",
+           city: profile.location?.city || "",
+           state: profile.location?.state || "",
+           zipCode: profile.location?.zipCode || "",
+           country: profile.location?.country || "",
+           // GPS coordinates for maps
+           latitude: profile.location?.latitude,
+           longitude: profile.location?.longitude
+         },
+         serviceHours: profile.serviceHours,
+         operatingDays: profile.operatingDays,
+       };
 
       const response = await fetch(`${API_URL}/api/auth/profile`, {
         method: "PUT",
@@ -324,86 +336,116 @@ export function AdminProfile() {
             </div>
           </div>
 
-          {/* Location */}
-          <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-neutral-100 dark:border-neutral-700">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 rounded-xl flex items-center justify-center">
-                <MapPin className="w-5 h-5 text-indigo-600 dark:text-indigo-300" />
-              </div>
-              <div>
-                <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Location</h2>
-                <p className="text-sm text-neutral-500 dark:text-neutral-400">Your business address</p>
-              </div>
-            </div>
+           {/* Location */}
+           <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-neutral-100 dark:border-neutral-700">
+             <div className="flex items-center gap-3 mb-6">
+               <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 rounded-xl flex items-center justify-center">
+                 <MapPin className="w-5 h-5 text-indigo-600 dark:text-indigo-300" />
+               </div>
+               <div>
+                 <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Location</h2>
+                 <p className="text-sm text-neutral-500 dark:text-neutral-400">Your business address and GPS coordinates</p>
+               </div>
+             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2 md:col-span-2">
-                <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Street Address</label>
-                <Input
-                  value={profile.location?.address || ""}
-                  onChange={(e) =>
-                    setProfile({
-                      ...profile,
-                      location: { ...profile.location, address: e.target.value },
-                    })
-                  }
-                  placeholder="123 Main Street"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">City</label>
-                <Input
-                  value={profile.location?.city || ""}
-                  onChange={(e) =>
-                    setProfile({
-                      ...profile,
-                      location: { ...profile.location, city: e.target.value },
-                    })
-                  }
-                  placeholder="City"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">State / Province</label>
-                <Input
-                  value={profile.location?.state || ""}
-                  onChange={(e) =>
-                    setProfile({
-                      ...profile,
-                      location: { ...profile.location, state: e.target.value },
-                    })
-                  }
-                  placeholder="State"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">ZIP / Postal Code</label>
-                <Input
-                  value={profile.location?.zipCode || ""}
-                  onChange={(e) =>
-                    setProfile({
-                      ...profile,
-                      location: { ...profile.location, zipCode: e.target.value },
-                    })
-                  }
-                  placeholder="12345"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Country</label>
-                <Input
-                  value={profile.location?.country || ""}
-                  onChange={(e) =>
-                    setProfile({
-                      ...profile,
-                      location: { ...profile.location, country: e.target.value },
-                    })
-                  }
-                  placeholder="Country"
-                />
-              </div>
-            </div>
-          </div>
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+               <div className="space-y-2 md:col-span-2">
+                 <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Street Address</label>
+                 <Input
+                   value={profile.location?.address || ""}
+                   onChange={(e) =>
+                     setProfile({
+                       ...profile,
+                       location: { ...profile.location, address: e.target.value },
+                     })
+                   }
+                   placeholder="123 Main Street"
+                 />
+               </div>
+               <div className="space-y-2">
+                 <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">City</label>
+                 <Input
+                   value={profile.location?.city || ""}
+                   onChange={(e) =>
+                     setProfile({
+                       ...profile,
+                       location: { ...profile.location, city: e.target.value },
+                     })
+                   }
+                   placeholder="City"
+                 />
+               </div>
+               <div className="space-y-2">
+                 <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">State / Province</label>
+                 <Input
+                   value={profile.location?.state || ""}
+                   onChange={(e) =>
+                     setProfile({
+                       ...profile,
+                       location: { ...profile.location, state: e.target.value },
+                     })
+                   }
+                   placeholder="State"
+                 />
+               </div>
+               <div className="space-y-2">
+                 <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">ZIP / Postal Code</label>
+                 <Input
+                   value={profile.location?.zipCode || ""}
+                   onChange={(e) =>
+                     setProfile({
+                       ...profile,
+                       location: { ...profile.location, zipCode: e.target.value },
+                     })
+                   }
+                   placeholder="12345"
+                 />
+               </div>
+               <div className="space-y-2">
+                 <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Country</label>
+                 <Input
+                   value={profile.location?.country || ""}
+                   onChange={(e) =>
+                     setProfile({
+                       ...profile,
+                       location: { ...profile.location, country: e.target.value },
+                     })
+                   }
+                   placeholder="Country"
+                 />
+               </div>
+               <div className="space-y-2 md:col-span-2">
+                 <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Latitude (GPS)</label>
+                 <Input
+                   type="number"
+                   step="any"
+                   value={profile.location?.latitude || ""}
+                   onChange={(e) =>
+                     setProfile({
+                       ...profile,
+                       location: { ...profile.location, latitude: e.target.value ? parseFloat(e.target.value) : undefined },
+                     })
+                   }
+                   placeholder="e.g., 40.7128"
+                 />
+               </div>
+               <div className="space-y-2 md:col-span-2">
+                 <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Longitude (GPS)</label>
+                 <Input
+                   type="number"
+                   step="any"
+                   value={profile.location?.longitude || ""}
+                   onChange={(e) =>
+                     setProfile({
+                       ...profile,
+                       location: { ...profile.location, longitude: e.target.value ? parseFloat(e.target.value) : undefined },
+                     })
+                   }
+                   placeholder="e.g., -74.0060"
+                 />
+               </div>
+             </div>
+           </div>
 
           {/* Service Hours */}
           <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-neutral-100 dark:border-neutral-700">

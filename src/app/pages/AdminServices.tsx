@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { 
   Plus, 
   Search, 
@@ -10,7 +9,8 @@ import {
   List as ListIcon,
   X,
   Upload,
-  Loader2
+  Loader2,
+  Star
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
@@ -25,10 +25,11 @@ import {
   DialogFooter,
 } from "../components/ui/dialog";
 import { getAuthToken } from "../contexts/AuthContext";
+import { StarRating } from "../components/StarRating";
 
 // API URL helper - always use deployed API for reliability
 const getApiUrl = () => {
-  return 'https://serenity-5zku.onrender.com';
+  return 'https://booqlly.vercel.app';
 };
 
 interface Service {
@@ -40,6 +41,8 @@ interface Service {
   price: number;
   image?: string;
   isActive: boolean;
+  averageRating?: number;
+  reviewCount?: number;
 }
 
 const CATEGORIES = [
@@ -394,9 +397,19 @@ export function AdminServices() {
                 {service.description && (
                   <p className="text-sm text-neutral-500 line-clamp-2">{service.description}</p>
                 )}
-              </div>
+               </div>
 
-              <div className="grid grid-cols-2 gap-4 pt-6 border-t border-neutral-50">
+               {/* Rating display */}
+               {service.averageRating !== undefined && service.averageRating > 0 && (
+                 <div className="flex items-center gap-2 mb-4">
+                   <StarRating rating={service.averageRating} size={14} showValue />
+                   <span className="text-xs text-neutral-500">
+                     ({service.reviewCount || 0} review{(service.reviewCount || 0) !== 1 ? 's' : ''})
+                   </span>
+                 </div>
+               )}
+
+               <div className="grid grid-cols-2 gap-4 pt-6 border-t border-neutral-50">
                 <div className="flex items-center gap-2 text-neutral-500">
                   <Clock className="w-4 h-4" />
                   <span className="text-sm font-medium">{service.duration} min</span>
@@ -427,6 +440,7 @@ export function AdminServices() {
                 <th className="px-8 py-4">Category</th>
                 <th className="px-8 py-4">Duration</th>
                 <th className="px-8 py-4">Price</th>
+                <th className="px-8 py-4">Rating</th>
                 <th className="px-8 py-4">Status</th>
                 <th className="px-8 py-4 text-right">Actions</th>
               </tr>
@@ -449,6 +463,18 @@ export function AdminServices() {
                   <td className="px-8 py-4 text-neutral-500 capitalize">{service.category}</td>
                   <td className="px-8 py-4 text-neutral-500">{service.duration} min</td>
                   <td className="px-8 py-4 font-bold text-violet-600">₵{service.price}</td>
+                  <td className="px-8 py-4">
+                    {service.averageRating !== undefined && service.averageRating > 0 ? (
+                      <div className="flex items-center gap-2">
+                        <StarRating rating={service.averageRating} size={14} />
+                        <span className="text-sm text-neutral-500">
+                          {service.averageRating.toFixed(1)} ({service.reviewCount || 0})
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-sm text-neutral-400">No reviews</span>
+                    )}
+                  </td>
                   <td className="px-8 py-4">
                     <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${service.isActive ? 'bg-green-50 text-green-600' : 'bg-neutral-100 text-neutral-400'}`}>
                       {service.isActive ? 'Active' : 'Disabled'}

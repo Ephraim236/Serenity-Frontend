@@ -13,20 +13,22 @@ import {
   ArrowRight,
   CheckCircle2,
   Smile,
-  Loader2
+  Loader2,
+  Star
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Calendar } from "../components/ui/calendar";
 import { format } from "date-fns";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { getAuthToken, useAuth } from "../contexts/AuthContext";
+import { StarRating } from "../components/StarRating";
 
 // API URL helper
 const getApiUrl = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:3000';
   }
-  return 'https://serenity-5zku.onrender.com';
+  return 'https://booqlly.vercel.app';
 };
 
 interface BusinessService {
@@ -37,6 +39,8 @@ interface BusinessService {
   duration: number;
   description?: string;
   image?: string;
+  averageRating?: number;
+  reviewCount?: number;
 }
 
 interface BusinessDetails {
@@ -222,19 +226,20 @@ export function BookingPage() {
     
     // Save to database
     try {
-      const bookingData = {
-        service: selectedService?.name,
-        specialist: selectedSpecialist?.name,
-        date: selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '',
-        time: selectedTime,
-        price: typeof selectedService?.price === 'string' 
-          ? selectedService.price.replace(/[^0-9]/g, '') 
-          : selectedService?.price,
-        clientName: user?.name || 'Guest',
-        clientEmail: user?.email || 'guest@example.com',
-        clientPhone: '',
-        businessId: businessId || 'demo-business-1'
-      };
+       const bookingData = {
+         service: selectedService?.name,
+         serviceId: selectedService?._id,
+         specialist: selectedSpecialist?.name,
+         date: selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '',
+         time: selectedTime,
+         price: typeof selectedService?.price === 'string' 
+           ? selectedService.price.replace(/[^0-9]/g, '') 
+           : selectedService?.price,
+         clientName: user?.name || 'Guest',
+         clientEmail: user?.email || 'guest@example.com',
+         clientPhone: '',
+         businessId: businessId || 'demo-business-1'
+       };
 
       if (token) {
         console.log('Saving booking to:', `${getApiUrl()}/api/dashboard/appointments`);
@@ -308,20 +313,35 @@ export function BookingPage() {
                       {typeof service.price === 'number' ? `₵${service.price.toLocaleString()}` : service.price}
                     </div>
                   </div>
-                  {/* Content below */}
-                  <div className="p-5">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs font-semibold px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
-                        {service.category}
-                      </span>
-                      <div className="flex items-center gap-1 text-neutral-400 text-xs">
-                        <Clock className="w-3 h-3" />
-                        <span>{typeof service.duration === 'number' ? `${service.duration} min` : service.duration}</span>
-                      </div>
-                    </div>
-                    <h4 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">{service.name}</h4>
-                    <p className="text-neutral-500 dark:text-neutral-400 text-sm line-clamp-2">{service.description}</p>
-                  </div>
+                   {/* Content below */}
+                   <div className="p-5">
+                     <div className="flex items-center gap-2 mb-2">
+                       <span className="text-xs font-semibold px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
+                         {service.category}
+                       </span>
+                       <div className="flex items-center gap-1 text-neutral-400 text-xs">
+                         <Clock className="w-3 h-3" />
+                         <span>{typeof service.duration === 'number' ? `${service.duration} min` : service.duration}</span>
+                       </div>
+                     </div>
+                     <h4 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">{service.name}</h4>
+                     
+                     {/* Service Rating */}
+                     {service.averageRating !== undefined && service.averageRating > 0 && (
+                       <div className="flex items-center gap-2 mb-2">
+                         <StarRating 
+                           rating={service.averageRating} 
+                           size={14} 
+                           showValue 
+                         />
+                         <span className="text-xs text-neutral-500">
+                           ({service.reviewCount || 0} review{(service.reviewCount || 0) !== 1 ? 's' : ''})
+                         </span>
+                       </div>
+                     )}
+                     
+                     <p className="text-neutral-500 dark:text-neutral-400 text-sm line-clamp-2">{service.description}</p>
+                   </div>
                 </button>
               ))}
             </div>

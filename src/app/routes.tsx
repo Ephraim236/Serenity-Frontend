@@ -7,6 +7,9 @@ import { AdminDashboard } from "./pages/AdminDashboard";
 import { AdminAppointments } from "./pages/AdminAppointments";
 import { AdminServices } from "./pages/AdminServices";
 import { AdminProfile } from "./pages/AdminProfile";
+import { BusinessMapPage } from "./pages/BusinessMapPage";
+import { BusinessReviews } from "./pages/BusinessReviews";
+import { WriteReview } from "./pages/WriteReview";
 
 import { LoginPage } from "./pages/LoginPage";
 import { SignUpPage } from "./pages/SignUpPage";
@@ -65,6 +68,22 @@ export const router = createBrowserRouter([
         Component: () => (
           <ProtectedRoute>
             <MyBookings />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "business-map",
+        Component: BusinessMapPage,
+      },
+      {
+        path: "business/:businessId/reviews",
+        Component: BusinessReviews,
+      },
+      {
+        path: "review/write",
+        Component: () => (
+          <ProtectedRoute>
+            <WriteReview />
           </ProtectedRoute>
         ),
       },

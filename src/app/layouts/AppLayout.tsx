@@ -41,11 +41,12 @@ export function AppLayout() {
   // Check if user is a business owner (for showing admin portal)
   const isBusinessOwner = user?.role === "business";
 
-  const clientNav = [
-    { label: "Home", href: "/", icon: Scissors },
-    { label: "Book Now", href: "/book", icon: Calendar },
-    { label: "My Bookings", href: "/my-bookings", icon: ShoppingBag },
-  ];
+const clientNav = [
+  { label: "Home", href: "/", icon: Scissors },
+  { label: "Book Now", href: "/book", icon: Calendar },
+  { label: "My Bookings", href: "/my-bookings", icon: ShoppingBag },
+  { label: "Find Businesses", href: "/business-map", icon: MapPin },
+];
 
   const adminNav = [
     { label: "Dashboard", href: "/admin", icon: LayoutDashboard },

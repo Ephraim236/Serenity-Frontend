@@ -29,8 +29,8 @@ const getApiUrl = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:5000';
   }
-  // Use production backend URL (Render)
-  return 'https://serenity-5zku.onrender.com';
+  // Use production backend URL (Vercel)
+  return 'https://booqlly.vercel.app';
 };
 
 const API_URL = getApiUrl();

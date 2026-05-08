@@ -17,6 +17,7 @@ import {
   ChevronRight,
   Search
 } from "lucide-react";
+import { StarRating } from "../components/StarRating";
 import { motion } from "motion/react";
 
 // API URL helper
@@ -24,7 +25,7 @@ const getApiUrl = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:3000';
   }
-  return 'https://serenity-5zku.onrender.com';
+  return 'https://booqlly.vercel.app';
 };
 
 interface Business {
@@ -35,11 +36,15 @@ interface Business {
   businessEmail?: string;
   businessPhone?: string;
   image?: string;
+  averageRating?: number;
+  reviewCount?: number;
   location?: {
     address?: string;
     city?: string;
     state?: string;
     country?: string;
+    latitude?: number;
+    longitude?: number;
   };
 }
 
@@ -52,7 +57,9 @@ const SERVICES = [
     duration: "60 min",
     price: "₵850",
     image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGElMjBmYWNpYWwlMjB0cmVhdG1lbnQlMjBwcm9mZXNzaW9uYWx8ZW58MXx8fHwxNzcxNjA3MDk4fDA&ixlib=rb-4.1.0&q=80&w=1080",
-    description: "Deep cleansing and rejuvenation for glowing skin."
+    description: "Deep cleansing and rejuvenation for glowing skin.",
+    averageRating: 4.8,
+    reviewCount: 124
   },
   {
     id: 2,
@@ -61,7 +68,9 @@ const SERVICES = [
     duration: "90 min",
     price: "₵1,200",
     image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGElMjBtYXNzYWdlfGVufDF8fHx8MTc3NDQwNzgwMHww&ixlib=rb-4.1.0&q=80&w=1080",
-    description: "Targeted pressure to release muscle tension and stress."
+    description: "Targeted pressure to release muscle tension and stress.",
+    averageRating: 4.9,
+    reviewCount: 98
   },
   {
     id: 3,
@@ -70,7 +79,9 @@ const SERVICES = [
     duration: "90 min",
     price: "₵1,400",
     image: "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYWxvbiUyMHNhbG9uJTIwYXV0aG9yJTIwaW50ZXJpb3J8ZW58MXx8fHwxNzc0NDA3ODAwfDA&ixlib=rb-4.1.0&q=80&w=1080",
-    description: "Heated stones to melt away tension and promote relaxation."
+    description: "Heated stones to melt away tension and promote relaxation.",
+    averageRating: 4.7,
+    reviewCount: 86
   },
   // Men's Grooming
   {
@@ -80,7 +91,9 @@ const SERVICES = [
     duration: "30 min",
     price: "₵150",
     image: "/Serenity Pics/young-african-american-man-visiting-barbershop.jpg",
-    description: "Traditional haircut with professional styling."
+    description: "Traditional haircut with professional styling.",
+    averageRating: 4.6,
+    reviewCount: 312
   },
   {
     id: 5,
@@ -89,7 +102,9 @@ const SERVICES = [
     duration: "30 min",
     price: "₵120",
     image: "/Serenity Pics/african-american-man-guy-sitting-chair-barber-works-with-beard (1).jpg",
-    description: "Professional beard grooming and styling."
+    description: "Professional beard grooming and styling.",
+    averageRating: 4.5,
+    reviewCount: 245
   },
   // Female Makeover
   {
@@ -99,7 +114,9 @@ const SERVICES = [
     duration: "60 min",
     price: "₵350",
     image: "/Serenity Pics/woman-getting-her-hair-done-salon.jpg",
-    description: "Professional styling with premium products."
+    description: "Professional styling with premium products.",
+    averageRating: 4.9,
+    reviewCount: 178
   },
 ];
 
@@ -392,41 +409,69 @@ export function ClientHome() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 </div>
 
-                <div className="p-6">
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-600 rounded-xl flex items-center justify-center text-white shrink-0">
-                      <Building2 className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-neutral-900 dark:text-white">
-                        {business.businessName || business.name}
-                      </h3>
-                      <p className="text-neutral-500 text-sm">{business.name}</p>
-                    </div>
-                  </div>
+                 <div className="p-6">
+                   <div className="flex items-start gap-4 mb-4">
+                     <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-600 rounded-xl flex items-center justify-center text-white shrink-0">
+                       <Building2 className="w-6 h-6" />
+                     </div>
+                     <div>
+                       <h3 className="text-xl font-bold text-neutral-900 dark:text-white">
+                         {business.businessName || business.name}
+                       </h3>
+                       <p className="text-neutral-500 text-sm">{business.name}</p>
+                       {business.averageRating !== undefined && business.averageRating > 0 && (
+                         <div className="flex items-center gap-2 mt-1">
+                           <StarRating 
+                             rating={business.averageRating} 
+                             size={14} 
+                             showValue 
+                           />
+                           <span className="text-xs text-neutral-500">
+                             ({business.reviewCount || 0} review{business.reviewCount !== 1 ? 's' : ''})
+                           </span>
+                         </div>
+                       )}
+                     </div>
+                   </div>
                   
-                  <div className="space-y-3">
-                    {business.location?.address && (
-                      <div className="flex items-center gap-2 text-neutral-500 text-sm">
-                        <MapPin className="w-4 h-4 text-violet-600" />
-                        <span>{business.location.address}, {business.location.city}</span>
-                      </div>
-                    )}
-                    {business.businessPhone && (
-                      <div className="flex items-center gap-2 text-neutral-500 text-sm">
-                        <Phone className="w-4 h-4 text-violet-600" />
-                        <span>{business.businessPhone}</span>
-                      </div>
-                    )}
-                    <div className="flex items-center gap-2 text-neutral-500 text-sm">
-                      <Mail className="w-4 h-4 text-violet-600" />
-                      <span>{business.email}</span>
+                   <div className="space-y-3">
+                     {business.location?.address && (
+                       <div className="flex items-center gap-2 text-neutral-500 text-sm">
+                         <MapPin className="w-4 h-4 text-violet-600" />
+                         <span>{business.location.address}, {business.location.city}</span>
+                       </div>
+                     )}
+                     {business.businessPhone && (
+                       <div className="flex items-center gap-2 text-neutral-500 text-sm">
+                         <Phone className="w-4 h-4 text-violet-600" />
+                         <span>{business.businessPhone}</span>
+                       </div>
+                     )}
+                     <div className="flex items-center gap-2 text-neutral-500 text-sm">
+                       <Mail className="w-4 h-4 text-violet-600" />
+                       <span>{business.email}</span>
+                     </div>
+                     {/* Show GPS coordinates if available */}
+                     {business.location?.latitude && business.location?.longitude && (
+                       <div className="flex items-center gap-2 text-neutral-500 text-sm text-xs">
+                         <MapPin className="w-4 h-4 text-violet-600" />
+                         <span>GPS: {business.location.latitude.toFixed(4)}, {business.location.longitude.toFixed(4)}</span>
+                       </div>
+                     )}
                     </div>
-                  </div>
 
-                  <Button className="w-full mt-6 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white rounded-xl">
-                    View Services & Book
-                  </Button>
+                  <div className="flex gap-3 mt-6">
+                    <Link to={`/book?business=${business._id}`} className="flex-1">
+                      <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white rounded-xl">
+                        View Services & Book
+                      </Button>
+                    </Link>
+                    <Link to={`/business/${business._id}/reviews`} className="flex-1">
+                      <Button variant="outline" className="w-full border-indigo-200 text-indigo-600 hover:bg-indigo-50 rounded-xl">
+                        Reviews
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               </motion.div>
             ))}
@@ -488,24 +533,39 @@ export function ClientHome() {
                   {service.price}
                 </div>
               </div>
-              <div className="p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xs font-semibold px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
-                    {service.category}
-                  </span>
-                  <div className="flex items-center gap-1 text-neutral-400 text-xs">
-                    <Clock className="w-3 h-3" />
-                    <span>{service.duration}</span>
-                  </div>
-                </div>
-                <h3 className="text-xl font-bold mb-2 text-neutral-900 dark:text-white">{service.name}</h3>
-                <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">{service.description}</p>
-                <Link to="/book">
-                  <Button className="w-full bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl">
-                    Book This
-                  </Button>
-                </Link>
-              </div>
+               <div className="p-6">
+                 <div className="flex items-center gap-2 mb-3">
+                   <span className="text-xs font-semibold px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
+                     {service.category}
+                   </span>
+                   <div className="flex items-center gap-1 text-neutral-400 text-xs">
+                     <Clock className="w-3 h-3" />
+                     <span>{service.duration}</span>
+                   </div>
+                 </div>
+                 <h3 className="text-xl font-bold mb-2 text-neutral-900 dark:text-white">{service.name}</h3>
+                 
+                 {/* Rating display */}
+                 {service.averageRating !== undefined && service.averageRating > 0 && (
+                   <div className="flex items-center gap-2 mb-2">
+                     <StarRating 
+                       rating={service.averageRating} 
+                       size={14} 
+                       showValue 
+                     />
+                     <span className="text-xs text-neutral-500">
+                       ({service.reviewCount || 0})
+                     </span>
+                   </div>
+                 )}
+                 
+                 <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">{service.description}</p>
+                 <Link to="/book">
+                   <Button className="w-full bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl">
+                     Book This
+                   </Button>
+                 </Link>
+               </div>
             </motion.div>
           ))}
         </div>

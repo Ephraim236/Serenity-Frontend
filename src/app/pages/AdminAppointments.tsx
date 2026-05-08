@@ -27,7 +27,7 @@ import { format } from "date-fns";
 import { getAuthToken } from "../contexts/AuthContext";
 import { toast } from "sonner";
 
-const API_URL = "https://serenity-5zku.onrender.com";
+const API_URL = "https://booqlly.vercel.app";
 
 interface Appointment {
   _id: string;

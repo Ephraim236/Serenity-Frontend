@@ -7,7 +7,8 @@ import {
   Scissors,
   MapPin,
   ChevronRight,
-  Loader2
+  Loader2,
+  Star
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
@@ -15,10 +16,12 @@ import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { useAuth } from "../contexts/AuthContext";
 import { useEffect, useState } from "react";
+import { StarRating } from "../components/StarRating";
 
 interface Appointment {
   _id: string;
   service: string;
+  serviceId?: string;
   specialist: string;
   date: string;
   time: string;
@@ -26,6 +29,7 @@ interface Appointment {
   clientName: string;
   clientEmail: string;
   clientPhone: string;
+  business: string; // business ID
   status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
   notes?: string;
 }
@@ -34,7 +38,7 @@ const getApiUrl = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:3000';
   }
-  return 'https://serenity-5zku.onrender.com';
+  return 'https://booqlly.vercel.app';
 };
 
 const getAuthToken = () => {
@@ -331,11 +335,21 @@ export function MyBookings() {
                               </Button>
                             </>
                           )}
-                          {displayStatus === 'completed' && (
-                            <Button className="w-full sm:w-auto bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl flex items-center gap-2">
-                              <RotateCcw className="w-4 h-4" /> Rebook Service
-                            </Button>
-                          )}
+                           {displayStatus === 'completed' && (
+                             <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+                               <Button 
+                                 variant="outline"
+                                 className="w-full sm:w-auto rounded-xl border-indigo-200 text-indigo-600 hover:bg-indigo-50"
+                               >
+                                 <RotateCcw className="w-4 h-4 mr-2" /> Rebook Service
+                               </Button>
+                               <Link to={`/review/write?businessId=${booking.business}&serviceId=${booking.serviceId || ''}&appointmentId=${booking._id}`} state={{ appointmentId: booking._id }}>
+                                 <Button className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white rounded-xl flex items-center gap-2">
+                                   <Star className="w-4 h-4" /> Leave a Review
+                                 </Button>
+                               </Link>
+                             </div>
+                           )}
                           {displayStatus === 'cancelled' && (
                             <Button variant="outline" className="w-full sm:w-auto rounded-xl border-neutral-200 text-neutral-600">
                               View Details
