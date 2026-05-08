@@ -12,6 +12,8 @@ interface BusinessLocation {
   longitude: number;
   address?: string;
   phone?: string;
+  averageRating?: number;
+  reviewCount?: number;
 }
 
 export function BusinessMapPage() {

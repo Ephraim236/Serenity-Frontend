@@ -29,6 +29,10 @@ interface Business {
   _id: string;
   businessName: string;
   name: string;
+  location?: {
+    address?: string;
+    city?: string;
+  };
 }
 
 export function WriteReview() {

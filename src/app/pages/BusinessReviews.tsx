@@ -3,7 +3,6 @@ import { useParams, Link } from "react-router";
 import { Star, MapPin, Phone, Mail, ArrowLeft, Building2 } from "lucide-react";
 import { StarRating } from "../components/StarRating";
 import { Button } from "../components/ui/button";
-import { getAuthToken } from "../contexts/AuthContext";
 import { toast } from "sonner";
 
 const API_URL = "https://booqlly.vercel.app";

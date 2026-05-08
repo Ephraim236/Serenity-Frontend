@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MapPin, ExternalLink, Star } from "lucide-react";
+import { MapPin, ExternalLink, Star, Phone } from "lucide-react";
 import { Button } from "../ui/button";
 import { StarRating } from "../StarRating";
 

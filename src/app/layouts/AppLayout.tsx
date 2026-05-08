@@ -12,7 +12,8 @@ import {
   LogOut,
   Sun,
   Moon,
-  Download
+  Download,
+  MapPin
 } from "lucide-react";
 import { usePWAInstall } from "../hooks/usePWAInstall";
 import { useState } from "react";
