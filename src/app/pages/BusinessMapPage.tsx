@@ -1,40 +1,49 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router";
 import { MapPin, RefreshCw } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { BusinessMap } from "../components/maps/BusinessMap";
 
-const API_URL = "https://booqlly.vercel.app";
+const getApiUrl = () => {
+  return import.meta.env.VITE_API_URL || 'https://booqlly.vercel.app';
+};
 
-interface BusinessLocation {
-  id: string;
-  name: string;
-  latitude: number;
-  longitude: number;
-  address?: string;
-  phone?: string;
-  averageRating?: number;
-  reviewCount?: number;
-}
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
 export function BusinessMapPage() {
-  const [businesses, setBusinesses] = useState<BusinessLocation[]>([]);
+  const [searchParams] = useSearchParams();
+  const [businesses, setBusinesses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [mapCenter, setMapCenter] = useState<{ latitude: number; longitude: number }>({
-    latitude: 5.6037, // Default to Ghana coordinates
+    latitude: 5.6037,
     longitude: -0.1870
   });
+  const [highlightedId, setHighlightedId] = useState<string | null>(null);
+
+  const highlightBusiness = searchParams.get('highlight');
 
   useEffect(() => {
     fetchBusinessLocations();
   }, []);
 
+  // Effect to highlight business after data loads
+  useEffect(() => {
+    if (highlightBusiness && businesses.length > 0) {
+      const business = businesses.find(b => b.id === highlightBusiness);
+      if (business) {
+        setHighlightedId(highlightBusiness);
+        setMapCenter({ latitude: business.latitude, longitude: business.longitude });
+      }
+    }
+  }, [highlightBusiness, businesses]);
+
   const fetchBusinessLocations = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      const response = await fetch(`${API_URL}/api/auth/business-locations`, {
+      const response = await fetch(`${getApiUrl()}/api/auth/business-locations`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -45,34 +54,37 @@ export function BusinessMapPage() {
       }
 
       const data = await response.json();
-      
+
       if (data.businesses && Array.isArray(data.businesses)) {
         // Filter out businesses without valid coordinates
         const validBusinesses = data.businesses
-          .filter((b: any) => 
-            b.latitude !== undefined && 
-            b.longitude !== undefined && 
-            b.latitude !== null && 
+          .filter((b: any) =>
+            b.latitude !== undefined &&
+            b.longitude !== undefined &&
+            b.latitude !== null &&
             b.longitude !== null
           )
-           .map((b: any) => ({
-             id: b.id,
-             name: b.name,
-             latitude: Number(b.latitude),
-             longitude: Number(b.longitude),
-             address: b.address || undefined,
-             phone: b.phone || undefined,
-             averageRating: b.averageRating,
-             reviewCount: b.reviewCount
-           }));
+          .map((b: any) => ({
+            id: b.id,
+            name: b.name,
+            latitude: Number(b.latitude),
+            longitude: Number(b.longitude),
+            address: b.location ? buildAddress(b) : undefined,
+            phone: b.businessPhone || undefined,
+            averageRating: b.averageRating,
+            reviewCount: b.reviewCount
+          }));
 
         setBusinesses(validBusinesses);
-        
+
         // Update map center to average of all business locations if we have businesses
         if (validBusinesses.length > 0) {
-          const avgLat = validBusinesses.reduce((sum, b) => sum + b.latitude, 0) / validBusinesses.length;
-          const avgLng = validBusinesses.reduce((sum, b) => sum + b.longitude, 0) / validBusinesses.length;
-          setMapCenter({ latitude: avgLat, longitude: avgLng });
+          // If no highlight, center on average; otherwise center on highlighted business
+          if (!highlightBusiness) {
+            const avgLat = validBusinesses.reduce((sum, b) => sum + b.latitude, 0) / validBusinesses.length;
+            const avgLng = validBusinesses.reduce((sum, b) => sum + b.longitude, 0) / validBusinesses.length;
+            setMapCenter({ latitude: avgLat, longitude: avgLng });
+          }
         }
       } else {
         setBusinesses([]);
@@ -84,6 +96,26 @@ export function BusinessMapPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Helper to build full address from location parts
+  const buildAddress = (b: any) => {
+    const parts = [];
+    if (b.location?.address) parts.push(b.location.address);
+    if (b.location?.city) parts.push(b.location.city);
+    if (b.location?.state) parts.push(b.location.state);
+    if (b.location?.country) parts.push(b.location.country);
+    return parts.join(', ');
+  };
+
+  // Helper to build full address from location parts
+  const buildAddress = (b: any) => {
+    const parts = [];
+    if (b.location?.address) parts.push(b.location.address);
+    if (b.location?.city) parts.push(b.location.city);
+    if (b.location?.state) parts.push(b.location.state);
+    if (b.location?.country) parts.push(b.location.country);
+    return parts.join(', ');
   };
 
   const handleRefresh = async () => {
@@ -152,11 +184,13 @@ export function BusinessMapPage() {
               </Button>
             </div>
             
-            <BusinessMap 
-              businesses={businesses} 
-              centerLatitude={mapCenter.latitude} 
-              centerLongitude={mapCenter.longitude}
-            />
+             <BusinessMap
+               businesses={businesses}
+               centerLatitude={mapCenter.latitude}
+               centerLongitude={mapCenter.longitude}
+               apiKey={GOOGLE_MAPS_API_KEY}
+               highlightId={highlightedId}
+             />
           </div>
         ) : (
           <div className="text-center py-12">

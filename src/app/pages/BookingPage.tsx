@@ -3,18 +3,21 @@ import { useNavigate, useSearchParams } from "react-router";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { toast } from "sonner";
-import { 
-  Scissors, 
-  Sparkles, 
-  User, 
-  Calendar as CalendarIcon, 
-  Clock, 
-  ArrowLeft, 
+import {
+  Scissors,
+  Sparkles,
+  User,
+  Calendar as CalendarIcon,
+  Clock,
+  ArrowLeft,
   ArrowRight,
   CheckCircle2,
   Smile,
   Loader2,
-  Star
+  Star,
+  MapPin,
+  Navigation,
+  Building2
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Calendar } from "../components/ui/calendar";
@@ -22,6 +25,7 @@ import { format } from "date-fns";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { getAuthToken, useAuth } from "../contexts/AuthContext";
 import { StarRating } from "../components/StarRating";
+import { StaticMap } from "../components/StaticMap";
 
 // API URL helper
 const getApiUrl = () => {
@@ -30,6 +34,8 @@ const getApiUrl = () => {
   }
   return 'https://booqlly.vercel.app';
 };
+
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
 interface BusinessService {
   _id: string;
@@ -50,6 +56,10 @@ interface BusinessDetails {
   location?: {
     address?: string;
     city?: string;
+    state?: string;
+    country?: string;
+    latitude?: number;
+    longitude?: number;
   };
   serviceHours?: {
     [key: string]: { open: string; close: string; isClosed: boolean };
@@ -282,11 +292,68 @@ export function BookingPage() {
     switch (step) {
       case 1:
         return (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             className="space-y-6"
           >
+            {/* Business Info & Map */}
+            {business && (
+              <div className="bg-gradient-to-r from-violet-50 to-blue-50 dark:from-neutral-800 dark:to-neutral-700 p-6 rounded-3xl border border-violet-100 dark:border-neutral-600">
+                <div className="flex flex-col lg:flex-row gap-6">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-blue-600 rounded-xl flex items-center justify-center">
+                        <Building2 className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">
+                          {business.businessName || business.name}
+                        </h2>
+                        {business.location?.city && (
+                          <p className="text-neutral-500 text-sm">
+                            {business.location.city}, {business.location.country}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {business.location?.address && (
+                      <div className="flex items-start gap-2 text-neutral-600 mb-4">
+                        <MapPin className="w-4 h-4 text-violet-600 shrink-0 mt-0.5" />
+                        <span className="text-sm">{business.location.address}</span>
+                      </div>
+                    )}
+
+                    {business.location?.latitude && business.location?.longitude && GOOGLE_MAPS_API_KEY && (
+                      <a
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${business.location.latitude},${business.location.longitude}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-sm font-medium text-violet-600 hover:text-violet-700 transition-colors"
+                      >
+                        <Navigation className="w-4 h-4" />
+                        Get Directions
+                      </a>
+                    )}
+                  </div>
+
+                  {/* Static Map */}
+                  {business.location?.latitude && business.location?.longitude && GOOGLE_MAPS_API_KEY && (
+                    <div className="lg:w-80 xl:w-96 shrink-0">
+                      <StaticMap
+                        latitude={business.location.latitude}
+                        longitude={business.location.longitude}
+                        address={business.location.address}
+                        businessName={business.businessName || business.name}
+                        apiKey={GOOGLE_MAPS_API_KEY}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold text-neutral-900 dark:text-white">Select a Service</h2>
               <p className="text-neutral-500 dark:text-neutral-400">Choose the treatment you'd like to book</p>

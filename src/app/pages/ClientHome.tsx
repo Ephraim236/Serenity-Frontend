@@ -466,9 +466,9 @@ export function ClientHome() {
                         View Services & Book
                       </Button>
                     </Link>
-                    <Link to={`/business/${business._id}/reviews`} className="flex-1">
+                    <Link to={`/business-map?highlight=${business._id}`} className="flex-1">
                       <Button variant="outline" className="w-full border-indigo-200 text-indigo-600 hover:bg-indigo-50 rounded-xl">
-                        Reviews
+                        View on Map
                       </Button>
                     </Link>
                   </div>
