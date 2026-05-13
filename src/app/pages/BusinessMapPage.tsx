@@ -108,16 +108,6 @@ export function BusinessMapPage() {
     return parts.join(', ');
   };
 
-  // Helper to build full address from location parts
-  const buildAddress = (b: any) => {
-    const parts = [];
-    if (b.location?.address) parts.push(b.location.address);
-    if (b.location?.city) parts.push(b.location.city);
-    if (b.location?.state) parts.push(b.location.state);
-    if (b.location?.country) parts.push(b.location.country);
-    return parts.join(', ');
-  };
-
   const handleRefresh = async () => {
     await fetchBusinessLocations();
   };
