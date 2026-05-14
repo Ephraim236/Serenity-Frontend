@@ -368,7 +368,11 @@ export function BookingPage() {
                   className="bg-white dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all text-left group"
                 >
                   {/* Image at top */}
-                  <div className="relative h-48 overflow-hidden">
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                    className="relative h-48 overflow-hidden"
+                  >
                     <ImageWithFallback 
                       src={service.image} 
                       alt={service.name}
@@ -499,18 +503,18 @@ export function BookingPage() {
                   {TIME_SLOTS.map((time) => {
                     const disabled = isTimeDisabled(time);
                     return (
-                      <button
-                        key={time}
-                        onClick={() => !disabled && handleTimeSelect(time)}
-                        disabled={disabled}
-                        className={`p-4 rounded-xl border font-medium transition-all ${
-                          selectedTime === time 
-                            ? "bg-blue-600 border-blue-600 text-white shadow-lg" 
-                            : disabled
-                              ? "bg-neutral-100 border-neutral-200 text-neutral-400 cursor-not-allowed"
-                              : "bg-white border-neutral-200 text-neutral-600 hover:border-indigo-600"
-                        }`}
-                      >
+               <button
+                 key={time}
+                 onClick={() => !disabled && handleTimeSelect(time)}
+                 disabled={disabled}
+                 className={`p-4 rounded-xl border font-medium transition-all hover:scale-[1.02] active:scale-95 ${
+                   selectedTime === time
+                     ? "bg-blue-600 border-blue-600 text-white shadow-lg"
+                     : disabled
+                       ? "bg-neutral-100 border-neutral-200 text-neutral-400 cursor-not-allowed"
+                       : "bg-white border-neutral-200 text-neutral-600 hover:border-indigo-600"
+                 }`}
+               >
                         {time}
                         {disabled && <span className="block text-xs">Passed</span>}
                       </button>

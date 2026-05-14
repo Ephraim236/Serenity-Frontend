@@ -84,7 +84,7 @@ export function AdminServices() {
     fetchServices();
   }, []);
 
-  // Handle image file upload - use base64 for local preview and storage
+  // Handle image file upload using the backend upload endpoint
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -104,21 +104,30 @@ export function AdminServices() {
     setUploadingImage(true);
 
     try {
-      // Use FileReader to read the file as a data URL (base64)
-      const base64 = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = () => reject(new Error('Failed to read file'));
-        reader.readAsDataURL(file);
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const token = getAuthToken();
+      const response = await fetch(`${getApiUrl()}/api/upload/image`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: formData
       });
-      
-      // Store the base64 data URL directly
-      setFormData(prev => ({ ...prev, image: base64 }));
-      setImagePreview(base64);
-      toast.success('Image added successfully');
+
+      if (response.ok) {
+        const data = await response.json();
+        setFormData(prev => ({ ...prev, image: data.url }));
+        setImagePreview(data.url);
+        toast.success('Image uploaded successfully');
+      } else {
+        const error = await response.json();
+        toast.error(error.error || 'Failed to upload image');
+      }
     } catch (error) {
       console.error('Image upload error:', error);
-      toast.error('Failed to add image');
+      toast.error('Failed to upload image');
     } finally {
       setUploadingImage(false);
     }
@@ -314,9 +323,9 @@ export function AdminServices() {
               <ListIcon className="w-4 h-4" />
             </button>
           </div>
-          <Button 
+          <Button
             onClick={openAddModal}
-            className="bg-violet-600 hover:bg-violet-700 text-white rounded-xl flex items-center gap-2"
+            className="bg-violet-600 hover:bg-violet-700 text-white rounded-xl flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
           >
             <Plus className="w-4 h-4" /> Add Service
           </Button>
@@ -347,9 +356,16 @@ export function AdminServices() {
           <p className="text-neutral-500">Loading services...</p>
         </div>
       ) : viewMode === 'grid' ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredServices.map((service) => (
-            <Card key={service._id} className="p-6 border-none shadow-sm bg-white rounded-[32px] hover:shadow-xl transition-all group overflow-hidden relative">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredServices.map((service) => (
+                <motion.div
+                  key={service._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ y: -6 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                >
+                  <Card className="p-6 border-none shadow-sm bg-white rounded-[32px] hover:shadow-xl transition-all group overflow-hidden relative">
               {/* Service Image */}
               <div className="relative h-40 -mx-6 -mt-6 mb-4 overflow-hidden bg-neutral-100">
                 {service.image ? (
@@ -420,17 +436,18 @@ export function AdminServices() {
                 </div>
               </div>
 
-              <div className="mt-6">
-                <Button 
-                  variant="outline" 
-                  className={`w-full rounded-xl h-11 text-sm font-bold ${service.isActive ? 'border-neutral-200 text-neutral-600' : 'border-violet-600 text-violet-600'}`}
-                  onClick={() => toggleStatus(service)}
-                >
-                  {service.isActive ? "Disable Service" : "Enable Service"}
-                </Button>
-              </div>
-            </Card>
-          ))}
+               <div className="mt-6">
+                 <Button
+                   variant="outline"
+                   className={`w-full rounded-xl h-11 text-sm font-bold ${service.isActive ? 'border-neutral-200 text-neutral-600' : 'border-violet-600 text-violet-600'}`}
+                   onClick={() => toggleStatus(service)}
+                 >
+                   {service.isActive ? "Disable Service" : "Enable Service"}
+                 </Button>
+               </div>
+             </Card>
+           </motion.div>
+         ))}
         </div>
       ) : (
         <Card className="border-none shadow-sm bg-white rounded-[32px] overflow-hidden">
@@ -447,8 +464,14 @@ export function AdminServices() {
               </tr>
             </thead>
             <tbody>
-              {filteredServices.map((service) => (
-                <tr key={service._id} className="border-b border-neutral-50 last:border-none group hover:bg-neutral-50/50 transition-colors">
+              {filteredServices.map((service, idx) => (
+                <motion.tr
+                  key={service._id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.05, duration: 0.3 }}
+                  className="border-b border-neutral-50 last:border-none group hover:bg-neutral-50/50 transition-colors"
+                >
                   <td className="px-8 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-lg bg-neutral-100 overflow-hidden flex-shrink-0">
@@ -499,10 +522,10 @@ export function AdminServices() {
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                     </div>
+                   </td>
+                 </motion.tr>
+               ))}
             </tbody>
           </table>
         </Card>
@@ -609,6 +632,7 @@ export function AdminServices() {
                     type="file"
                     id="image-upload"
                     accept="image/*"
+                    capture="environment"
                     onChange={handleImageUpload}
                     disabled={uploadingImage}
                     className="hidden"

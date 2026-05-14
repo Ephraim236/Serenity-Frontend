@@ -1,5 +1,6 @@
 import { MapPin, Navigation } from 'lucide-react';
 import { Button } from './ui/button';
+import { motion } from 'motion/react';
 
 interface StaticMapProps {
   latitude?: number;
@@ -10,7 +11,6 @@ interface StaticMapProps {
   className?: string;
 }
 
-// Generate Google Maps URL for directions
 const getDirectionsUrl = (latitude: number, longitude: number, address?: string) => {
   const params = new URLSearchParams({
     api: '1',
@@ -19,7 +19,6 @@ const getDirectionsUrl = (latitude: number, longitude: number, address?: string)
   return `https://www.google.com/maps/dir/?${params.toString()}`;
 };
 
-// Generate Google Static Maps URL
 const getStaticMapUrl = (latitude: number, longitude: number, apiKey: string) => {
   const params = new URLSearchParams({
     center: `${latitude},${longitude}`,
@@ -43,21 +42,29 @@ export function StaticMap({
   const mapImageUrl = apiKey ? getStaticMapUrl(latitude, longitude, apiKey) : null;
 
   return (
-    <div className={`bg-white rounded-2xl overflow-hidden border border-neutral-200 shadow-sm ${className}`}>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className={`bg-white rounded-2xl overflow-hidden border border-neutral-200 shadow-sm ${className}`}
+    >
       {/* Map Image */}
       {mapImageUrl ? (
-        <div className="relative h-64 w-full">
+        <motion.div
+          whileHover={{ scale: 1.02 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          className="relative h-64 w-full"
+        >
           <img
             src={mapImageUrl}
             alt="Business location"
             className="w-full h-full object-cover"
             onError={(e) => {
-              // Show fallback if the static map fails (e.g., invalid API key)
               (e.target as HTMLImageElement).style.display = 'none';
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
-        </div>
+        </motion.div>
       ) : (
         <div className="h-64 bg-neutral-100 flex items-center justify-center">
           <div className="text-center text-neutral-500">
@@ -71,7 +78,12 @@ export function StaticMap({
       )}
 
       {/* Location Info */}
-      <div className="p-4">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+        className="p-4"
+      >
         {businessName && (
           <h3 className="font-bold text-lg text-neutral-900 mb-2">{businessName}</h3>
         )}
@@ -84,20 +96,22 @@ export function StaticMap({
         )}
 
         {/* Get Directions Button */}
-        <a
+        <motion.a
           href={directionsUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="block"
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.98 }}
         >
           <Button
-            className="w-full bg-violet-600 hover:bg-violet-700 text-white rounded-xl gap-2"
+            className="w-full bg-violet-600 hover:bg-violet-700 text-white rounded-xl gap-2 transition-all"
           >
             <Navigation className="w-4 h-4" />
             Get Directions
           </Button>
-        </a>
-      </div>
-    </div>
+        </motion.a>
+      </motion.div>
+    </motion.div>
   );
 }

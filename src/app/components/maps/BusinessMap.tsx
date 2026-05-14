@@ -145,14 +145,19 @@ export function BusinessMap({
   }
 
   return (
-    <div className="space-y-6">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="space-y-6"
+    >
       <div className="rounded-2xl shadow-lg border border-neutral-100 dark:border-neutral-700 overflow-hidden">
         <LoadScript
           googleMapsApiKey={apiKey}
           libraries={libraries}
         >
           <GoogleMap
-            mapContainerStyle={containerStyle}
+            mapContainerStyle={{ ...containerStyle, height: '500px' }}
             center={center}
             zoom={zoomLevel}
             onLoad={onMapLoad}
@@ -239,9 +244,12 @@ export function BusinessMap({
           </h3>
         </div>
         <div className="max-h-96 overflow-y-auto">
-          {businesses.map((business) => (
-            <div
+          {businesses.map((business, idx) => (
+            <motion.div
               key={business.id}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: idx * 0.05, duration: 0.3 }}
               onClick={() => setSelectedBusiness(business)}
               className={`flex items-center gap-3 p-4 border-b border-neutral-100 dark:border-neutral-700 last:border-none hover:bg-neutral-50 dark:hover:bg-neutral-700/50 transition-colors cursor-pointer ${
                 selectedBusiness?.id === business.id ? 'bg-indigo-50 dark:bg-indigo-900/20 border-l-4 border-indigo-500' : ''

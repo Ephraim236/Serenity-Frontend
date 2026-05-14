@@ -4,10 +4,10 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { SearchBackdrop3D } from "../components/SearchBackdrop3D";
-import { 
-  Star, 
-  Clock, 
-  CheckCircle2, 
+import {
+  Star,
+  Clock,
+  CheckCircle2,
   ArrowRight,
   MapPin,
   Phone,
@@ -18,9 +18,8 @@ import {
   Search
 } from "lucide-react";
 import { StarRating } from "../components/StarRating";
-import { motion } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 
-// API URL helper
 const getApiUrl = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:3000';
@@ -49,7 +48,6 @@ interface Business {
 }
 
 const SERVICES = [
-  // Spa Services
   {
     id: 1,
     name: "Luxury Facial",
@@ -83,7 +81,6 @@ const SERVICES = [
     averageRating: 4.7,
     reviewCount: 86
   },
-  // Men's Grooming
   {
     id: 4,
     name: "Classic Haircut",
@@ -106,7 +103,6 @@ const SERVICES = [
     averageRating: 4.5,
     reviewCount: 245
   },
-  // Female Makeover
   {
     id: 6,
     name: "Hair Styling",
@@ -120,7 +116,6 @@ const SERVICES = [
   },
 ];
 
-// Hero slideshow images
 const HERO_IMAGES = [
   "/Serenity Pics/african-american-man-guy-sitting-chair-barber-works-with-beard (1).jpg",
   "/Serenity Pics/man-woman-doing-beauty-treatment-home.jpg",
@@ -137,43 +132,15 @@ export function ClientHome() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-  
-  // Detect PWA installation status
+
   const [isAppInstalled, setIsAppInstalled] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
 
-  useEffect(() => {
-    // Check if running in standalone mode (PWA installed)
-    const standalone = window.matchMedia('(display-mode: standalone)').matches;
-    const inMinimalUi = window.matchMedia('(display-mode: minimal-ui)').matches;
-    
-    // Also check localStorage for dismissed state
-    const installDismissed = localStorage.getItem('booqlly_install_dismissed');
-    const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
-    const dismissedTime = installDismissed ? parseInt(installDismissed) : 0;
-    const isExpired = dismissedTime > 0 && dismissedTime < thirtyDaysAgo;
-    
-    // Clear expired dismissal or update status
-    if (isExpired) {
-      localStorage.removeItem('booqlly_install_dismissed');
-    }
-    
-    // Set installed if either standalone or NOT dismissed
-    setIsAppInstalled(standalone || inMinimalUi);
-    
-    // Store dismissal with expiry
-    if (installDismissed && !isExpired && !standalone && !inMinimalUi) {
-      setIsAppInstalled(true); // Treat as installed if dismissed recently
-    }
-    
-    // Detect iOS Safari
-    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && 
-      /Version/.test(navigator.userAgent) && 
-      !/Opera/.test(navigator.userAgent);
-    setIsIOS(isIOSDevice || (/Mac/.test(navigator.userAgent) && 'ontouchend' in document));
-  }, []);
   const businessesRef = useRef<HTMLDivElement>(null);
   const servicesRef = useRef<HTMLDivElement>(null);
+
+  const { scrollY } = useScroll();
+  const heroY = useTransform(scrollY, [0, 500], [0, 150]);
 
   const scrollBusinesses = (direction: "left" | "right") => {
     if (businessesRef.current) {
@@ -201,7 +168,6 @@ export function ClientHome() {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % HERO_IMAGES.length);
     }, 4000);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -220,11 +186,9 @@ export function ClientHome() {
         setLoading(false);
       }
     };
-
     fetchBusinesses();
   }, []);
 
-  // Filter businesses based on search query
   useEffect(() => {
     if (searchQuery.trim() === "") {
       setFilteredBusinesses(businesses);
@@ -235,11 +199,7 @@ export function ClientHome() {
         const email = business.email.toLowerCase();
         const city = business.location?.city?.toLowerCase() || "";
         const address = business.location?.address?.toLowerCase() || "";
-        
-        return businessName.includes(query) || 
-               email.includes(query) || 
-               city.includes(query) || 
-               address.includes(query);
+        return businessName.includes(query) || email.includes(query) || city.includes(query) || address.includes(query);
       });
       setFilteredBusinesses(filtered);
     }
@@ -253,11 +213,14 @@ export function ClientHome() {
     <div className="flex flex-col gap-16 pb-16">
       {/* Hero Section */}
       <section className="relative h-[600px] flex items-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
+        <motion.div className="absolute inset-0 z-0" style={{ y: heroY }}>
           {HERO_IMAGES.map((image, index) => (
-            <div
+            <motion.div
               key={index}
-              className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
+              className="absolute inset-0"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: index === currentSlide ? 1 : 0 }}
+              transition={{ duration: 1, ease: "easeInOut" }}
             >
               <ImageWithFallback
                 src={image}
@@ -267,77 +230,104 @@ export function ClientHome() {
                 placeholder="skeleton"
                 fetchPriority={index === 0 ? 'high' : 'low'}
               />
-            </div>
+            </motion.div>
           ))}
           <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" />
-        </div>
-        
+        </motion.div>
+
         <div className="container mx-auto px-4 relative z-10 text-white">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
             className="max-w-2xl"
           >
-            <span className="inline-block py-1 px-3 rounded-full bg-indigo-600 text-xs font-bold uppercase tracking-wider mb-6">
+            <motion.span
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="inline-block py-1 px-3 rounded-full bg-indigo-600 text-xs font-bold uppercase tracking-wider mb-6"
+            >
               Welcome to Booqlly
-            </span>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            </motion.span>
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35, duration: 0.7 }}
+              className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
+            >
               Luxury <span className="text-blue-400">Self-Care</span> Effortlessly Booked
-            </h1>
-            <p className="text-lg md:text-xl text-neutral-200 mb-8 max-w-lg">
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.55, duration: 0.7 }}
+              className="text-lg md:text-xl text-neutral-200 mb-8 max-w-lg"
+            >
               Connecting Clients and Services Effortlessly.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.75, duration: 0.5 }}
+              className="flex flex-col sm:flex-row gap-4"
+            >
               <Link to="/book">
-                <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 h-14 rounded-full text-lg">
+                <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 h-14 rounded-full text-lg transition-all hover:scale-105 active:scale-95">
                   Book an Appointment
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 px-8 h-14 rounded-full text-lg">
+              <Button size="lg" variant="outline" className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 px-8 h-14 rounded-full text-lg transition-all hover:scale-105 active:scale-95">
                 View Services
               </Button>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
-      {/* Stats/Info */}
+      {/* Stats/Info - Staggered reveal */}
       <section className="container mx-auto px-4 mt-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8 bg-white dark:bg-neutral-800 rounded-3xl shadow-xl -mt-24 relative z-20 border border-neutral-100 dark:border-neutral-700">
-          <div className="flex items-start gap-4 p-4">
-            <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 shrink-0">
-              <Star className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-bold text-lg mb-1">5-Star Rated</h3>
-              <p className="text-neutral-500 text-sm">Best rated service in the city.</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-4 p-4 border-l border-neutral-100">
-            <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 shrink-0">
-              <Clock className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-bold text-lg mb-1">Flexible Hours</h3>
-              <p className="text-neutral-500 text-sm">Choose the best available time that suits your prefernce.</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-4 p-4 border-l border-neutral-100">
-            <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 shrink-0">
-              <CheckCircle2 className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-bold text-lg mb-1">Trusted Businesses</h3>
-              <p className="text-neutral-500 text-sm">All our Businesses are trusted with excellent experience.</p>
-            </div>
-          </div>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8 bg-white dark:bg-neutral-800 rounded-3xl shadow-xl -mt-24 relative z-20 border border-neutral-100 dark:border-neutral-700"
+        >
+          {[
+            { icon: Star, title: "5-Star Rated", desc: "Best rated service in the city.", delay: 0.1 },
+            { icon: Clock, title: "Flexible Hours", desc: "Choose the best available time that suits your prefernce.", delay: 0.2 },
+            { icon: CheckCircle2, title: "Trusted Businesses", desc: "All our Businesses are trusted with excellent experience.", delay: 0.3 }
+          ].map((item, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, x: idx === 0 ? -20 : idx === 2 ? 20 : 0, y: idx === 1 ? 20 : 0 }}
+              whileInView={{ opacity: 1, x: 0, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: item.delay, duration: 0.5 }}
+              className="flex items-start gap-4 p-4"
+            >
+              <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 shrink-0">
+                <item.icon className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-bold text-lg mb-1">{item.title}</h3>
+                <p className="text-neutral-500 text-sm">{item.desc}</p>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
       </section>
 
       {/* Search Bar */}
       <section className="container mx-auto px-4 mt-8">
-        <div className="relative max-w-3xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6 }}
+          className="relative max-w-3xl mx-auto"
+        >
           <SearchBackdrop3D />
           <div className="absolute left-5 top-1/2 -translate-y-1/2 z-10">
             <Search className="w-6 h-6 text-neutral-400" />
@@ -354,7 +344,7 @@ export function ClientHome() {
               Search
             </button>
           </div>
-        </div>
+        </motion.div>
         {searchQuery && (
           <p className="text-center text-sm text-neutral-500 dark:text-neutral-400 mt-4">
             {filteredBusinesses.length} result{filteredBusinesses.length !== 1 ? 's' : ''} found
@@ -362,138 +352,152 @@ export function ClientHome() {
         )}
       </section>
 
-      {/* Businesses Section */}
+      {/* Businesses Section - staggered cards */}
       {businesses.length > 0 && (
         <section className="container mx-auto px-4 mt-12">
-          <div className="mb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6 }}
+            className="mb-8"
+          >
             <h2 className="text-3xl font-bold mb-4 text-neutral-900 dark:text-white">Featured Businesses</h2>
             <p className="text-neutral-500 dark:text-neutral-400 max-w-xl">
               Choose a business below to view their services and book an appointment.
             </p>
-          </div>
+          </motion.div>
 
-           <div 
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: 0.1 } }
+            }}
             ref={businessesRef}
             className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory scroll-smooth -mx-4 px-4"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            {filteredBusinesses.map((business, index) => (
+            {filteredBusinesses.map((business) => (
               <motion.div
                 key={business._id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
+                variants={{
+                  hidden: { opacity: 0, y: 50 },
+                  visible: { opacity: 1, y: 0 }
+                }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
                 onClick={() => handleBusinessClick(business._id)}
                 className="flex-shrink-0 w-[70%] sm:w-[45%] md:w-[30%] snap-start cursor-pointer group"
               >
-                {/* Business Image */}
-                <div className="h-48 overflow-hidden relative">
-                  {business.image ? (
-                    <img 
-                      key={business.image.substring(0, 50)} // Force re-render on image change
-                      src={business.image} 
-                      alt={business.businessName || business.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      loading="eager"
-                      onError={(e) => {
-                        console.log('Image load error for business:', business._id);
-                        (e.target as HTMLImageElement).style.display = 'none';
-                      }}
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center">
-                      <Building2 className="w-16 h-16 text-white/50" />
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                </div>
-
-                 <div className="p-6">
-                   <div className="flex items-start gap-4 mb-4">
-                     <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-600 rounded-xl flex items-center justify-center text-white shrink-0">
-                       <Building2 className="w-6 h-6" />
-                     </div>
-                     <div>
-                       <h3 className="text-xl font-bold text-neutral-900 dark:text-white">
-                         {business.businessName || business.name}
-                       </h3>
-                       <p className="text-neutral-500 text-sm">{business.name}</p>
-                       {business.averageRating !== undefined && business.averageRating > 0 && (
-                         <div className="flex items-center gap-2 mt-1">
-                           <StarRating 
-                             rating={business.averageRating} 
-                             size={14} 
-                             showValue 
-                           />
-                           <span className="text-xs text-neutral-500">
-                             ({business.reviewCount || 0} review{business.reviewCount !== 1 ? 's' : ''})
-                           </span>
-                         </div>
-                       )}
-                     </div>
-                   </div>
-                  
-                   <div className="space-y-3">
-                     {business.location?.address && (
-                       <div className="flex items-center gap-2 text-neutral-500 text-sm">
-                         <MapPin className="w-4 h-4 text-violet-600" />
-                         <span>{business.location.address}, {business.location.city}</span>
-                       </div>
-                     )}
-                     {business.businessPhone && (
-                       <div className="flex items-center gap-2 text-neutral-500 text-sm">
-                         <Phone className="w-4 h-4 text-violet-600" />
-                         <span>{business.businessPhone}</span>
-                       </div>
-                     )}
-                     <div className="flex items-center gap-2 text-neutral-500 text-sm">
-                       <Mail className="w-4 h-4 text-violet-600" />
-                       <span>{business.email}</span>
-                     </div>
-                     {/* Show GPS coordinates if available */}
-                     {business.location?.latitude && business.location?.longitude && (
-                       <div className="flex items-center gap-2 text-neutral-500 text-sm text-xs">
-                         <MapPin className="w-4 h-4 text-violet-600" />
-                         <span>GPS: {business.location.latitude.toFixed(4)}, {business.location.longitude.toFixed(4)}</span>
-                       </div>
-                     )}
-                    </div>
-
-                  <div className="flex gap-3 mt-6">
-                    <Link to={`/book?business=${business._id}`} className="flex-1">
-                      <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white rounded-xl">
-                        View Services & Book
-                      </Button>
-                    </Link>
-                    <Link to={`/business-map?highlight=${business._id}`} className="flex-1">
-                      <Button variant="outline" className="w-full border-indigo-200 text-indigo-600 hover:bg-indigo-50 rounded-xl">
-                        View on Map
-                      </Button>
-                    </Link>
+                <motion.div
+                  whileHover={{ y: -12, scale: 1.02 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+                  className="bg-white dark:bg-neutral-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-neutral-100 dark:border-neutral-700"
+                >
+                  <div className="h-48 overflow-hidden relative">
+                    {business.image ? (
+                      <img
+                        src={business.image}
+                        alt={business.businessName || business.name}
+                        className="w-full h-full object-cover"
+                        loading="eager"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center">
+                        <Building2 className="w-16 h-16 text-white/50" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                   </div>
-                </div>
+
+                  <div className="p-6">
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-600 rounded-xl flex items-center justify-center text-white shrink-0">
+                        <Building2 className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-neutral-900 dark:text-white">
+                          {business.businessName || business.name}
+                        </h3>
+                        <p className="text-neutral-500 text-sm">{business.name}</p>
+                        {business.averageRating !== undefined && business.averageRating > 0 && (
+                          <div className="flex items-center gap-2 mt-1">
+                            <StarRating rating={business.averageRating} size={14} showValue />
+                            <span className="text-xs text-neutral-500">
+                              ({business.reviewCount || 0} review{business.reviewCount !== 1 ? 's' : ''})
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      {business.location?.address && (
+                        <div className="flex items-center gap-2 text-neutral-500 text-sm">
+                          <MapPin className="w-4 h-4 text-violet-600" />
+                          <span>{business.location.address}, {business.location.city}</span>
+                        </div>
+                      )}
+                      {business.businessPhone && (
+                        <div className="flex items-center gap-2 text-neutral-500 text-sm">
+                          <Phone className="w-4 h-4 text-violet-600" />
+                          <span>{business.businessPhone}</span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-2 text-neutral-500 text-sm">
+                        <Mail className="w-4 h-4 text-violet-600" />
+                        <span>{business.email}</span>
+                      </div>
+                      {business.location?.latitude && business.location?.longitude && (
+                        <div className="flex items-center gap-2 text-neutral-500 text-xs">
+                          <MapPin className="w-4 h-4 text-violet-600" />
+                          <span>GPS: {business.location.latitude.toFixed(4)}, {business.location.longitude.toFixed(4)}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex gap-3 mt-6">
+                      <Link to={`/book?business=${business._id}`} className="flex-1">
+                        <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white rounded-xl transition-all hover:scale-105 active:scale-95">
+                          View Services & Book
+                        </Button>
+                      </Link>
+                      <Link to={`/business-map?highlight=${business._id}`} className="flex-1">
+                        <Button variant="outline" className="w-full border-indigo-200 text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all hover:scale-105 active:scale-95">
+                          View on Map
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </motion.div>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </section>
       )}
 
-      {/* Featured Services */}
+      {/* Featured Services - scrollable with stagger */}
       <section className="container mx-auto px-4">
-        <div className="flex items-end justify-between mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6 }}
+          className="flex items-end justify-between mb-8"
+        >
           <div>
             <h2 className="text-3xl font-bold mb-4 text-neutral-900 dark:text-white">Featured Services</h2>
             <p className="text-neutral-500 dark:text-neutral-400 max-w-xl">
               Choose from our most popular treatments designed to enhance your natural beauty.
             </p>
           </div>
-          {/* Navigation Arrows */}
           <div className="hidden md:flex gap-2">
             <Button
               variant="outline"
               size="icon"
-              className="rounded-full"
+              className="rounded-full transition-all hover:scale-105 active:scale-95"
               onClick={() => scrollServices("left")}
             >
               <ChevronLeft className="w-5 h-5" />
@@ -501,95 +505,112 @@ export function ClientHome() {
             <Button
               variant="outline"
               size="icon"
-              className="rounded-full"
+              className="rounded-full transition-all hover:scale-105 active:scale-95"
               onClick={() => scrollServices("right")}
             >
               <ChevronRight className="w-5 h-5" />
             </Button>
           </div>
-        </div>
+        </motion.div>
 
-        <div 
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.08 } }
+          }}
           ref={servicesRef}
           className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory scroll-smooth -mx-4 px-4"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          {SERVICES.map((service, index) => (
+          {SERVICES.map((service) => (
             <motion.div
               key={service.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
+              variants={{
+                hidden: { opacity: 0, y: 50 },
+                visible: { opacity: 1, y: 0 }
+              }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
               className="flex-shrink-0 w-[70%] sm:w-[45%] md:w-[30%] snap-start group bg-white dark:bg-neutral-800 rounded-3xl overflow-hidden border border-neutral-100 dark:border-neutral-700 shadow-sm hover:shadow-xl transition-all duration-300"
             >
-              <div className="relative h-64 overflow-hidden">
+              <motion.div
+                whileHover={{ scale: 1.03 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                className="relative h-64 overflow-hidden"
+              >
                 <ImageWithFallback
                   src={service.image}
                   alt={service.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  placeholder="skeleton"
                 />
                 <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full font-bold text-blue-600">
                   {service.price}
                 </div>
+              </motion.div>
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-xs font-semibold px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
+                    {service.category}
+                  </span>
+                  <div className="flex items-center gap-1 text-neutral-400 text-xs">
+                    <Clock className="w-3 h-3" />
+                    <span>{service.duration}</span>
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-neutral-900 dark:text-white">{service.name}</h3>
+
+                {service.averageRating !== undefined && service.averageRating > 0 && (
+                  <div className="flex items-center gap-2 mb-2">
+                    <StarRating rating={service.averageRating} size={14} showValue />
+                    <span className="text-xs text-neutral-500">
+                      ({service.reviewCount || 0})
+                    </span>
+                  </div>
+                )}
+
+                <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6 line-clamp-2">{service.description}</p>
+                <Link to="/book">
+                  <Button className="w-full bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl transition-all hover:scale-105 active:scale-95">
+                    Book This
+                  </Button>
+                </Link>
               </div>
-               <div className="p-6">
-                 <div className="flex items-center gap-2 mb-3">
-                   <span className="text-xs font-semibold px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
-                     {service.category}
-                   </span>
-                   <div className="flex items-center gap-1 text-neutral-400 text-xs">
-                     <Clock className="w-3 h-3" />
-                     <span>{service.duration}</span>
-                   </div>
-                 </div>
-                 <h3 className="text-xl font-bold mb-2 text-neutral-900 dark:text-white">{service.name}</h3>
-                 
-                 {/* Rating display */}
-                 {service.averageRating !== undefined && service.averageRating > 0 && (
-                   <div className="flex items-center gap-2 mb-2">
-                     <StarRating 
-                       rating={service.averageRating} 
-                       size={14} 
-                       showValue 
-                     />
-                     <span className="text-xs text-neutral-500">
-                       ({service.reviewCount || 0})
-                     </span>
-                   </div>
-                 )}
-                 
-                 <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">{service.description}</p>
-                 <Link to="/book">
-                   <Button className="w-full bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl">
-                     Book This
-                   </Button>
-                 </Link>
-               </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
-      {/* Mobile App Promo */}
+      {/* Mobile App Promo - parallax reveal */}
       <section className="relative bg-neutral-900 py-24 overflow-hidden">
-        {/* Ghana Map Background Image */}
         <div className="absolute inset-0">
           <ImageWithFallback
             src="/Serenity Pics/map-ghana-polygonal-mesh-line-map-flag-map.jpg"
             alt="Ghana map"
             className="w-full h-full object-cover opacity-40"
             loading="lazy"
-            placeholder="skeleton"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/80 to-neutral-900/60" />
-        
-        {/* Content */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/80 to-neutral-900/60"
+        />
+
         <div className="container mx-auto px-4 relative z-10">
-          {/* Ghana Flag Colors Caption */}
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+              className="text-4xl font-bold mb-4"
+            >
               <span style={{ color: '#FF0000' }}>B</span>
               <span style={{ color: '#FFD700' }}>oo</span>
               <span style={{ color: '#006B3D' }}>k </span>
@@ -607,41 +628,55 @@ export function ClientHome() {
               <span style={{ color: '#006B3D' }}>a</span>
               <span style={{ color: '#FF0000' }}>n</span>
               <span style={{ color: '#FFD700' }}>a</span>
-            </h2>
-            <p className="text-neutral-400 text-lg">Book your beauty appointments anywhere in Ghana</p>
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.7 }}
+              className="text-neutral-400 text-lg"
+            >
+              Book your beauty appointments anywhere in Ghana
+            </motion.p>
           </div>
 
           {!isAppInstalled && (
-          <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
-            {/* Install Instructions */}
-            <div className="bg-neutral-800 p-6 rounded-2xl flex items-center gap-4">
-              <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center">
-                <svg className="w-10 h-10 text-neutral-900" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
-                </svg>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="grid grid-cols-1 gap-8 max-w-4xl mx-auto"
+            >
+              <div className="bg-neutral-800 p-6 rounded-2xl flex items-center gap-4">
+                <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center">
+                  <svg className="w-10 h-10 text-neutral-900" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z" />
+                  </svg>
+                </div>
+                <div className="text-white flex-1">
+                  <p className="text-xl font-bold">How to Install</p>
+                  {isIOS ? (
+                    <p className="text-sm text-neutral-400 mt-1">Tap <span className="font-semibold text-white">Share</span> button → Tap <span className="font-semibold text-white">Add to Home Screen</span></p>
+                  ) : (
+                    <p className="text-sm text-neutral-400 mt-1">Tap <span className="font-semibold text-white">⋮</span> menu → Tap <span className="font-semibold text-white">Add to Home Screen</span></p>
+                  )}
+                </div>
+                <button
+                  onClick={() => {
+                    localStorage.setItem('booqlly_install_dismissed', Date.now().toString());
+                    setIsAppInstalled(true);
+                  }}
+                  className="shrink-0 text-neutral-400 hover:text-white"
+                  aria-label="Dismiss"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
-              <div className="text-white flex-1">
-                <p className="text-xl font-bold">How to Install</p>
-                {isIOS ? (
-                  <p className="text-sm text-neutral-400 mt-1">Tap <span className="font-semibold text-white">Share</span> button → Tap <span className="font-semibold text-white">Add to Home Screen</span></p>
-                ) : (
-                  <p className="text-sm text-neutral-400 mt-1">Tap <span className="font-semibold text-white">⋮</span> menu → Tap <span className="font-semibold text-white">Add to Home Screen</span></p>
-                )}
-              </div>
-              <button 
-                onClick={() => {
-                  localStorage.setItem('booqlly_install_dismissed', Date.now().toString());
-                  setIsAppInstalled(true);
-                }}
-                className="shrink-0 text-neutral-400 hover:text-white"
-                aria-label="Dismiss"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-          </div>)}
+            </motion.div>
+          )}
         </div>
       </section>
     </div>

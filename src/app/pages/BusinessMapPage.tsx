@@ -115,10 +115,15 @@ export function BusinessMapPage() {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-center"
+        >
+          <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="mt-4 text-neutral-500 dark:text-neutral-400">Loading business locations...</p>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -126,7 +131,12 @@ export function BusinessMapPage() {
   if (error) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center p-6">
-        <div className="text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center"
+        >
           <MapPin className="w-16 h-16 text-red-500 mb-4" />
           <h2 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">
             Unable to Load Map
@@ -134,14 +144,14 @@ export function BusinessMapPage() {
           <p className="text-neutral-500 dark:text-neutral-400 mb-6">
             {error}
           </p>
-          <Button 
+          <Button
             onClick={handleRefresh}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl transition-all hover:scale-105 active:scale-95"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
             Try Again
           </Button>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -149,14 +159,19 @@ export function BusinessMapPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-8"
+        >
           <h1 className="text-3xl font-bold text-neutral-900 dark:text-white">
             Find Businesses Near You
           </h1>
           <p className="text-neutral-500 dark:text-neutral-400">
             View business locations on the map and get directions to their shops
           </p>
-        </div>
+        </motion.div>
 
         {businesses.length > 0 ? (
           <div className="space-y-6">
@@ -183,7 +198,12 @@ export function BusinessMapPage() {
              />
           </div>
         ) : (
-          <div className="text-center py-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-center py-12"
+          >
             <MapPin className="w-16 h-16 text-neutral-400 mb-4" />
             <h2 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">
               No Business Locations Available
@@ -192,7 +212,7 @@ export function BusinessMapPage() {
               No businesses with location data are currently available.
               Business owners can set their GPS coordinates in their profile settings.
             </p>
-          </div>
+          </motion.div>
         )}
       </div>
     </div>
