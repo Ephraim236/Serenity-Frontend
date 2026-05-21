@@ -15,6 +15,7 @@ import {
   Download,
   MapPin
 } from "lucide-react";
+import { cn } from "../components/ui/utils";
 import { usePWAInstall } from "../hooks/usePWAInstall";
 import { useState } from "react";
 import { Button } from "../components/ui/button";
@@ -167,13 +168,15 @@ const clientNav = [
             )}
           </nav>
 
-          {/* Mobile Toggle */}
-          <button 
-            className="md:hidden p-2 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {/* Mobile Toggle — hidden on client pages (bottom tabs handle nav) */}
+          {isAdmin && (
+            <button 
+              className="md:hidden p-2 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          )}
         </div>
       </header>
 
@@ -282,14 +285,15 @@ const clientNav = [
         )}
       </AnimatePresence>
 
-      <main className="flex-1">
+      <main className="flex-1 pb-[calc(4rem+env(safe-area-inset-bottom,0px))]">
         <MobileBackButton />
         <Outlet />
       </main>
 
       <Chatbot />
 
-      <footer className="border-t bg-white py-8 dark:bg-neutral-900 dark:border-neutral-800">
+      {/* Footer — add bottom padding when bottom tab bar is visible */}
+      <footer className={cn("border-t bg-white py-8 dark:bg-neutral-900 dark:border-neutral-800", !isAdmin && "pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-8")}>
         {location.pathname === "/" && (
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
@@ -343,6 +347,35 @@ const clientNav = [
         </div>
         )}
       </footer>
+
+      {/* Mobile Bottom Tab Bar — client pages only */}
+      {!isAdmin && (
+        <nav
+          className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/85 dark:bg-neutral-900/85 backdrop-blur-xl border-t border-neutral-200 dark:border-neutral-800"
+          style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+        >
+          <div className="flex items-center justify-around h-16 px-2">
+            {clientNav.map((item) => {
+              const isActive = location.pathname === item.href || (item.href !== '/' && location.pathname.startsWith(item.href + '/'));
+              return (
+                <Link
+                  key={item.label}
+                  to={item.href}
+                  className={cn(
+                    "flex flex-col items-center justify-center gap-0.5 py-2 px-3 min-w-[52px] transition-colors",
+                    isActive
+                      ? "text-blue-600 dark:text-blue-400"
+                      : "text-neutral-500 dark:text-neutral-400 active:text-blue-500"
+                  )}
+                >
+                  <item.icon className="w-6 h-6" />
+                  <span className="text-[10px] font-medium leading-tight">{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
+      )}
     </div>
   );
 }

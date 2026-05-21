@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from "react";
+import { motion } from "motion/react";
 import { MapPin, ExternalLink, Star, Phone, Navigation } from "lucide-react";
 import { Button } from "../ui/button";
 import { StarRating } from "../StarRating";

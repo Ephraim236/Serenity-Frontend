@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
@@ -17,7 +17,8 @@ import {
   Star,
   MapPin,
   Navigation,
-  Building2
+  Building2,
+  Store
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Calendar } from "../components/ui/calendar";
@@ -111,11 +112,43 @@ export function BookingPage() {
   const [business, setBusiness] = useState<BusinessDetails | null>(null);
   const [services, setServices] = useState<BusinessService[]>([]);
   const [loading, setLoading] = useState(true);
+  const [businesses, setBusinesses] = useState<BusinessDetails[]>([]);
+  const [businessesLoading, setBusinessesLoading] = useState(false);
+  const [selectedBusiness, setSelectedBusiness] = useState<BusinessDetails | null>(null);
   const [bookingId, setBookingId] = useState<string>('');
   const [bookedSlots, setBookedSlots] = useState<string[]>([]);
   const servicesRef = useRef<HTMLDivElement>(null);
 
+  // Fetch all registered businesses
+  const fetchBusinesses = useCallback(async () => {
+    setBusinessesLoading(true);
+    try {
+      const response = await fetch(`${getApiUrl()}/api/business`);
+      if (response.ok) {
+        const data = await response.json();
+        setBusinesses(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch businesses:', error);
+    } finally {
+      setBusinessesLoading(false);
+    }
+  }, []);
+
+  // Select a business and load its services
+  const handleBusinessSelect = useCallback((biz: BusinessDetails) => {
+    setSelectedBusiness(biz);
+    setBusiness(biz);
+    setServices(biz.services || []);
+    setStep(1);
+  }, []);
+
   // Fetch business details and services
+  useEffect(() => {
+    fetchBusinesses();
+  }, [fetchBusinesses]);
+
+  // Fetch business details and services from URL param
   useEffect(() => {
     const fetchBusinessData = async () => {
       if (!businessId) {
@@ -128,6 +161,7 @@ export function BookingPage() {
         if (response.ok) {
           const data = await response.json();
           setBusiness(data);
+          setSelectedBusiness(data);
           setServices(data.services || []);
         }
       } catch (error) {
@@ -136,6 +170,7 @@ export function BookingPage() {
         setLoading(false);
       }
     };
+
 
     fetchBusinessData();
   }, [businessId]);
@@ -248,7 +283,7 @@ export function BookingPage() {
          clientName: user?.name || 'Guest',
          clientEmail: user?.email || 'guest@example.com',
          clientPhone: '',
-         businessId: businessId || 'demo-business-1'
+          businessId: selectedBusiness?._id || businessId || 'demo-business-1'
        };
 
       if (token) {
@@ -290,6 +325,80 @@ export function BookingPage() {
 
   const renderStep = () => {
     switch (step) {
+      case 0:
+        return (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="space-y-6"
+          >
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-neutral-900 dark:text-white">Choose a Business</h2>
+              <p className="text-neutral-500 dark:text-neutral-400">Select where you'd like to book your appointment</p>
+            </div>
+            {businessesLoading ? (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+              </div>
+            ) : businesses.length === 0 ? (
+              <div className="text-center py-12 text-neutral-500">
+                <Store className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p>No registered businesses found.</p>
+                <p className="text-sm mt-1">Please check back later.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {businesses.map((biz: any) => (
+                  <button
+                    key={biz._id}
+                    onClick={() => handleBusinessSelect(biz)}
+                    className="bg-white dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all text-left group"
+                  >
+                    <div className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center shrink-0">
+                          <Building2 className="w-7 h-7 text-white" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-lg text-neutral-900 dark:text-white truncate">
+                            {biz.businessName || biz.name}
+                          </h3>
+                          {biz.businessName && (
+                            <p className="text-xs text-neutral-400 truncate">{biz.name}</p>
+                          )}
+                          {biz.location?.city && (
+                            <div className="flex items-center gap-1 text-neutral-500 text-sm mt-1">
+                              <MapPin className="w-3.5 h-3.5" />
+                              <span>
+                                {biz.location.city}
+                                {biz.location.country ? `, ${biz.location.country}` : ''}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <ArrowRight className="w-5 h-5 text-neutral-300 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all shrink-0" />
+                      </div>
+                      {biz.averageRating !== undefined && biz.averageRating > 0 && (
+                        <div className="flex items-center gap-2 mt-3">
+                          <div className="flex items-center gap-1">
+                            <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                            <span className="text-sm font-semibold text-neutral-700 dark:text-neutral-200">
+                              {biz.averageRating.toFixed(1)}
+                            </span>
+                          </div>
+                          <span className="text-xs text-neutral-400">
+                            ({biz.reviewCount || 0} review{(biz.reviewCount || 0) !== 1 ? 's' : ''})
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        );
+
       case 1:
         return (
           <motion.div
@@ -414,8 +523,12 @@ export function BookingPage() {
                      <p className="text-neutral-500 dark:text-neutral-400 text-sm line-clamp-2">{service.description}</p>
                    </div>
                 </button>
-              ))}
+               ))}
             </div>
+
+            <Button variant="ghost" onClick={() => setStep(0)} className="mt-8 flex items-center gap-2">
+              <ArrowLeft className="w-4 h-4" /> Change Business
+            </Button>
           </motion.div>
         );
 
@@ -603,20 +716,43 @@ export function BookingPage() {
         {/* Progress Bar */}
         {step < 4 && (
           <div className="flex items-center justify-between mb-12 px-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center flex-1 last:flex-none">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
-                  step >= i ? "bg-indigo-600 text-white shadow-lg" : "bg-neutral-200 text-neutral-500"
-                }`}>
-                  {step > i ? <CheckCircle2 className="w-6 h-6" /> : i}
+            {!businessId ? (
+              /* 4-step flow: Business → Service → Specialist → Date */
+              (() => {
+                const labels = ['Business', 'Service', 'Specialist', '✓'];
+                const total = labels.length;
+                return labels.map((lbl, idx) => (
+                  <div key={lbl} className="flex items-center flex-1 last:flex-none">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ${
+                      step > idx ? "bg-indigo-600 text-white shadow-lg" : "bg-neutral-200 text-neutral-500"
+                    }`}>
+                      {step > idx ? <CheckCircle2 className="w-6 h-6" /> : (idx === 0 ? <Store className="w-5 h-5" /> : lbl)}
+                    </div>
+                    {idx < total - 1 && (
+                      <div className={`h-1 flex-1 mx-4 rounded-full ${
+                        step > idx ? "bg-indigo-600" : "bg-neutral-200"
+                      }`} />
+                    )}
+                  </div>
+                ));
+              })()
+            ) : (
+              /* 3-step flow: Service → Specialist → Date (business from URL) */
+              [1, 2, 3].map((i) => (
+                <div key={i} className="flex items-center flex-1 last:flex-none">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
+                    step >= i ? "bg-indigo-600 text-white shadow-lg" : "bg-neutral-200 text-neutral-500"
+                  }`}>
+                    {step > i ? <CheckCircle2 className="w-6 h-6" /> : i}
+                  </div>
+                  {i < 3 && (
+                    <div className={`h-1 flex-1 mx-4 rounded-full ${
+                      step > i ? "bg-indigo-600" : "bg-neutral-200"
+                    }`} />
+                  )}
                 </div>
-                {i < 3 && (
-                  <div className={`h-1 flex-1 mx-4 rounded-full ${
-                    step > i ? "bg-indigo-600" : "bg-neutral-200"
-                  }`} />
-                )}
-              </div>
-            ))}
+              ))
+            )}
           </div>
         )}
 
