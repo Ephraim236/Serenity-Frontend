@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion } from "motion/react";
 import { 
   Users, 
   Calendar as CalendarIcon, 
@@ -196,7 +197,13 @@ export function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10"
+        >
           <div>
             <h1 className="text-3xl font-bold text-neutral-900 dark:text-white">Business Overview</h1>
             <p className="text-neutral-500 dark:text-neutral-400">Welcome back!</p>
@@ -204,76 +211,62 @@ export function AdminDashboard() {
           <div className="flex items-center gap-3">
             <Button variant="outline" className="rounded-xl bg-white/60 backdrop-blur-sm border-white/20 shadow-sm hover:bg-white/80">Export Report</Button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Stats Grid with Glass Effect */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          <div className="relative overflow-hidden rounded-3xl bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-transparent" />
-            <div className="relative p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/30">
-                  <span className="text-xl font-bold">₵</span>
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.08 } }
+          }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10"
+        >
+          {[
+            { title: "Total Revenue", value: formatCurrency(stats.totalRevenue), iconBg: "from-green-500 to-green-600", iconColor: "text-green-600", statBg: "bg-green-50/80 backdrop-blur-sm", growth: stats.growth },
+            { title: "Bookings", value: stats.totalAppointments, iconBg: "from-indigo-500 to-indigo-600", iconColor: "text-green-600", statBg: "bg-green-50/80 backdrop-blur-sm", growth: stats.growth / 2 },
+            { title: "Active Clients", value: stats.activeClients, iconBg: "from-blue-500 to-blue-600", iconColor: "text-green-600", statBg: "bg-green-50/80 backdrop-blur-sm", growth: stats.growth / 3 },
+            { title: "Today's Appointments", value: stats.todayAppointments, iconBg: "from-purple-500 to-purple-600", iconColor: "text-green-600", statBg: "bg-green-50/80 backdrop-blur-sm", growth: stats.growth / 4 },
+          ].map((stat, idx) => (
+            <motion.div
+              key={stat.title}
+              variants={{
+                hidden: { opacity: 0, y: 30, scale: 0.95 },
+                visible: { opacity: 1, y: 0, scale: 1 }
+              }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              whileHover={{ y: -6, scale: 1.02 }}
+              className="relative overflow-hidden rounded-3xl bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl cursor-default"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent" />
+              <div className="relative p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div className={`w-12 h-12 bg-gradient-to-br ${stat.iconBg} text-white rounded-2xl flex items-center justify-center shadow-lg`}>
+                    {stat.title === "Total Revenue" && <span className="text-xl font-bold">₵</span>}
+                    {stat.title === "Bookings" && <CalendarIcon className="w-6 h-6" />}
+                    {stat.title === "Active Clients" && <Users className="w-6 h-6" />}
+                    {stat.title === "Today's Appointments" && <TrendingUp className="w-6 h-6" />}
+                  </div>
+                  <span className={`text-xs font-bold text-green-600 ${stat.statBg} px-2 py-1 rounded-full`}>
+                    +{typeof stat.growth === 'number' && stat.growth % 1 !== 0 ? stat.growth.toFixed(0) : stat.growth}%
+                  </span>
                 </div>
-                <span className="text-xs font-bold text-green-600 bg-green-50/80 backdrop-blur-sm px-2 py-1 rounded-full">
-                  +{stats.growth}%
-                </span>
+                <h3 className="text-neutral-500 dark:text-neutral-400 text-sm font-medium mb-1">{stat.title}</h3>
+                <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stat.value}</p>
               </div>
-              <h3 className="text-neutral-500 dark:text-neutral-400 text-sm font-medium mb-1">Total Revenue</h3>
-              <p className="text-2xl font-bold text-neutral-900 dark:text-white">{formatCurrency(stats.totalRevenue)}</p>
-            </div>
-          </div>
+            </motion.div>
+          ))}
+        </motion.div>
 
-          <div className="relative overflow-hidden rounded-3xl bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent" />
-            <div className="relative p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                  <CalendarIcon className="w-6 h-6" />
-                </div>
-                <span className="text-xs font-bold text-green-600 bg-green-50/80 backdrop-blur-sm px-2 py-1 rounded-full">
-                  +{stats.growth / 2}%
-                </span>
-              </div>
-              <h3 className="text-neutral-500 dark:text-neutral-400 text-sm font-medium mb-1">Bookings</h3>
-              <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.totalAppointments}</p>
-            </div>
-          </div>
-
-          <div className="relative overflow-hidden rounded-3xl bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent" />
-            <div className="relative p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
-                  <Users className="w-6 h-6" />
-                </div>
-                <span className="text-xs font-bold text-green-600 bg-green-50/80 backdrop-blur-sm px-2 py-1 rounded-full">
-                  +{stats.growth / 3}%
-                </span>
-              </div>
-              <h3 className="text-neutral-500 dark:text-neutral-400 text-sm font-medium mb-1">Active Clients</h3>
-              <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.activeClients}</p>
-            </div>
-          </div>
-
-          <div className="relative overflow-hidden rounded-3xl bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent" />
-            <div className="relative p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30">
-                  <TrendingUp className="w-6 h-6" />
-                </div>
-                <span className="text-xs font-bold text-green-600 bg-green-50/80 backdrop-blur-sm px-2 py-1 rounded-full">
-                  +{stats.growth / 4}%
-                </span>
-              </div>
-              <h3 className="text-neutral-500 dark:text-neutral-400 text-sm font-medium mb-1">Today's Appointments</h3>
-              <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.todayAppointments}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6 }}
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10"
+        >
           {/* Revenue Chart with Glass Effect */}
           <div className="lg:col-span-2 p-8 border-none shadow-xl bg-white/70 backdrop-blur-xl rounded-3xl border border-white/20 dark:bg-neutral-800/70 dark:border-neutral-700/20">
             <div className="flex items-center justify-between mb-8">
@@ -348,10 +341,16 @@ export function AdminDashboard() {
             </div>
             <Button variant="outline" className="w-full mt-8 rounded-xl bg-white/60 backdrop-blur-sm border-white/20 hover:bg-white/80">View Schedule</Button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Today's Appointments - Modern Mobile-Friendly Cards */}
-        <div className="p-4 sm:p-6 border-none shadow-xl bg-white/70 backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-white/20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6 }}
+          className="p-4 sm:p-6 border-none shadow-xl bg-white/70 backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-white/20"
+        >
           <div className="flex items-center justify-between mb-4 sm:mb-6">
             <h3 className="text-lg sm:text-xl font-bold">Today's Appointments</h3>
             <Link to="/admin/appointments">
@@ -360,9 +359,26 @@ export function AdminDashboard() {
           </div>
           
           {/* Mobile Card View */}
-          <div className="space-y-3 sm:hidden">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: 0.06 } }
+            }}
+            className="space-y-3 sm:hidden"
+          >
             {appointments.slice(0, 5).map((apt) => (
-              <div key={apt._id} className="bg-white dark:bg-neutral-800 rounded-xl p-4 shadow-sm border border-neutral-100 dark:border-neutral-700">
+              <motion.div
+                key={apt._id}
+                variants={{
+                  hidden: { opacity: 0, y: 15, scale: 0.97 },
+                  visible: { opacity: 1, y: 0, scale: 1 }
+                }}
+                transition={{ duration: 0.35, ease: "easeOut" }}
+                className="bg-white dark:bg-neutral-800 rounded-xl p-4 shadow-sm border border-neutral-100 dark:border-neutral-700"
+              >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-300 font-bold text-sm">
@@ -407,18 +423,27 @@ export function AdminDashboard() {
                     </div>
                   )}
                 </div>
-              </div>
+              </motion.div>
             ))}
             {appointments.length === 0 && (
               <div className="text-center py-8">
                 <CalendarIcon className="w-12 h-12 text-neutral-300 dark:text-neutral-600 mx-auto mb-2" />
                 <p className="text-neutral-500 dark:text-neutral-400">No appointments today</p>
               </div>
-            )}
-          </div>
+             )}
+            </motion.div>
 
           {/* Desktop Table View */}
-          <div className="hidden sm:block overflow-x-auto">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: 0.04 } }
+            }}
+            className="hidden sm:block overflow-x-auto"
+          >
             <table className="w-full">
               <thead>
                 <tr className="text-left text-neutral-400 text-sm border-b border-neutral-50 dark:border-neutral-700">
@@ -432,7 +457,15 @@ export function AdminDashboard() {
               </thead>
               <tbody>
                 {appointments.map((apt) => (
-                  <tr key={apt._id} className="border-b border-neutral-50 dark:border-neutral-700 last:border-none group">
+                  <motion.tr
+                    key={apt._id}
+                    variants={{
+                      hidden: { opacity: 0, x: -15 },
+                      visible: { opacity: 1, x: 0 }
+                    }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    className="border-b border-neutral-50 dark:border-neutral-700 last:border-none group"
+                  >
                     <td className="py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-300 font-bold">
@@ -485,12 +518,12 @@ export function AdminDashboard() {
                         </Button>
                       </div>
                     </td>
-                  </tr>
+                  </motion.tr>
                 ))}
               </tbody>
             </table>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { Camera, Save, MapPin, Phone, Mail, Clock, Image as ImageIcon, Loader2 } from "lucide-react";
+import { motion } from "motion/react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { getAuthToken } from "../contexts/AuthContext";
@@ -19,7 +20,6 @@ interface Location {
   state: string;
   zipCode: string;
   country: string;
-  // GPS coordinates for maps
   latitude?: number;
   longitude?: number;
 }
@@ -61,7 +61,6 @@ const DEFAULT_LOCATION: Location = {
   state: "",
   zipCode: "",
   country: "",
-  // GPS coordinates for maps
   latitude: undefined,
   longitude: undefined
 };
@@ -98,33 +97,32 @@ export function AdminProfile() {
         },
       });
 
-       if (response.ok) {
-         const data = await response.json();
-         setProfile({
-           businessName: data.businessName || "",
-           businessEmail: data.businessEmail || "",
-           businessPhone: data.businessPhone || "",
-           businessImage: data.businessImage || "",
-           businessImages: data.businessImages || [],
-           location: {
-             address: data.location?.address || "",
-             city: data.location?.city || "",
-             state: data.location?.state || "",
-             zipCode: data.location?.zipCode || "",
-             country: data.location?.country || "",
-             // GPS coordinates for maps
-             latitude: data.location?.latitude,
-             longitude: data.location?.longitude
-           },
-           serviceHours: data.serviceHours || DEFAULT_SERVICE_HOURS,
-           operatingDays: data.operatingDays || [],
-         });
-       }
-     } catch (error) {
-       console.error("Failed to fetch profile:", error);
-     } finally {
-       setIsLoading(false);
-     }
+      if (response.ok) {
+        const data = await response.json();
+        setProfile({
+          businessName: data.businessName || "",
+          businessEmail: data.businessEmail || "",
+          businessPhone: data.businessPhone || "",
+          businessImage: data.businessImage || "",
+          businessImages: data.businessImages || [],
+          location: {
+            address: data.location?.address || "",
+            city: data.location?.city || "",
+            state: data.location?.state || "",
+            zipCode: data.location?.zipCode || "",
+            country: data.location?.country || "",
+            latitude: data.location?.latitude,
+            longitude: data.location?.longitude
+          },
+          serviceHours: data.serviceHours || DEFAULT_SERVICE_HOURS,
+          operatingDays: data.operatingDays || [],
+        });
+      }
+    } catch (error) {
+      console.error("Failed to fetch profile:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -136,6 +134,7 @@ export function AdminProfile() {
 
     setIsUploading(true);
     const token = getAuthToken();
+    const API_URL = import.meta.env.VITE_API_URL || 'https://booqlly.vercel.app';
 
     try {
       const response = await fetch(`${API_URL}/api/upload/image`, {
@@ -162,25 +161,24 @@ export function AdminProfile() {
     setIsSaving(true);
     const token = getAuthToken();
 
-     try {
-       const profileData = {
-         businessName: profile.businessName,
-         businessEmail: profile.businessEmail,
-         businessPhone: profile.businessPhone,
-         businessImage: profile.businessImage,
-         location: {
-           address: profile.location?.address || "",
-           city: profile.location?.city || "",
-           state: profile.location?.state || "",
-           zipCode: profile.location?.zipCode || "",
-           country: profile.location?.country || "",
-           // GPS coordinates for maps
-           latitude: profile.location?.latitude,
-           longitude: profile.location?.longitude
-         },
-         serviceHours: profile.serviceHours,
-         operatingDays: profile.operatingDays,
-       };
+    try {
+      const profileData = {
+        businessName: profile.businessName,
+        businessEmail: profile.businessEmail,
+        businessPhone: profile.businessPhone,
+        businessImage: profile.businessImage,
+        location: {
+          address: profile.location?.address || "",
+          city: profile.location?.city || "",
+          state: profile.location?.state || "",
+          zipCode: profile.location?.zipCode || "",
+          country: profile.location?.country || "",
+          latitude: profile.location?.latitude,
+          longitude: profile.location?.longitude
+        },
+        serviceHours: profile.serviceHours,
+        operatingDays: profile.operatingDays,
+      };
 
       const response = await fetch(`${getApiUrl()}/api/auth/profile`, {
         method: "PUT",
@@ -242,16 +240,40 @@ export function AdminProfile() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-neutral-900 dark:text-white">Business Profile</h1>
-            <p className="text-neutral-500 dark:text-neutral-400">Manage your business information</p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-neutral-900 dark:text-white">Business Profile</h1>
+              <p className="text-neutral-500 dark:text-neutral-400">Manage your business information</p>
+            </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="space-y-8">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.1 } }
+          }}
+          className="space-y-8"
+        >
           {/* Business Image */}
-          <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-neutral-100 dark:border-neutral-700">
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            whileHover={{ y: -4 }}
+            className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-neutral-100 dark:border-neutral-700"
+          >
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 rounded-xl flex items-center justify-center">
                 <ImageIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-300" />
@@ -298,10 +320,17 @@ export function AdminProfile() {
                 <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2">JPG, PNG or GIF. Max 5MB</p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Business Info */}
-          <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-neutral-100 dark:border-neutral-700">
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-neutral-100 dark:border-neutral-700"
+          >
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 rounded-xl flex items-center justify-center">
                 <ImageIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-300" />
@@ -340,158 +369,172 @@ export function AdminProfile() {
                 />
               </div>
             </div>
-          </div>
+          </motion.div>
 
-            {/* Location */}
-            <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-neutral-100 dark:border-neutral-700">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 rounded-xl flex items-center justify-center">
-                  <MapPin className="w-5 h-5 text-indigo-600 dark:text-indigo-300" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Location</h2>
-                  <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                    Set your business location on the map. Click anywhere to place the pin.
-                  </p>
-                </div>
+          {/* Location */}
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            transition={{ duration: 0.55, ease: "easeOut" }}
+            className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-neutral-100 dark:border-neutral-700"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 rounded-xl flex items-center justify-center">
+                <MapPin className="w-5 h-5 text-indigo-600 dark:text-indigo-300" />
               </div>
-
-              <div className="space-y-6">
-                {/* Map Picker */}
-                {GOOGLE_MAPS_API_KEY && (
-                  <div className="rounded-xl overflow-hidden border border-neutral-200">
-                    <MapPicker
-                      apiKey={GOOGLE_MAPS_API_KEY}
-                      latitude={profile.location?.latitude}
-                      longitude={profile.location?.longitude}
-                      onLocationSelect={(lat, lng) => {
-                        setProfile({
-                          ...profile,
-                          location: {
-                            ...profile.location,
-                            latitude: lat,
-                            longitude: lng
-                          }
-                        });
-                      }}
-                      height="350px"
-                    />
-                  </div>
-                )}
-
-                {/* Address Fields */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2 md:col-span-2">
-                    <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Street Address</label>
-                    <Input
-                      value={profile.location?.address || ""}
-                      onChange={(e) =>
-                        setProfile({
-                          ...profile,
-                          location: { ...profile.location, address: e.target.value },
-                        })
-                      }
-                      placeholder="123 Main Street"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">City</label>
-                    <Input
-                      value={profile.location?.city || ""}
-                      onChange={(e) =>
-                        setProfile({
-                          ...profile,
-                          location: { ...profile.location, city: e.target.value },
-                        })
-                      }
-                      placeholder="City"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">State / Province</label>
-                    <Input
-                      value={profile.location?.state || ""}
-                      onChange={(e) =>
-                        setProfile({
-                          ...profile,
-                          location: { ...profile.location, state: e.target.value },
-                        })
-                      }
-                      placeholder="State"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">ZIP / Postal Code</label>
-                    <Input
-                      value={profile.location?.zipCode || ""}
-                      onChange={(e) =>
-                        setProfile({
-                          ...profile,
-                          location: { ...profile.location, zipCode: e.target.value },
-                        })
-                      }
-                      placeholder="12345"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Country</label>
-                    <Input
-                      value={profile.location?.country || ""}
-                      onChange={(e) =>
-                        setProfile({
-                          ...profile,
-                          location: { ...profile.location, country: e.target.value },
-                        })
-                      }
-                      placeholder="Country"
-                    />
-                  </div>
-                  <div className="space-y-2 md:col-span-2">
-                    <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Latitude (GPS)</label>
-                    <Input
-                      type="number"
-                      step="any"
-                      value={profile.location?.latitude || ""}
-                      onChange={(e) =>
-                        setProfile({
-                          ...profile,
-                          location: { ...profile.location, latitude: e.target.value ? parseFloat(e.target.value) : undefined },
-                        })
-                      }
-                      placeholder="e.g., 5.6037"
-                    />
-                  </div>
-                  <div className="space-y-2 md:col-span-2">
-                    <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Longitude (GPS)</label>
-                    <Input
-                      type="number"
-                      step="any"
-                      value={profile.location?.longitude || ""}
-                      onChange={(e) =>
-                        setProfile({
-                          ...profile,
-                          location: { ...profile.location, longitude: e.target.value ? parseFloat(e.target.value) : undefined },
-                        })
-                      }
-                      placeholder="e.g., -0.1870"
-                    />
-                  </div>
-                </div>
-
-                {!GOOGLE_MAPS_API_KEY && (
-                  <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <p className="text-sm text-yellow-800">
-                      <strong>Note:</strong> To use the interactive map picker, set your{' '}
-                      <code className="bg-yellow-100 px-1 rounded">VITE_GOOGLE_MAPS_API_KEY</code>{' '}
-                      in the .env file. You can still manually enter latitude and longitude coordinates.
-                    </p>
-                  </div>
-                )}
+              <div>
+                <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Location</h2>
+                <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                  Set your business location on the map. Click anywhere to place the pin.
+                </p>
               </div>
             </div>
 
+            <div className="space-y-6">
+              {/* Map Picker */}
+              {GOOGLE_MAPS_API_KEY && (
+                <div className="rounded-xl overflow-hidden border border-neutral-200">
+                  <MapPicker
+                    apiKey={GOOGLE_MAPS_API_KEY}
+                    latitude={profile.location?.latitude}
+                    longitude={profile.location?.longitude}
+                    onLocationSelect={(lat, lng) => {
+                      setProfile({
+                        ...profile,
+                        location: {
+                          ...profile.location,
+                          latitude: lat,
+                          longitude: lng
+                        }
+                      });
+                    }}
+                    height="350px"
+                  />
+                </div>
+              )}
+
+              {/* Address Fields */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Street Address</label>
+                  <Input
+                    value={profile.location?.address || ""}
+                    onChange={(e) =>
+                      setProfile({
+                        ...profile,
+                        location: { ...profile.location, address: e.target.value },
+                      })
+                    }
+                    placeholder="123 Main Street"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">City</label>
+                  <Input
+                    value={profile.location?.city || ""}
+                    onChange={(e) =>
+                      setProfile({
+                        ...profile,
+                        location: { ...profile.location, city: e.target.value },
+                      })
+                    }
+                    placeholder="City"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">State / Province</label>
+                  <Input
+                    value={profile.location?.state || ""}
+                    onChange={(e) =>
+                      setProfile({
+                        ...profile,
+                        location: { ...profile.location, state: e.target.value },
+                      })
+                    }
+                    placeholder="State"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">ZIP / Postal Code</label>
+                  <Input
+                    value={profile.location?.zipCode || ""}
+                    onChange={(e) =>
+                      setProfile({
+                        ...profile,
+                        location: { ...profile.location, zipCode: e.target.value },
+                      })
+                    }
+                    placeholder="12345"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Country</label>
+                  <Input
+                    value={profile.location?.country || ""}
+                    onChange={(e) =>
+                      setProfile({
+                        ...profile,
+                        location: { ...profile.location, country: e.target.value },
+                      })
+                    }
+                    placeholder="Country"
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Latitude (GPS)</label>
+                  <Input
+                    type="number"
+                    step="any"
+                    value={profile.location?.latitude || ""}
+                    onChange={(e) =>
+                      setProfile({
+                        ...profile,
+                        location: { ...profile.location, latitude: e.target.value ? parseFloat(e.target.value) : undefined },
+                      })
+                    }
+                    placeholder="e.g., 5.6037"
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Longitude (GPS)</label>
+                  <Input
+                    type="number"
+                    step="any"
+                    value={profile.location?.longitude || ""}
+                    onChange={(e) =>
+                      setProfile({
+                        ...profile,
+                        location: { ...profile.location, longitude: e.target.value ? parseFloat(e.target.value) : undefined },
+                      })
+                    }
+                    placeholder="e.g., -0.1870"
+                  />
+                </div>
+              </div>
+
+              {!GOOGLE_MAPS_API_KEY && (
+                <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <p className="text-sm text-yellow-800">
+                    <strong>Note:</strong> To use the interactive map picker, set your{' '}
+                    <code className="bg-yellow-100 px-1 rounded">VITE_GOOGLE_MAPS_API_KEY</code>{' '}
+                    in the .env file. You can still manually enter latitude and longitude coordinates.
+                  </p>
+                </div>
+              )}
+            </div>
+          </motion.div>
+
           {/* Service Hours */}
-          <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-neutral-100 dark:border-neutral-700">
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            transition={{ duration: 0.55, ease: "easeOut" }}
+            className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-neutral-100 dark:border-neutral-700"
+          >
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 rounded-xl flex items-center justify-center">
                 <Clock className="w-5 h-5 text-indigo-600 dark:text-indigo-300" />
@@ -504,8 +547,12 @@ export function AdminProfile() {
 
             <div className="space-y-4">
               {DAYS.map((day) => (
-                <div
+                <motion.div
                   key={day}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-30px" }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
                   className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-neutral-50 dark:bg-neutral-700/50 rounded-xl"
                 >
                   <div className="flex items-center gap-4">
@@ -539,13 +586,19 @@ export function AdminProfile() {
                       />
                     </div>
                   )}
-                </div>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* Save Button */}
-          <div className="flex justify-end">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
+            className="flex justify-end"
+          >
             <Button
               onClick={handleSave}
               disabled={isSaving}
@@ -558,8 +611,8 @@ export function AdminProfile() {
               )}
               <span>{isSaving ? "Saving..." : "Save Changes"}</span>
             </Button>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   );

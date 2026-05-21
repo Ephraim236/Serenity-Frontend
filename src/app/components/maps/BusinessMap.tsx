@@ -95,7 +95,13 @@ export function BusinessMap({
         </div>
 
         {/* Business list with static location info */}
-        <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-lg border border-neutral-100 dark:border-neutral-700 overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+        className="bg-white dark:bg-neutral-800 rounded-xl shadow-lg border border-neutral-100 dark:border-neutral-700 overflow-hidden"
+      >
           <div className="p-4 border-b border-neutral-100 dark:border-neutral-700">
             <h3 className="font-bold text-neutral-900 dark:text-white">
               Business Locations ({businesses.length})
@@ -137,9 +143,9 @@ export function BusinessMap({
                   <Navigation className="w-4 h-4 text-indigo-500" />
                 </Button>
               </div>
-            ))}
+          ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -281,10 +287,10 @@ export function BusinessMap({
               >
                 <ExternalLink className="w-4 h-4 text-indigo-500" />
               </Button>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

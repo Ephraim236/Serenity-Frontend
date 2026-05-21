@@ -382,9 +382,9 @@ export function BookingPage() {
                     />
                     <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full font-bold text-indigo-600">
                       {typeof service.price === 'number' ? `₵${service.price.toLocaleString()}` : service.price}
-                    </div>
-                  </div>
-                   {/* Content below */}
+                        </div>
+                      </motion.div>
+                       {/* Content below */}
                    <div className="p-5">
                      <div className="flex items-center gap-2 mb-2">
                        <span className="text-xs font-semibold px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
