@@ -16,7 +16,6 @@ import {
   Loader2,
   Star,
   MapPin,
-  Navigation,
   Building2,
   Store
 } from "lucide-react";
@@ -435,15 +434,13 @@ export function BookingPage() {
                     )}
 
                     {business.location?.latitude && business.location?.longitude && GOOGLE_MAPS_API_KEY && (
-                      <a
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${business.location.latitude},${business.location.longitude}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-sm font-medium text-violet-600 hover:text-violet-700 transition-colors"
+                      <button
+                        onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${business.location.latitude},${business.location.longitude}`, '_blank', 'noopener,noreferrer')}
+                        className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400 hover:bg-violet-200 dark:hover:bg-violet-800/60 transition-colors"
+                        aria-label="Get directions"
                       >
-                        <Navigation className="w-4 h-4" />
-                        Get Directions
-                      </a>
+                        <MapPin className="w-5 h-5" />
+                      </button>
                     )}
                   </div>
 

@@ -13,7 +13,8 @@ import {
   Sun,
   Moon,
   Download,
-  MapPin
+  MapPin,
+  LogIn
 } from "lucide-react";
 import { cn } from "../components/ui/utils";
 import { usePWAInstall } from "../hooks/usePWAInstall";
@@ -49,6 +50,14 @@ const clientNav = [
   { label: "My Bookings", href: "/my-bookings", icon: ShoppingBag },
   { label: "Find Businesses", href: "/business-map", icon: MapPin },
 ];
+
+const unauthenticatedClientNav = [
+  { label: "Login", href: "/login", icon: LogIn },
+  { label: "Sign Up", href: "/signup", icon: User },
+];
+
+// Bottom tab bar is auth-aware — unauthenticated users see Login/SignUp instead of My Bookings/Find Businesses
+const bottomMobileNav = isAuthenticated ? clientNav : unauthenticatedClientNav;
 
   const adminNav = [
     { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -355,7 +364,7 @@ const clientNav = [
           style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
         >
           <div className="flex items-center justify-around h-16 px-2">
-            {clientNav.map((item) => {
+            {bottomMobileNav.map((item) => {
               const isActive = location.pathname === item.href || (item.href !== '/' && location.pathname.startsWith(item.href + '/'));
               return (
                 <Link

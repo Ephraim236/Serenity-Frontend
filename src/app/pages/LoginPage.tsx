@@ -110,7 +110,7 @@ export function LoginPage() {
           <p className="text-white/70 mt-2">Sign in to your Booqlly account</p>
         </div>
 
-        <Card className="p-8 border-none shadow-2xl bg-white/10 backdrop-blur-2xl rounded-[32px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.37)]">
+        <Card className="p-8 border-none shadow-2xl bg-white/10 backdrop-blur-2xl rounded-[32px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.37)] dark:bg-neutral-950/30">
           {/* Role Selector */}
           <div className="flex bg-neutral-100 dark:bg-neutral-700 p-1 rounded-2xl mb-8">
             <button
@@ -146,7 +146,7 @@ export function LoginPage() {
               variant="outline"
               onClick={handleGoogleLogin}
               disabled={isGoogleLoading}
-              className="w-full h-12 mb-4 bg-white border-2 border-neutral-200 hover:bg-neutral-50 text-neutral-700 rounded-xl text-sm font-bold flex items-center justify-center gap-2"
+              className="w-full h-12 mb-4 bg-white dark:bg-neutral-800 border-2 border-neutral-200 dark:border-neutral-600 hover:bg-neutral-50 dark:hover:bg-neutral-700 text-neutral-700 dark:text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2"
             >
               {isGoogleLoading ? (
                 <div className="w-5 h-5 border-2 border-neutral-400 border-t-transparent rounded-full animate-spin" />
@@ -171,32 +171,32 @@ export function LoginPage() {
               <label className="text-sm font-bold text-neutral-700 dark:text-neutral-300 ml-1">Email Address</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-indigo-400" />
-                <input
-                  required
-                  type="email"
-                  placeholder="name@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
-                />
+                  <input
+                    required
+                    type="email"
+                    placeholder="name@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full pl-12 pr-4 py-3.5 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-900 dark:text-white dark:placeholder:text-neutral-400 focus:bg-white dark:focus:bg-neutral-600 transition-all"
+                  />
               </div>
             </div>
 
             <div className="space-y-2">
-              <div className="flex justify-between items-center ml-1">
-                <label className="text-sm font-bold text-neutral-700">Password</label>
-                <button type="button" className="text-xs font-bold text-indigo-600 hover:text-indigo-700">Forgot Password?</button>
-              </div>
+                     <div className="flex justify-between items-center ml-1">
+                      <label className="text-sm font-bold text-neutral-700 dark:text-neutral-300">Password</label>
+                      <button type="button" className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300">Forgot Password?</button>
+                    </div>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-indigo-400" />
-                <input
-                  required
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
-                />
+                  <input
+                    required
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full pl-12 pr-4 py-3.5 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-900 dark:text-white dark:placeholder:text-neutral-400 focus:bg-white dark:focus:bg-neutral-600 transition-all"
+                  />
               </div>
             </div>
 

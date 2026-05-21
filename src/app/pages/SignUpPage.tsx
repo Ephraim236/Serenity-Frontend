@@ -261,7 +261,7 @@ export function SignUpPage() {
           <p className="text-white/70 mt-2">Join Booqlly</p>
         </div>
 
-        <Card className="p-8 border-none shadow-2xl bg-white/10 backdrop-blur-2xl rounded-[40px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.37)]">
+        <Card className="p-8 border-none shadow-2xl bg-white/10 backdrop-blur-2xl rounded-[40px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.37)] dark:bg-neutral-950/30">
           {/* Role Selector */}
           {currentStep === 1 && (
             <div className="mb-8">
@@ -272,11 +272,11 @@ export function SignUpPage() {
                   onClick={() => setRole("client")}
                   className={`flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all ${
                     role === "client" 
-                      ? "border-blue-600 bg-blue-50/50 text-blue-700" 
-                      : "border-neutral-100 hover:border-neutral-200 text-neutral-500"
+                      ? "border-blue-600 bg-blue-50/50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300" 
+                      : "border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 text-neutral-600 dark:text-neutral-300"
                   }`}
                 >
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "client" ? "bg-blue-600 text-white" : "bg-neutral-100"}`}>
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "client" ? "bg-blue-600 text-white" : "bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300"}`}>
                     <User className="w-6 h-6" />
                   </div>
                   <div className="text-center">
@@ -289,11 +289,11 @@ export function SignUpPage() {
                   onClick={() => { setRole("business"); nextStep(); }}
                   className={`flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all ${
                     role === "business" 
-                      ? "border-blue-600 bg-blue-50/50 text-blue-700" 
-                      : "border-neutral-100 hover:border-neutral-200 text-neutral-500"
+                      ? "border-blue-600 bg-blue-50/50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300" 
+                      : "border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 text-neutral-600 dark:text-neutral-300"
                   }`}
                 >
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "business" ? "bg-blue-600 text-white" : "bg-neutral-100"}`}>
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "business" ? "bg-blue-600 text-white" : "bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300"}`}>
                     <Briefcase className="w-6 h-6" />
                   </div>
                   <div className="text-center">
@@ -309,15 +309,13 @@ export function SignUpPage() {
           {currentStep === 2 && role === "business" && (
             <div className="space-y-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-neutral-900">Business Profile</h2>
-                <button type="button" onClick={prevStep} className="text-sm text-blue-600 font-medium hover:underline">
-                  Back
-                </button>
+                <h2 className="text-xl font-bold text-neutral-900 dark:text-white">Business Profile</h2>
+                <button type="button" onClick={prevStep} className="text-sm text-blue-600 dark:text-blue-400 font-medium hover:underline">Back</button>
               </div>
 
               {/* Business Name */}
               <div className="space-y-2">
-                <label className="text-sm font-bold text-neutral-700 ml-1">Business Name *</label>
+                <label className="text-sm font-bold text-neutral-700 dark:text-neutral-300 ml-1">Business Name *</label>
                 <input
                   required
                   type="text"
@@ -325,14 +323,14 @@ export function SignUpPage() {
                   placeholder="Booqlly Studio Central"
                   value={formData.businessName}
                   onChange={handleChange}
-                  className="w-full px-5 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                  className="w-full px-5 py-3.5 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-900 dark:text-white dark:placeholder:text-neutral-400 focus:bg-white dark:focus:bg-neutral-600 transition-all"
                 />
               </div>
 
               {/* Contact Info */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-neutral-700 ml-1">Business Email *</label>
+                  <label className="text-sm font-bold text-neutral-700 dark:text-neutral-300 ml-1">Business Email *</label>
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-400" />
                     <input
@@ -342,12 +340,12 @@ export function SignUpPage() {
                       placeholder="contact@business.com"
                       value={formData.businessEmail}
                       onChange={handleChange}
-                      className="w-full pl-12 pr-4 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                      className="w-full pl-12 pr-4 py-3.5 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-900 dark:text-white dark:placeholder:text-neutral-400 focus:bg-white dark:focus:bg-neutral-600 transition-all"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-neutral-700 ml-1">Business Phone *</label>
+                  <label className="text-sm font-bold text-neutral-700 dark:text-neutral-300 ml-1">Business Phone *</label>
                   <div className="relative">
                     <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-400" />
                     <input
@@ -357,7 +355,7 @@ export function SignUpPage() {
                       placeholder="+1 (555) 123-4567"
                       value={formData.businessPhone}
                       onChange={handleChange}
-                      className="w-full pl-12 pr-4 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                      className="w-full pl-12 pr-4 py-3.5 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-900 dark:text-white dark:placeholder:text-neutral-400 focus:bg-white dark:focus:bg-neutral-600 transition-all"
                     />
                   </div>
                 </div>
@@ -365,7 +363,7 @@ export function SignUpPage() {
 
               {/* Location */}
               <div className="space-y-2">
-                <label className="text-sm font-bold text-neutral-700 ml-1 flex items-center gap-2">
+                <label className="text-sm font-bold text-neutral-700 dark:text-neutral-300 ml-1 flex items-center gap-2">
                   <MapPin className="w-4 h-4" /> Location
                 </label>
                 <input
@@ -375,7 +373,7 @@ export function SignUpPage() {
                   placeholder="Street Address"
                   value={formData.location.address}
                   onChange={handleChange}
-                  className="w-full px-5 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all mb-3"
+                  className="w-full px-5 py-3.5 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-900 dark:text-white dark:placeholder:text-neutral-400 focus:bg-white dark:focus:bg-neutral-600 transition-all mb-3"
                 />
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <input
@@ -384,7 +382,7 @@ export function SignUpPage() {
                     placeholder="City"
                     value={formData.location.city}
                     onChange={handleChange}
-                    className="px-4 py-2.5 bg-neutral-50 border border-neutral-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                    className="px-4 py-2.5 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-900 dark:text-white dark:placeholder:text-neutral-400 focus:bg-white dark:focus:bg-neutral-600 transition-all"
                   />
                   <input
                     type="text"
@@ -392,7 +390,7 @@ export function SignUpPage() {
                     placeholder="State"
                     value={formData.location.state}
                     onChange={handleChange}
-                    className="px-4 py-2.5 bg-neutral-50 border border-neutral-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                    className="px-4 py-2.5 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-900 dark:text-white dark:placeholder:text-neutral-400 focus:bg-white dark:focus:bg-neutral-600 transition-all"
                   />
                   <input
                     type="text"
@@ -400,7 +398,7 @@ export function SignUpPage() {
                     placeholder="Zip Code"
                     value={formData.location.zipCode}
                     onChange={handleChange}
-                    className="px-4 py-2.5 bg-neutral-50 border border-neutral-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                    className="px-4 py-2.5 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-900 dark:text-white dark:placeholder:text-neutral-400 focus:bg-white dark:focus:bg-neutral-600 transition-all"
                   />
                   <input
                     type="text"
@@ -408,14 +406,14 @@ export function SignUpPage() {
                     placeholder="Country"
                     value={formData.location.country}
                     onChange={handleChange}
-                    className="px-4 py-2.5 bg-neutral-50 border border-neutral-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                    className="px-4 py-2.5 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-900 dark:text-white dark:placeholder:text-neutral-400 focus:bg-white dark:focus:bg-neutral-600 transition-all"
                   />
                 </div>
               </div>
 
               {/* Operating Days */}
               <div className="space-y-2">
-                <label className="text-sm font-bold text-neutral-700 ml-1">Operating Days *</label>
+                <label className="text-sm font-bold text-neutral-700 dark:text-neutral-300 ml-1">Operating Days *</label>
                 <div className="flex flex-wrap gap-2">
                   {DAYS_OF_WEEK.map((day) => (
                     <button
@@ -425,7 +423,7 @@ export function SignUpPage() {
                       className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                         formData.operatingDays.includes(day.key)
                           ? "bg-indigo-600 text-white"
-                          : "bg-neutral-100 text-neutral-500 hover:bg-neutral-200"
+                          : "bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-600"
                       }`}
                     >
                       {day.label}
@@ -436,13 +434,13 @@ export function SignUpPage() {
 
               {/* Service Hours */}
               <div className="space-y-2">
-                <label className="text-sm font-bold text-neutral-700 ml-1 flex items-center gap-2">
+                <label className="text-sm font-bold text-neutral-700 dark:text-neutral-300 ml-1 flex items-center gap-2">
                   <Clock className="w-4 h-4" /> Service Hours
                 </label>
                 <div className="space-y-3 max-h-48 overflow-y-auto pr-2">
                   {DAYS_OF_WEEK.map((day) => (
                     <div key={day.key} className="flex items-center gap-3">
-                      <span className="w-16 text-sm font-medium text-neutral-600">{day.label}</span>
+                      <span className="w-16 text-sm font-medium text-neutral-600 dark:text-neutral-300">{day.label}</span>
                       <label className="flex items-center gap-2 cursor-pointer">
                         <input
                           type="checkbox"
@@ -450,7 +448,7 @@ export function SignUpPage() {
                           onChange={(e) => handleServiceHoursChange(day.key, 'isClosed', !e.target.checked)}
                           className="w-4 h-4 rounded border-neutral-300 text-indigo-600 focus:ring-indigo-500"
                         />
-                        <span className="text-xs text-neutral-500">Open</span>
+                        <span className="text-xs text-neutral-500 dark:text-neutral-400">Open</span>
                       </label>
                       <AnimatePresence>
                         {!formData.serviceHours[day.key].isClosed && (
@@ -464,14 +462,14 @@ export function SignUpPage() {
                               type="time"
                               value={formData.serviceHours[day.key].open}
                               onChange={(e) => handleServiceHoursChange(day.key, 'open', e.target.value)}
-                              className="px-3 py-1.5 bg-neutral-50 border border-neutral-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                              className="px-3 py-1.5 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-900 dark:text-white"
                             />
-                            <span className="text-neutral-400">to</span>
+                            <span className="text-neutral-400 dark:text-neutral-500">to</span>
                             <input
                               type="time"
                               value={formData.serviceHours[day.key].close}
                               onChange={(e) => handleServiceHoursChange(day.key, 'close', e.target.value)}
-                              className="px-3 py-1.5 bg-neutral-50 border border-neutral-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                              className="px-3 py-1.5 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-900 dark:text-white"
                             />
                           </motion.div>
                         )}
@@ -483,13 +481,13 @@ export function SignUpPage() {
 
               {/* Business Images */}
               <div className="space-y-2">
-                <label className="text-sm font-bold text-neutral-700 ml-1 flex items-center gap-2">
+                <label className="text-sm font-bold text-neutral-700 dark:text-neutral-300 ml-1 flex items-center gap-2">
                   <ImageIcon className="w-4 h-4" /> Business Images
                 </label>
-                <p className="text-xs text-neutral-500 ml-1">Upload your business image</p>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 ml-1">Upload your business image</p>
                 
                 {/* File Upload Area */}
-                <div className="border-2 border-dashed border-neutral-200 rounded-2xl p-6 text-center hover:border-blue-400 transition-colors">
+                <div className="border-2 border-dashed border-neutral-200 dark:border-neutral-700 rounded-2xl p-6 text-center hover:border-blue-400 dark:hover:border-blue-500 transition-colors">
                   <input
                     type="file"
                     id="business-images"
@@ -499,16 +497,16 @@ export function SignUpPage() {
                     className="hidden"
                   />
                   <label htmlFor="business-images" className="cursor-pointer">
-                    <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-3">
-                      <ImageIcon className="w-6 h-6 text-indigo-600" />
+                    <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <ImageIcon className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                     </div>
-                    <p className="text-sm font-medium text-neutral-700">
+                    <p className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
                       Click to upload images
                     </p>
-                    <p className="text-xs text-neutral-400 mt-1">
+                    <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-1">
                       or drag and drop
                     </p>
-                    <p className="text-xs text-neutral-400 mt-1">
+                    <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-1">
                       PNG, JPG, GIF up to 5MB
                     </p>
                   </label>
@@ -518,7 +516,7 @@ export function SignUpPage() {
                 {formData.businessImages.length > 0 && (
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
                     {formData.businessImages.map((img, index) => (
-                      <div key={index} className="relative group rounded-xl overflow-hidden aspect-square bg-neutral-100">
+                      <div key={index} className="relative group rounded-xl overflow-hidden aspect-square bg-neutral-100 dark:bg-neutral-800">
                         <ImageWithFallback 
                           src={img} 
                           alt={`Business ${index + 1}`} 
@@ -540,7 +538,7 @@ export function SignUpPage() {
 
                 {/* Add URL Option */}
                 <details className="mt-3">
-                  <summary className="text-sm text-indigo-600 font-medium cursor-pointer hover:underline">
+                  <summary className="text-sm text-indigo-600 dark:text-indigo-400 font-medium cursor-pointer hover:underline">
                     Or add image URL
                   </summary>
                   <div className="mt-3 space-y-2">
@@ -551,12 +549,12 @@ export function SignUpPage() {
                           placeholder="https://example.com/image.jpg"
                           value={img}
                           onChange={(e) => handleImageUrlChange(index, e.target.value)}
-                          className="flex-1 px-4 py-2.5 bg-neutral-50 border border-neutral-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                          className="flex-1 px-4 py-2.5 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-900 dark:text-white dark:placeholder:text-neutral-400 focus:bg-white dark:focus:bg-neutral-600 transition-all"
                         />
                         <button
                           type="button"
                           onClick={() => handleImageUrlRemove(index)}
-                          className="p-2 text-neutral-400 hover:text-red-500 transition-colors"
+                          className="p-2 text-neutral-400 dark:text-neutral-500 hover:text-red-500 transition-colors"
                         >
                           <X className="w-5 h-5" />
                         </button>
@@ -565,7 +563,7 @@ export function SignUpPage() {
                     <button
                       type="button"
                       onClick={handleImageUrlAdd}
-                      className="flex items-center gap-2 text-sm text-indigo-600 font-medium hover:underline"
+                      className="flex items-center gap-2 text-sm text-indigo-600 dark:text-indigo-400 font-medium hover:underline"
                     >
                       <Plus className="w-4 h-4" /> Add Image URL
                     </button>
@@ -588,10 +586,8 @@ export function SignUpPage() {
             <form onSubmit={handleSignUp} className="space-y-6">
               {role === "business" && (
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold text-neutral-900">Account Details</h2>
-                  <button type="button" onClick={prevStep} className="text-sm text-indigo-600 font-medium hover:underline">
-                    Back
-                  </button>
+                  <h2 className="text-xl font-bold text-neutral-900 dark:text-white">Account Details</h2>
+                  <button type="button" onClick={prevStep} className="text-sm text-indigo-600 dark:text-indigo-400 font-medium hover:underline">Back</button>
                 </div>
               )}
 
@@ -601,7 +597,7 @@ export function SignUpPage() {
                 variant="outline"
                 onClick={handleGoogleLogin}
                 disabled={isGoogleLoading}
-                className="w-full h-12 mb-6 bg-white border-2 border-neutral-200 hover:bg-neutral-50 text-neutral-700 rounded-2xl text-sm font-bold flex items-center justify-center gap-2"
+                className="w-full h-12 mb-6 bg-white dark:bg-neutral-800 border-2 border-neutral-200 dark:border-neutral-600 hover:bg-neutral-50 dark:hover:bg-neutral-700 text-neutral-700 dark:text-white rounded-2xl text-sm font-bold flex items-center justify-center gap-2"
               >
                 {isGoogleLoading ? (
                   <div className="w-5 h-5 border-2 border-neutral-400 border-t-transparent rounded-full animate-spin" />
@@ -613,14 +609,14 @@ export function SignUpPage() {
 
               {/* Divider */}
               <div className="flex items-center gap-4 mb-8">
-                <div className="flex-1 h-px bg-neutral-200" />
-                <span className="text-xs text-neutral-400 font-medium">or sign up with email</span>
-                <div className="flex-1 h-px bg-neutral-200" />
+                <div className="flex-1 h-px bg-neutral-200 dark:bg-neutral-700" />
+                <span className="text-xs text-neutral-400 dark:text-neutral-500 font-medium">or sign up with email</span>
+                <div className="flex-1 h-px bg-neutral-200 dark:bg-neutral-700" />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-neutral-700 ml-1">Full Name</label>
+                  <label className="text-sm font-bold text-neutral-700 dark:text-neutral-300 ml-1">Full Name</label>
                   <input
                     required
                     type="text"
@@ -628,11 +624,11 @@ export function SignUpPage() {
                     placeholder="Jane Doe"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full px-5 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                    className="w-full px-5 py-3.5 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-900 dark:text-white dark:placeholder:text-neutral-400 focus:bg-white dark:focus:bg-neutral-600 transition-all"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-neutral-700 ml-1">Email Address</label>
+                  <label className="text-sm font-bold text-neutral-700 dark:text-neutral-300 ml-1">Email Address</label>
                   <input
                     required
                     type="email"
@@ -640,13 +636,13 @@ export function SignUpPage() {
                     placeholder="jane@example.com"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-5 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                    className="w-full px-5 py-3.5 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-900 dark:text-white dark:placeholder:text-neutral-400 focus:bg-white dark:focus:bg-neutral-600 transition-all"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-neutral-700 ml-1">Password</label>
+                <label className="text-sm font-bold text-neutral-700 dark:text-neutral-300 ml-1">Password</label>
                 <input
                   required
                   type="password"
@@ -654,13 +650,13 @@ export function SignUpPage() {
                   placeholder="Create a strong password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-5 py-3.5 bg-neutral-50 border border-neutral-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                  className="w-full px-5 py-3.5 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-900 dark:text-white dark:placeholder:text-neutral-400 focus:bg-white dark:focus:bg-neutral-600 transition-all"
                 />
               </div>
 
               <div className="flex items-start gap-3 px-1">
                 <input type="checkbox" required className="mt-1 w-4 h-4 rounded border-neutral-300 text-indigo-600 focus:ring-indigo-500" />
-                <label className="text-xs text-neutral-500 leading-tight">
+                <label className="text-xs text-neutral-500 dark:text-neutral-400 leading-tight">
                   I agree to the <button type="button" className="text-indigo-600 font-bold hover:underline">Terms of Service</button> and <button type="button" className="text-indigo-600 font-bold hover:underline">Privacy Policy</button>.
                 </label>
               </div>
@@ -679,10 +675,10 @@ export function SignUpPage() {
             </form>
           )}
 
-          <div className="mt-10 pt-8 border-t border-neutral-50 text-center">
-            <p className="text-neutral-500 text-sm">
+          <div className="mt-10 pt-8 border-t border-neutral-100 dark:border-neutral-800 text-center">
+            <p className="text-neutral-500 dark:text-neutral-400 text-sm">
               Already have an account?{" "}
-              <Link to="/login" className="text-indigo-600 font-bold hover:underline">
+              <Link to="/login" className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline">
                 Sign in here
               </Link>
             </p>
