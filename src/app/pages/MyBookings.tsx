@@ -8,7 +8,8 @@ import {
   MapPin,
   ChevronRight,
   Loader2,
-  Star
+  Star,
+  Plus
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
@@ -29,7 +30,7 @@ interface Appointment {
   clientName: string;
   clientEmail: string;
   clientPhone: string;
-  business: string; // business ID
+  business: string;
   status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
   notes?: string;
 }
@@ -45,12 +46,20 @@ const getAuthToken = () => {
   return localStorage.getItem('serenity_auth_token');
 };
 
+const STATUS_CONFIG: Record<string, { label: string; badge: string; dot: string; border: string }> = {
+  pending:    { label: 'Pending',   badge: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400', dot: 'bg-amber-400', border: 'border-l-amber-400' },
+  confirmed:  { label: 'Confirmed', badge: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400', dot: 'bg-green-400',  border: 'border-l-green-400' },
+  cancelled:  { label: 'Cancelled', badge: 'bg-neutral-200 text-neutral-500 dark:bg-neutral-700 dark:text-neutral-400', dot: 'bg-neutral-400', border: 'border-l-neutral-400' },
+  completed:  { label: 'Completed', badge: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400', dot: 'bg-blue-400',  border: 'border-l-blue-400' },
+};
+
 export function MyBookings() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'all' | 'upcoming' | 'past'>('all');
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -88,8 +97,7 @@ export function MyBookings() {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden && user?.email) {
-        // Refresh data when page becomes visible
-        const fetchAppointments = async () => {
+        (async () => {
           try {
             const token = getAuthToken();
             const response = await fetch(
@@ -108,8 +116,7 @@ export function MyBookings() {
           } catch (error) {
             console.error('Failed to fetch appointments:', error);
           }
-        };
-        fetchAppointments();
+        })();
       }
     };
 
@@ -152,228 +159,218 @@ export function MyBookings() {
     }
   };
 
-  const getStatusDisplay = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return { label: 'Pending Approval', class: 'bg-amber-50 text-amber-600' };
-      case 'confirmed':
-        return { label: 'Confirmed', class: 'bg-green-50 text-green-600' };
-      case 'cancelled':
-        return { label: 'Cancelled', class: 'bg-neutral-100 text-neutral-400' };
-      case 'completed':
-        return { label: 'Completed', class: 'bg-blue-50 text-blue-600' };
-      default:
-        return { label: status, class: 'bg-neutral-100 text-neutral-400' };
-    }
-  };
-
-  const getStatusBarColor = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'bg-amber-500';
-      case 'confirmed':
-        return 'bg-green-500';
-      case 'cancelled':
-        return 'bg-neutral-300';
-      case 'completed':
-        return 'bg-blue-500';
-      default:
-        return 'bg-neutral-300';
-    }
-  };
-
-  const getStatusForDisplay = (apt: Appointment) => {
+  const getDisplayStatus = (apt: Appointment): 'upcoming' | 'past' | 'cancelled' => {
+    if (apt.status === 'cancelled') return 'cancelled';
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
     const aptDate = new Date(apt.date);
     aptDate.setHours(0, 0, 0, 0);
-
-    if (apt.status === 'cancelled') return 'cancelled';
-    if (apt.status === 'completed') return 'completed';
-    if (aptDate < today) return 'completed';
-    if (apt.status === 'confirmed') return 'upcoming';
-    return 'pending';
+    if (apt.status === 'completed' || aptDate < today) return 'past';
+    return 'upcoming';
   };
+
+  const filteredAppointments = appointments.filter(apt => {
+    const ds = getDisplayStatus(apt);
+    if (activeTab === 'upcoming') return ds === 'upcoming';
+    if (activeTab === 'past') return ds === 'past' || ds === 'cancelled';
+    return true;
+  });
+
+  const upcomingCount = appointments.filter(apt => getDisplayStatus(apt) === 'upcoming').length;
+  const pastCount = appointments.filter(apt => getDisplayStatus(apt) !== 'upcoming').length;
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-12 max-w-4xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-          <div>
-            <h1 className="text-4xl font-bold text-neutral-900">My Bookings</h1>
-            <p className="text-neutral-500">Track and manage your upcoming and past appointments</p>
-          </div>
-          <Link to="/book">
-            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl h-12 px-8 font-bold">
-              New Booking
-            </Button>
-          </Link>
-        </div>
+      <div className="mx-auto max-w-4xl px-4 py-12">
+        <h1 className="text-3xl font-bold text-neutral-900 mb-2">My Bookings</h1>
+        <p className="text-neutral-500 mb-10">Track and manage your appointments</p>
         <div className="flex items-center justify-center py-20">
           <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-          <span className="ml-3 text-neutral-500">Loading your bookings...</span>
+          <span className="ml-3 text-neutral-500">Loading your bookings…</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-4xl">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-        <div>
-          <h1 className="text-4xl font-bold text-neutral-900">My Bookings</h1>
-          <p className="text-neutral-500">Track and manage your upcoming and past appointments</p>
-        </div>
-        <Link to="/book">
-          <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl h-12 px-8 font-bold">
-            New Booking
-          </Button>
-        </Link>
+    <div className="mx-auto max-w-4xl px-4 py-6 md:py-12">
+      {/* ── Header ── */}
+      <div className="mb-8 md:mb-12">
+        <h1 className="text-2xl md:text-4xl font-bold text-neutral-900">My Bookings</h1>
+        <p className="text-neutral-500 text-sm md:text-base">
+          {user?.name ? `${user.name.split(' ')[0]}, ` : ''}
+          {appointments.length > 0
+            ? `you have ${appointments.length} booking${appointments.length !== 1 ? 's' : ''}`
+            : 'no bookings yet'}
+        </p>
       </div>
 
+      {/* ── Empty State ── */}
       {appointments.length === 0 ? (
-        <div className="text-center py-20">
-          <div className="w-20 h-20 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div className="flex flex-col items-center justify-center py-16 md:py-20">
+          <div className="w-20 h-20 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center mb-6">
             <CalendarIcon className="w-10 h-10 text-neutral-400" />
           </div>
           <h3 className="text-xl font-bold text-neutral-900 mb-2">No bookings yet</h3>
-          <p className="text-neutral-500 mb-8">You haven't made any appointments yet.</p>
+          <p className="text-neutral-500 text-center mb-8 max-w-xs">
+            When you book an appointment it will appear here
+          </p>
           <Link to="/book">
-            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl h-12 px-8">
+            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl h-12 px-8 font-bold">
               Book Now
             </Button>
           </Link>
         </div>
       ) : (
-        <div className="space-y-6">
-          {appointments.map((booking) => {
-            const statusDisplay = getStatusDisplay(booking.status);
-            const displayStatus = getStatusForDisplay(booking);
-            
-            return (
-              <Card key={booking._id} className="p-0 border-none shadow-sm bg-white rounded-[32px] overflow-hidden group">
-                <div className="flex flex-col md:flex-row">
-                  <div className={`w-full md:w-3 px-6 py-6 md:py-0 ${getStatusBarColor(booking.status)}`} />
-                  
-                  <div className="flex-1 p-8">
-                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                          <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${statusDisplay.class}`}>
-                            {statusDisplay.label}
-                          </span>
-                          <span className="text-xs text-neutral-400 font-mono">ID: {booking._id.slice(-8).toUpperCase()}</span>
-                        </div>
-                        
-                        <div>
-                          <h3 className="text-2xl font-bold text-neutral-900 mb-1">{booking.service}</h3>
-                          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-neutral-500 font-medium">
-                            <span className="flex items-center gap-2">
-                              <CalendarIcon className="w-4 h-4 text-indigo-400" /> {new Date(booking.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-                            </span>
-                            <span className="flex items-center gap-2">
-                              <Clock className="w-4 h-4 text-indigo-400" /> {booking.time}
-                            </span>
-                            <span className="flex items-center gap-2">
-                              <Scissors className="w-4 h-4 text-indigo-400" /> {booking.specialist}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
+        <>
+          {/* ── Tab Filter ── */}
+          <div className="flex gap-2 mb-6 overflow-x-auto pb-1 -mx-4 px-4 md:mx-0 md:px-0">
+            {[
+              { key: 'all', label: `All (${appointments.length})` },
+              { key: 'upcoming', label: `Upcoming (${upcomingCount})` },
+              { key: 'past', label: `Past (${pastCount})` },
+            ].map(tab => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key as typeof activeTab)}
+                className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors ${
+                  activeTab === tab.key
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200'
+                    : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
 
-                      <div className="flex flex-col sm:flex-row items-center gap-3 pt-6 lg:pt-0 border-t lg:border-none border-neutral-50">
-                        <div className="text-center sm:text-right mr-6">
-                          <p className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-1">Total Amount</p>
-                          <p className="text-2xl font-black text-indigo-600">₵{booking.price.toLocaleString()}</p>
-                        </div>
-                        
-                        <div className="flex items-center gap-2 w-full sm:w-auto">
-                          {displayStatus === 'pending' && (
-                            <>
-                              <Button 
-                                variant="outline" 
-                                className="flex-1 sm:flex-none rounded-xl border-neutral-200 text-neutral-600 hover:bg-neutral-50"
-                                disabled={cancellingId === booking._id}
-                              >
-                                {cancellingId === booking._id ? (
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                ) : (
-                                  'Reschedule'
-                                )}
-                              </Button>
-                              <Button 
-                                variant="ghost" 
-                                className="flex-1 sm:flex-none rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600"
-                                onClick={() => handleCancel(booking._id)}
-                                disabled={cancellingId === booking._id}
-                              >
-                                {cancellingId === booking._id ? (
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                ) : (
-                                  'Cancel'
-                                )}
-                              </Button>
-                            </>
-                          )}
-                          {displayStatus === 'upcoming' && (
-                            <>
-                              <Button variant="outline" className="flex-1 sm:flex-none rounded-xl border-neutral-200 text-neutral-600 hover:bg-neutral-50">
-                                Reschedule
-                              </Button>
-                              <Button 
-                                variant="ghost" 
-                                className="flex-1 sm:flex-none rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600"
-                                onClick={() => handleCancel(booking._id)}
-                                disabled={cancellingId === booking._id}
-                              >
-                                {cancellingId === booking._id ? (
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                ) : (
-                                  'Cancel'
-                                )}
-                              </Button>
-                            </>
-                          )}
-                           {displayStatus === 'completed' && (
-                             <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
-                               <Button 
-                                 variant="outline"
-                                 className="w-full sm:w-auto rounded-xl border-indigo-200 text-indigo-600 hover:bg-indigo-50"
-                               >
-                                 <RotateCcw className="w-4 h-4 mr-2" /> Rebook Service
-                               </Button>
-                               <Link to={`/review/write?businessId=${booking.business}&serviceId=${booking.serviceId || ''}&appointmentId=${booking._id}`} state={{ appointmentId: booking._id }}>
-                                 <Button className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white rounded-xl flex items-center gap-2">
-                                   <Star className="w-4 h-4" /> Leave a Review
-                                 </Button>
-                               </Link>
-                             </div>
-                           )}
-                          {displayStatus === 'cancelled' && (
-                            <Button variant="outline" className="w-full sm:w-auto rounded-xl border-neutral-200 text-neutral-600">
-                              View Details
-                            </Button>
-                          )}
-                        </div>
-                      </div>
+          {/* ── Booking List ── */}
+          <div className="space-y-4">
+            {filteredAppointments.map((booking) => {
+              const sc = STATUS_CONFIG[booking.status] ?? STATUS_CONFIG.pending;
+              const displayStatus = getDisplayStatus(booking);
+              
+              return (
+                <Card
+                  key={booking._id}
+                  className={`overflow-hidden border-l-4 ${sc.border} bg-white dark:bg-neutral-800 shadow-sm`}
+                >
+                  <div className="p-4 md:p-6">
+                    {/* Card Header: status badge + service name + price */}
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${sc.badge}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${sc.dot}`} />
+                        {sc.label}
+                      </span>
+                      <span className="text-lg font-black text-indigo-600 dark:text-indigo-400 whitespace-nowrap">
+                        ₵{booking.price.toLocaleString()}
+                      </span>
                     </div>
+
+                    {/* Service Name */}
+                    <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-1 leading-tight">
+                      {booking.service}
+                    </h3>
+
+                    {/* Meta row */}
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs md:text-sm text-neutral-500 dark:text-neutral-400 font-medium mb-3">
+                      <span className="flex items-center gap-1.5">
+                        <CalendarIcon className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                        {new Date(booking.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                        {booking.time}
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <Scissors className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                        {booking.specialist}
+                      </span>
+                    </div>
+
+                    {/* ID tag */}
+                    <p className="text-[10px] font-mono text-neutral-400 mb-4">
+                      #{booking._id.slice(-8).toUpperCase()}
+                    </p>
+
+                    {/* ── Actions ── */}
+                    {displayStatus === 'upcoming' && (
+                      <div className="flex flex-col-reverse sm:flex-row gap-2 pt-3 border-t border-neutral-100 dark:border-neutral-700">
+                        <Button
+                          variant="ghost"
+                          className="flex-1 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 text-sm h-11"
+                          onClick={() => handleCancel(booking._id)}
+                          disabled={cancellingId === booking._id}
+                        >
+                          {cancellingId === booking._id ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            'Cancel Booking'
+                          )}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="flex-1 rounded-xl border-neutral-200 dark:border-neutral-600 text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-700 text-sm h-11"
+                          disabled={cancellingId === booking._id}
+                        >
+                          {cancellingId === booking._id ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            'Reschedule'
+                          )}
+                        </Button>
+                      </div>
+                    )}
+
+                    {displayStatus === 'past' && (
+                      <div className="flex flex-col sm:flex-row gap-2 pt-3 border-t border-neutral-100 dark:border-neutral-700">
+                        <Link to={`/review/write?businessId=${booking.business}&serviceId=${booking.serviceId || ''}&appointmentId=${booking._id}`} state={{ appointmentId: booking._id }} className="flex-1">
+                          <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white rounded-xl flex items-center justify-center gap-2 text-sm h-11">
+                            <Star className="w-4 h-4" /> Leave a Review
+                          </Button>
+                        </Link>
+                        <Button
+                          variant="outline"
+                          className="flex-1 rounded-xl border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-sm h-11"
+                        >
+                          <RotateCcw className="w-4 h-4 mr-2" /> Rebook
+                        </Button>
+                      </div>
+                    )}
+
+                    {displayStatus === 'cancelled' && (
+                      <div className="pt-3 border-t border-neutral-100 dark:border-neutral-700">
+                        <Link to={`/business-map`}>
+                          <Button variant="outline" className="w-full rounded-xl border-neutral-200 dark:border-neutral-600 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700 text-sm h-11">
+                            Find Another Business
+                          </Button>
+                        </Link>
+                      </div>
+                    )}
                   </div>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
+                </Card>
+              );
+            })}
+          </div>
+        </>
       )}
 
-      <div className="mt-12 p-8 bg-blue-50 rounded-[40px] flex items-center justify-between">
-        <div className="max-w-md">
-          <h4 className="text-xl font-bold text-blue-900 mb-2">Need help with your booking?</h4>
-          <p className="text-blue-700/70 text-sm">Our support team is available 24/7 to assist you with any changes or questions.</p>
+      {/* ── Help Banner ── */}
+      <div className="mt-8 p-6 bg-blue-50 dark:bg-blue-950/30 rounded-3xl">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/40 rounded-2xl flex items-center justify-center shrink-0">
+            <MapPin className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+          </div>
+          <div className="flex-1">
+            <h4 className="font-bold text-blue-900 dark:text-blue-200">Need help with your booking?</h4>
+            <p className="text-sm text-blue-700/70 dark:text-blue-300/70 mt-0.5">
+              Our support team is available 24/7 to assist with any changes or questions.
+            </p>
+          </div>
+          <Button variant="outline" className="w-full sm:w-auto bg-white dark:bg-neutral-800 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-xl h-10 px-5 font-semibold text-sm shrink-0">
+            Contact Support
+          </Button>
         </div>
-        <Button className="bg-white text-indigo-600 hover:bg-white/90 rounded-2xl h-12 px-6 font-bold shadow-sm">
-          Contact Support
-        </Button>
       </div>
     </div>
   );

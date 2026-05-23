@@ -340,10 +340,10 @@ export function BookingPage() {
                 <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
               </div>
             ) : businesses.length === 0 ? (
-              <div className="text-center py-12 text-neutral-500">
-                <Store className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>No registered businesses found.</p>
-                <p className="text-sm mt-1">Please check back later.</p>
+              <div className="text-center py-12 text-neutral-500 dark:text-neutral-400">
+                <Store className="w-12 h-12 mx-auto mb-4 opacity-50 dark:opacity-30" />
+                <p className="dark:text-neutral-300">No registered businesses found.</p>
+                <p className="text-sm mt-1 dark:text-neutral-400">Please check back later.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -363,10 +363,10 @@ export function BookingPage() {
                             {biz.businessName || biz.name}
                           </h3>
                           {biz.businessName && (
-                            <p className="text-xs text-neutral-400 truncate">{biz.name}</p>
+                            <p className="text-xs truncate dark:text-neutral-500">{biz.name}</p>
                           )}
                           {biz.location?.city && (
-                            <div className="flex items-center gap-1 text-neutral-500 text-sm mt-1">
+                            <div className="flex items-center gap-1 text-neutral-500 dark:text-neutral-400 text-sm mt-1">
                               <MapPin className="w-3.5 h-3.5" />
                               <span>
                                 {biz.location.city}
@@ -375,7 +375,7 @@ export function BookingPage() {
                             </div>
                           )}
                         </div>
-                        <ArrowRight className="w-5 h-5 text-neutral-300 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all shrink-0" />
+                        <ArrowRight className="w-5 h-5 text-neutral-400 dark:text-neutral-500 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all shrink-0" />
                       </div>
                       {biz.averageRating !== undefined && biz.averageRating > 0 && (
                         <div className="flex items-center gap-2 mt-3">
@@ -385,7 +385,7 @@ export function BookingPage() {
                               {biz.averageRating.toFixed(1)}
                             </span>
                           </div>
-                          <span className="text-xs text-neutral-400">
+                          <span className="text-xs dark:text-neutral-500">
                             ({biz.reviewCount || 0} review{(biz.reviewCount || 0) !== 1 ? 's' : ''})
                           </span>
                         </div>
@@ -419,7 +419,7 @@ export function BookingPage() {
                           {business.businessName || business.name}
                         </h2>
                         {business.location?.city && (
-                          <p className="text-neutral-500 text-sm">
+                          <p className="text-neutral-500 dark:text-neutral-400 text-sm">
                             {business.location.city}, {business.location.country}
                           </p>
                         )}
@@ -427,9 +427,9 @@ export function BookingPage() {
                     </div>
 
                     {business.location?.address && (
-                      <div className="flex items-start gap-2 text-neutral-600 mb-4">
+                      <div className="flex items-start gap-2 text-neutral-600 dark:text-neutral-300 mb-4">
                         <MapPin className="w-4 h-4 text-violet-600 shrink-0 mt-0.5" />
-                        <span className="text-sm">{business.location.address}</span>
+                        <span className="text-sm dark:text-neutral-300">{business.location.address}</span>
                       </div>
                     )}
 
@@ -492,15 +492,15 @@ export function BookingPage() {
                       </motion.div>
                        {/* Content below */}
                    <div className="p-5">
-                     <div className="flex items-center gap-2 mb-2">
-                       <span className="text-xs font-semibold px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
-                         {service.category}
-                       </span>
-                       <div className="flex items-center gap-1 text-neutral-400 text-xs">
-                         <Clock className="w-3 h-3" />
-                         <span>{typeof service.duration === 'number' ? `${service.duration} min` : service.duration}</span>
-                       </div>
-                     </div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs font-semibold px-2 py-1 bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 rounded-full">
+                          {service.category}
+                        </span>
+                        <div className="flex items-center gap-1 text-neutral-400 dark:text-neutral-500 text-xs">
+                          <Clock className="w-3 h-3" />
+                          <span>{typeof service.duration === 'number' ? `${service.duration} min` : service.duration}</span>
+                        </div>
+                      </div>
                      <h4 className="font-bold text-lg text-neutral-900 dark:text-white mb-2">{service.name}</h4>
                      
                      {/* Service Rating */}
@@ -511,9 +511,9 @@ export function BookingPage() {
                            size={14} 
                            showValue 
                          />
-                         <span className="text-xs text-neutral-500">
-                           ({service.reviewCount || 0} review{(service.reviewCount || 0) !== 1 ? 's' : ''})
-                         </span>
+                          <span className="text-xs dark:text-neutral-400">
+                            ({service.reviewCount || 0} review{(service.reviewCount || 0) !== 1 ? 's' : ''})
+                          </span>
                        </div>
                      )}
                      
@@ -537,43 +537,43 @@ export function BookingPage() {
             className="space-y-6"
           >
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold">Choose Specialist</h2>
-              <p className="text-neutral-500">Select a professional for your {selectedService?.name}</p>
+              <h2 className="text-3xl font-bold dark:text-white">Choose Specialist</h2>
+              <p className="text-neutral-500 dark:text-neutral-400">Select a professional for your {selectedService?.name}</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <button
-                onClick={() => handleSpecialistSelect({ name: 'Any Professional', id: 'any', image: 'https://images.unsplash.com/photo-1745434123194-7c877b033e4d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYWxvbiUyMHN0YWZmJTIwdGVhbSUyMHBvcnRyYWl0JTIwcHJvZmVzc2lvbmFsfGVufDF8fHx8MTc3MTYwNzA5OHww&ixlib=rb-4.1.0&q=80&w=1080' })}
-                className="p-6 bg-white border border-neutral-100 rounded-2xl shadow-sm hover:border-indigo-600 hover:shadow-md transition-all text-center flex flex-col items-center gap-3"
-              >
-                <div className="w-20 h-20 bg-neutral-100 rounded-full flex items-center justify-center text-neutral-400">
-                  <User className="w-10 h-10" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-lg">Any Professional</h4>
-                  <p className="text-neutral-400 text-sm">Find the best available slot</p>
-                </div>
-              </button>
-              {SPECIALISTS.map((specialist) => (
-                <button
-                  key={specialist.id}
-                  onClick={() => handleSpecialistSelect(specialist)}
-                  className="p-6 bg-white border border-neutral-100 rounded-2xl shadow-sm hover:border-indigo-600 hover:shadow-md transition-all text-center flex flex-col items-center gap-3"
-                >
-                  <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-blue-100">
-                    <ImageWithFallback 
-                      src={specialist.image} 
-                      alt={specialist.name} 
-                      className="w-full h-full object-cover" 
-                      loading="lazy"
-                      placeholder="skeleton"
-                    />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-lg">{specialist.name}</h4>
-                    <p className="text-neutral-400 text-sm">{specialist.role}</p>
-                  </div>
-                </button>
-              ))}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+               <button
+                 onClick={() => handleSpecialistSelect({ name: 'Any Professional', id: 'any', image: 'https://images.unsplash.com/photo-1745434123194-7c877b033e4d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYWxvbiUyMHN0YWZmJTIwdGVhbSUyMHBvcnRyYWl0JTIwcHJvZmVzc2lvbmFsfGVufDF8fHx8MTc3MTYwNzA5OHww&ixlib=rb-4.1.0&q=80&w=1080' })}
+                 className="p-6 bg-white dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-2xl shadow-sm hover:border-indigo-600 hover:shadow-md transition-all text-center flex flex-col items-center gap-3"
+               >
+                 <div className="w-20 h-20 bg-neutral-100 dark:bg-neutral-700 rounded-full flex items-center justify-center text-neutral-400 dark:text-neutral-500">
+                   <User className="w-10 h-10" />
+                 </div>
+                 <div>
+                   <h4 className="font-bold text-lg dark:text-white">Any Professional</h4>
+                   <p className="text-neutral-400 dark:text-neutral-500 text-sm">Find the best available slot</p>
+                 </div>
+               </button>
+               {SPECIALISTS.map((specialist) => (
+                 <button
+                   key={specialist.id}
+                   onClick={() => handleSpecialistSelect(specialist)}
+                   className="p-6 bg-white dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-2xl shadow-sm hover:border-indigo-600 hover:shadow-md transition-all text-center flex flex-col items-center gap-3"
+                 >
+                   <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-blue-100 dark:border-neutral-700">
+                     <ImageWithFallback 
+                       src={specialist.image} 
+                       alt={specialist.name} 
+                       className="w-full h-full object-cover" 
+                       loading="lazy"
+                       placeholder="skeleton"
+                     />
+                   </div>
+                   <div>
+                     <h4 className="font-bold text-lg dark:text-white">{specialist.name}</h4>
+                     <p className="text-neutral-400 dark:text-neutral-500 text-sm">{specialist.role}</p>
+                   </div>
+                 </button>
+               ))}
             </div>
             <Button variant="ghost" onClick={() => setStep(1)} className="mt-8 flex items-center gap-2">
               <ArrowLeft className="w-4 h-4" /> Back to Services
@@ -589,12 +589,12 @@ export function BookingPage() {
             className="space-y-8"
           >
             <div className="text-center">
-              <h2 className="text-3xl font-bold">Pick Date & Time</h2>
-              <p className="text-neutral-500">When would you like to come in?</p>
+              <h2 className="text-3xl font-bold dark:text-white">Pick Date & Time</h2>
+              <p className="text-neutral-500 dark:text-neutral-400">When would you like to come in?</p>
             </div>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-              <div className="bg-white p-6 rounded-3xl border border-neutral-100 shadow-sm flex justify-center">
+              <div className="bg-white dark:bg-neutral-800 p-6 rounded-3xl border border-neutral-100 dark:border-neutral-700 shadow-sm flex justify-center">
                 <Calendar
                   mode="single"
                   selected={selectedDate}
@@ -605,7 +605,7 @@ export function BookingPage() {
               </div>
 
               <div className="space-y-6">
-                <h4 className="font-bold flex items-center gap-2">
+                <h4 className="font-bold flex items-center gap-2 dark:text-white">
                   <Clock className="w-5 h-5 text-indigo-600" />
                   Available Time Slots
                 </h4>
@@ -618,11 +618,11 @@ export function BookingPage() {
                  onClick={() => !disabled && handleTimeSelect(time)}
                  disabled={disabled}
                  className={`p-4 rounded-xl border font-medium transition-all hover:scale-[1.02] active:scale-95 ${
-                   selectedTime === time
-                     ? "bg-blue-600 border-blue-600 text-white shadow-lg"
-                     : disabled
-                       ? "bg-neutral-100 border-neutral-200 text-neutral-400 cursor-not-allowed"
-                       : "bg-white border-neutral-200 text-neutral-600 hover:border-indigo-600"
+                    selectedTime === time
+                      ? "bg-blue-600 border-blue-600 text-white shadow-lg"
+                      : disabled
+                        ? "bg-neutral-100 dark:bg-neutral-700/50 border-neutral-200 dark:border-neutral-700 text-neutral-400 dark:text-neutral-600 cursor-not-allowed"
+                        : "bg-white dark:bg-neutral-700 border-neutral-200 dark:border-neutral-600 text-neutral-600 dark:text-neutral-300 hover:border-indigo-600 dark:hover:border-indigo-500"
                  }`}
                >
                         {time}
@@ -665,21 +665,21 @@ export function BookingPage() {
             animate={{ scale: 1, opacity: 1 }}
             className="text-center py-12"
           >
-            <div className="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-8">
+            <div className="w-24 h-24 bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-400 rounded-full flex items-center justify-center mx-auto mb-8">
               <CheckCircle2 className="w-12 h-12" />
             </div>
-            <h2 className="text-4xl font-bold mb-4">Booking Successful!</h2>
-            <p className="text-neutral-500 mb-2 max-w-md mx-auto">
-              Your appointment for <span className="font-bold text-neutral-900">{selectedService?.name}</span> with <span className="font-bold text-neutral-900">{selectedSpecialist?.name}</span> is scheduled for <span className="font-bold text-neutral-900">{selectedDate ? format(selectedDate, 'PPP') : ''}</span> at <span className="font-bold text-neutral-900">{selectedTime}</span>.
+            <h2 className="text-4xl font-bold mb-4 dark:text-white">Booking Successful!</h2>
+            <p className="text-neutral-500 dark:text-neutral-400 mb-2 max-w-md mx-auto">
+              Your appointment for <span className="font-bold text-neutral-900 dark:text-white">{selectedService?.name}</span> with <span className="font-bold text-neutral-900 dark:text-white">{selectedSpecialist?.name}</span> is scheduled for <span className="font-bold text-neutral-900 dark:text-white">{selectedDate ? format(selectedDate, 'PPP') : ''}</span> at <span className="font-bold text-neutral-900 dark:text-white">{selectedTime}</span>.
             </p>
-            <p className="text-amber-600 font-medium mb-8 max-w-md mx-auto">
+            <p className="text-amber-600 dark:text-amber-500 font-medium mb-8 max-w-md mx-auto">
               ⏳ Waiting for admin approval
             </p>
             
-            <Card className="max-w-md mx-auto p-6 mb-8 bg-neutral-50 border-dashed">
+            <Card className="max-w-md mx-auto p-6 mb-8 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 border-dashed">
               <div className="flex justify-between items-center mb-4">
-                <span className="text-neutral-500">Booking ID:</span>
-                <span className="font-mono font-bold">#{bookingId || `SPA-${Date.now()}`}</span>
+                <span className="text-neutral-500 dark:text-neutral-400">Booking ID:</span>
+                <span className="font-mono font-bold dark:text-white">#{bookingId || `SPA-${Date.now()}`}</span>
               </div>
               <div className="flex justify-between items-center text-lg font-bold">
                 <span>Total Amount:</span>
@@ -753,8 +753,8 @@ export function BookingPage() {
           </div>
         )}
 
-        <div className="bg-neutral-50 rounded-[40px] p-2">
-          <div className="bg-white rounded-[32px] p-8 md:p-12 shadow-sm border border-neutral-100">
+        <div className="bg-neutral-50 dark:bg-neutral-800 rounded-[40px] p-2">
+          <div className="bg-white dark:bg-neutral-800 rounded-[32px] p-8 md:p-12 shadow-sm border border-neutral-100 dark:border-neutral-700">
             {renderStep()}
           </div>
         </div>

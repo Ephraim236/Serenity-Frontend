@@ -51,13 +51,17 @@ const clientNav = [
   { label: "Find Businesses", href: "/business-map", icon: MapPin },
 ];
 
-const unauthenticatedClientNav = [
-  { label: "Login", href: "/login", icon: LogIn },
-  { label: "Sign Up", href: "/signup", icon: User },
-];
-
-// Bottom tab bar is auth-aware — unauthenticated users see Login/SignUp instead of My Bookings/Find Businesses
-const bottomMobileNav = isAuthenticated ? clientNav : unauthenticatedClientNav;
+// Bottom tab bar: Home + Book Now are persistent, remaining two slots swap
+// between (My Bookings / Find Businesses) when authenticated and
+// (Login / Sign Up) when not.
+const bottomMobileNav = isAuthenticated
+  ? clientNav
+  : [
+      { label: "Home", href: "/", icon: Scissors },
+      { label: "Book Now", href: "/book", icon: Calendar },
+      { label: "Login", href: "/login", icon: LogIn },
+      { label: "Sign Up", href: "/signup", icon: User },
+    ];
 
   const adminNav = [
     { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -294,15 +298,44 @@ const bottomMobileNav = isAuthenticated ? clientNav : unauthenticatedClientNav;
         )}
       </AnimatePresence>
 
-      <main className="flex-1 pb-[calc(4rem+env(safe-area-inset-bottom,0px))]">
+      {/* Main content */}
+      <main className="flex-1 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-0">
         <MobileBackButton />
         <Outlet />
       </main>
 
+      {/* Mobile Bottom Tab Bar — always rendered before Chatbot so Chatbot z-index sits above it */}
+      {!isAdmin && (
+        <nav
+          className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/85 dark:bg-neutral-900/85 backdrop-blur-xl border-t border-neutral-200 dark:border-neutral-800"
+          style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+        >
+          <div className="flex items-center justify-around h-20 px-2">
+            {bottomMobileNav.map((item) => {
+              const isActive = location.pathname === item.href || (item.href !== '/' && location.pathname.startsWith(item.href + '/'));
+              return (
+                <Link
+                  key={item.label}
+                  to={item.href}
+                  className={cn(
+                    "flex flex-col items-center justify-center gap-1 py-3 px-3 min-w-[56px] transition-colors",
+                    isActive
+                      ? "text-blue-600 dark:text-blue-400"
+                      : "text-neutral-500 dark:text-neutral-400 active:text-blue-500"
+                  )}
+                >
+                  <item.icon className="w-7 h-7" />
+                  <span className="text-sm font-medium leading-tight">{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
+      )}
+      
       <Chatbot />
 
-      {/* Footer — add bottom padding when bottom tab bar is visible */}
-      <footer className={cn("border-t bg-white py-8 dark:bg-neutral-900 dark:border-neutral-800", !isAdmin && "pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-8")}>
+      <footer className="border-t bg-white py-8 dark:bg-neutral-900 dark:border-neutral-800">
         {location.pathname === "/" && (
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
@@ -356,35 +389,6 @@ const bottomMobileNav = isAuthenticated ? clientNav : unauthenticatedClientNav;
         </div>
         )}
       </footer>
-
-      {/* Mobile Bottom Tab Bar — client pages only */}
-      {!isAdmin && (
-        <nav
-          className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/85 dark:bg-neutral-900/85 backdrop-blur-xl border-t border-neutral-200 dark:border-neutral-800"
-          style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
-        >
-          <div className="flex items-center justify-around h-16 px-2">
-            {bottomMobileNav.map((item) => {
-              const isActive = location.pathname === item.href || (item.href !== '/' && location.pathname.startsWith(item.href + '/'));
-              return (
-                <Link
-                  key={item.label}
-                  to={item.href}
-                  className={cn(
-                    "flex flex-col items-center justify-center gap-0.5 py-2 px-3 min-w-[52px] transition-colors",
-                    isActive
-                      ? "text-blue-600 dark:text-blue-400"
-                      : "text-neutral-500 dark:text-neutral-400 active:text-blue-500"
-                  )}
-                >
-                  <item.icon className="w-6 h-6" />
-                  <span className="text-[10px] font-medium leading-tight">{item.label}</span>
-                </Link>
-              );
-            })}
-          </div>
-        </nav>
-      )}
     </div>
   );
 }
