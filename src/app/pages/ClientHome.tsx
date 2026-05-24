@@ -15,10 +15,23 @@ import {
   Mail,
   ChevronLeft,
   ChevronRight,
-  Search
+  Search,
+  Sparkles,
+  Heart
 } from "lucide-react";
 import { StarRating } from "../components/StarRating";
 import { motion, useScroll, useTransform } from "motion/react";
+import {
+  ScrollFadeInUp,
+  ScrollFadeInLeft,
+  ScrollFadeInRight,
+  ScrollScale,
+  StaggerContainer,
+  StaggerItem,
+  ParallaxScroll,
+  HoverLift,
+  PulseAnimation
+} from "../components/ScrollAnimations";
 
 const getApiUrl = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
@@ -355,18 +368,12 @@ export function ClientHome() {
       {/* Businesses Section - staggered cards */}
       {businesses.length > 0 && (
         <section className="container mx-auto px-4 mt-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.6 }}
-            className="mb-8"
-          >
+          <ScrollFadeInUp className="mb-8">
             <h2 className="text-3xl font-bold mb-4 text-neutral-900 dark:text-white">Featured Businesses</h2>
             <p className="text-neutral-500 dark:text-neutral-400 max-w-xl">
               Choose a business below to view their services and book an appointment.
             </p>
-          </motion.div>
+          </ScrollFadeInUp>
 
           <motion.div
             initial="hidden"
@@ -480,13 +487,7 @@ export function ClientHome() {
 
       {/* Featured Services - scrollable with stagger */}
       <section className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.6 }}
-          className="flex items-end justify-between mb-8"
-        >
+        <ScrollFadeInUp className="flex items-end justify-between mb-8">
           <div>
             <h2 className="text-3xl font-bold mb-4 text-neutral-900 dark:text-white">Featured Services</h2>
             <p className="text-neutral-500 dark:text-neutral-400 max-w-xl">
@@ -511,7 +512,7 @@ export function ClientHome() {
               <ChevronRight className="w-5 h-5" />
             </Button>
           </div>
-        </motion.div>
+        </ScrollFadeInUp>
 
         <motion.div
           initial="hidden"
