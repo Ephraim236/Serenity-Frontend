@@ -22,7 +22,6 @@ import { toast } from "sonner";
 import { useAuth } from "../contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { StarRating } from "../components/StarRating";
-import { motion } from "motion/react";
 import { ScrollFadeInUp, StaggerContainer, StaggerItem, HoverLift } from "../components/ScrollAnimations";
 
 interface Appointment {
@@ -410,27 +409,18 @@ function BookingCard({
   const StatusIcon = sc.icon;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -2 }}
-      className={`bg-gradient-to-br ${sc.gradient} rounded-xl border border-slate-200 dark:border-slate-700 hover:shadow-md transition-all overflow-hidden cursor-pointer`}
-    >
+    <div className={`bg-gradient-to-br ${sc.gradient} rounded-xl border border-slate-200 dark:border-slate-700 hover:shadow-md transition-all overflow-hidden cursor-pointer`}>
       <button
         onClick={onExpand}
         className="w-full text-left p-3.5 flex items-start gap-3 hover:bg-black/2 dark:hover:bg-white/5 transition-colors"
       >
-        <motion.div
-          initial={{ scale: 1 }}
-          whileHover={{ scale: 1.1 }}
-          className={`flex-shrink-0 w-10 h-10 rounded-lg bg-white dark:bg-slate-700 flex items-center justify-center ${
-            booking.status === 'pending' ? 'text-amber-500' :
-            booking.status === 'confirmed' || booking.status === 'completed' ? 'text-green-500' :
-            'text-neutral-400'
-          }`}
-        >
+        <div className={`flex-shrink-0 w-10 h-10 rounded-lg bg-white dark:bg-slate-700 flex items-center justify-center hover:scale-110 transition-transform ${
+          booking.status === 'pending' ? 'text-amber-500' :
+          booking.status === 'confirmed' || booking.status === 'completed' ? 'text-green-500' :
+          'text-neutral-400'
+        }`}>
           <StatusIcon className="w-5 h-5" />
-        </motion.div>
+        </div>
 
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-slate-900 dark:text-white text-sm truncate">
@@ -449,23 +439,13 @@ function BookingCard({
           <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${sc.badge}`}>
             {sc.label}
           </span>
-          <motion.div
-            animate={{ rotate: expanded ? 180 : 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          >
-            <ChevronDown className="w-4 h-4 text-slate-400" />
-          </motion.div>
+          <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${expanded ? 'rotate-180' : ''}`} />
         </div>
       </button>
 
       {/* ── Expanded Details ── */}
-      <motion.div
-        initial={{ opacity: 0, height: 0 }}
-        animate={expanded ? { opacity: 1, height: "auto" } : { opacity: 0, height: 0 }}
-        transition={{ duration: 0.3 }}
-        className="overflow-hidden"
-      >
-        <div className="border-t border-slate-200 dark:border-slate-700 px-3.5 py-3 space-y-3 bg-white/50 dark:bg-slate-900/30">
+      {expanded && (
+        <div className="border-t border-slate-200 dark:border-slate-700 px-3.5 py-3 space-y-3 bg-white/50 dark:bg-slate-900/30 animate-in fade-in duration-300">
           {/* Details Grid */}
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div>
@@ -538,7 +518,7 @@ function BookingCard({
             )}
           </div>
         </div>
-      </motion.div>
-    </motion.div>
+      )}
+    </div>
   );
 }
