@@ -1,6 +1,6 @@
 import { MapPin, Navigation } from 'lucide-react';
 import { Button } from './ui/button';
-import { motion } from 'motion/react';
+import { motion } from "framer-motion";
 
 interface StaticMapProps {
   latitude?: number;

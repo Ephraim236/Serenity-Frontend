@@ -20,7 +20,7 @@ import { cn } from "../components/ui/utils";
 import { usePWAInstall } from "../hooks/usePWAInstall";
 import { useState } from "react";
 import { Button } from "../components/ui/button";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../contexts/AuthContext";
 import { useTheme } from "../contexts/ThemeContext";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";

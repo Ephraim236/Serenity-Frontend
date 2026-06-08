@@ -20,7 +20,6 @@ import {
   Heart
 } from "lucide-react";
 import { StarRating } from "../components/StarRating";
-import { motion, useScroll, useTransform } from "motion/react";
 import {
   ScrollFadeInUp,
   ScrollFadeInLeft,

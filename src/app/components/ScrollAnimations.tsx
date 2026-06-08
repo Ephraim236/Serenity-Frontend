@@ -1,5 +1,7 @@
-import { motion, useScroll, useTransform, useInView } from "motion/react";
-import { useRef, ReactNode } from "react";
+import { useRef, ReactNode, useEffect, useState } from "react";
+
+// Note: All motion-based animations have been converted to CSS/Intersection Observer
+// to avoid bundling issues with the motion library. CSS transitions provide smooth animations.
 
 /**
  * ScrollFadeInUp
@@ -10,19 +12,40 @@ export const ScrollFadeInUp: React.FC<{
   delay?: number;
   className?: string;
 }> = ({ children, delay = 0, className = "" }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
+  const ref = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    if (!ref.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => setIsInView(true), delay * 1000);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [delay]);
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-      transition={{ duration: 0.6, delay, ease: "easeOut" }}
-      className={className}
+      className={`${className} ${
+        isInView
+          ? "animate-fade-in-up"
+          : "opacity-0 translate-y-10"
+      } transition-all duration-600`}
+      style={{
+        transitionDelay: delay ? `${delay}s` : "0s"
+      }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };
 
@@ -35,19 +58,40 @@ export const ScrollFadeInLeft: React.FC<{
   delay?: number;
   className?: string;
 }> = ({ children, delay = 0, className = "" }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
+  const ref = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    if (!ref.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => setIsInView(true), delay * 1000);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [delay]);
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      initial={{ opacity: 0, x: -40 }}
-      animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
-      transition={{ duration: 0.6, delay, ease: "easeOut" }}
-      className={className}
+      className={`${className} ${
+        isInView
+          ? "opacity-100 translate-x-0"
+          : "opacity-0 -translate-x-10"
+      } transition-all duration-600`}
+      style={{
+        transitionDelay: delay ? `${delay}s` : "0s"
+      }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };
 
@@ -60,19 +104,40 @@ export const ScrollFadeInRight: React.FC<{
   delay?: number;
   className?: string;
 }> = ({ children, delay = 0, className = "" }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
+  const ref = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    if (!ref.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => setIsInView(true), delay * 1000);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [delay]);
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      initial={{ opacity: 0, x: 40 }}
-      animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
-      transition={{ duration: 0.6, delay, ease: "easeOut" }}
-      className={className}
+      className={`${className} ${
+        isInView
+          ? "opacity-100 translate-x-0"
+          : "opacity-0 translate-x-10"
+      } transition-all duration-600`}
+      style={{
+        transitionDelay: delay ? `${delay}s` : "0s"
+      }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };
 
@@ -85,19 +150,40 @@ export const ScrollScale: React.FC<{
   delay?: number;
   className?: string;
 }> = ({ children, delay = 0, className = "" }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
+  const ref = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    if (!ref.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => setIsInView(true), delay * 1000);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [delay]);
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-      transition={{ duration: 0.6, delay, ease: "easeOut" }}
-      className={className}
+      className={`${className} ${
+        isInView
+          ? "opacity-100 scale-100"
+          : "opacity-0 scale-90"
+      } transition-all duration-600`}
+      style={{
+        transitionDelay: delay ? `${delay}s` : "0s"
+      }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };
 
@@ -110,26 +196,33 @@ export const StaggerContainer: React.FC<{
   staggerDelay?: number;
   className?: string;
 }> = ({ children, staggerDelay = 0.1, className = "" }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
+  const ref = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    if (!ref.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
-      variants={{
-        visible: {
-          transition: {
-            staggerChildren: staggerDelay,
-            delayChildren: 0.1,
-          },
-        },
-      }}
       className={className}
     >
-      {children}
-    </motion.div>
+      {isInView ? children : null}
+    </div>
   );
 };
 
@@ -142,39 +235,50 @@ export const StaggerItem: React.FC<{
   className?: string;
 }> = ({ children, className = "" }) => {
   return (
-    <motion.div
-      variants={{
-        hidden: { opacity: 0, y: 20 },
-        visible: {
-          opacity: 1,
-          y: 0,
-          transition: { duration: 0.6, ease: "easeOut" },
-        },
-      }}
-      className={className}
+    <div
+      className={`${className} animate-fade-in-up opacity-100 transition-all duration-600`}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };
 
 /**
  * ParallaxScroll
- * Creates parallax effect on scroll
+ * Creates parallax effect on scroll (CSS-based alternative)
  */
 export const ParallaxScroll: React.FC<{
   children: ReactNode;
   offset?: number;
   className?: string;
 }> = ({ children, offset = 50, className = "" }) => {
-  const ref = useRef(null);
-  const { scrollY } = useScroll();
-  const y = useTransform(scrollY, [0, 300], [0, offset]);
+  const ref = useRef<HTMLDivElement>(null);
+  const [translateY, setTranslateY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (ref.current) {
+        const rect = ref.current.getBoundingClientRect();
+        const scrollProgress = window.scrollY;
+        setTranslateY(scrollProgress * 0.5);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <motion.div ref={ref} style={{ y }} className={className}>
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        transform: `translateY(${translateY * 0.3}px)`,
+        transition: "transform 0.1s ease-out"
+      }}
+    >
       {children}
-    </motion.div>
+    </div>
   );
 };
 
@@ -186,14 +290,30 @@ export const RotateOnScroll: React.FC<{
   children: ReactNode;
   className?: string;
 }> = ({ children, className = "" }) => {
-  const ref = useRef(null);
-  const { scrollY } = useScroll();
-  const rotate = useTransform(scrollY, [0, 500], [0, 360]);
+  const ref = useRef<HTMLDivElement>(null);
+  const [rotation, setRotation] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scroll = window.scrollY;
+      setRotation((scroll / 5) % 360);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <motion.div ref={ref} style={{ rotate }} className={className}>
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        transform: `rotate(${rotation}deg)`,
+        transition: "transform 0.1s ease-out"
+      }}
+    >
       {children}
-    </motion.div>
+    </div>
   );
 };
 
@@ -205,14 +325,33 @@ export const ScrollOpacity: React.FC<{
   children: ReactNode;
   className?: string;
 }> = ({ children, className = "" }) => {
-  const ref = useRef(null);
-  const { scrollY } = useScroll();
-  const opacity = useTransform(scrollY, [0, 300, 600], [0, 1, 0]);
+  const ref = useRef<HTMLDivElement>(null);
+  const [opacity, setOpacity] = useState(1);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (ref.current) {
+        const rect = ref.current.getBoundingClientRect();
+        const scrollProgress = Math.max(0, Math.min(1, (300 - rect.top) / 300));
+        setOpacity(scrollProgress);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <motion.div ref={ref} style={{ opacity }} className={className}>
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: Math.max(0.3, opacity),
+        transition: "opacity 0.1s ease-out"
+      }}
+    >
       {children}
-    </motion.div>
+    </div>
   );
 };
 
@@ -224,14 +363,24 @@ export const HoverLift: React.FC<{
   children: ReactNode;
   className?: string;
 }> = ({ children, className = "" }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <motion.div
-      whileHover={{ y: -8, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}
-      transition={{ duration: 0.3 }}
-      className={className}
+    <div
+      ref={ref}
+      className={`${className} transition-all duration-300`}
+      style={{
+        transform: isHovered ? "translateY(-8px)" : "translateY(0)",
+        boxShadow: isHovered
+          ? "0 20px 25px -5px rgba(0, 0, 0, 0.1)"
+          : "0 0px 0px 0px rgba(0, 0, 0, 0)"
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };
 
@@ -244,13 +393,11 @@ export const PulseAnimation: React.FC<{
   className?: string;
 }> = ({ children, className = "" }) => {
   return (
-    <motion.div
-      animate={{ scale: [1, 1.05, 1] }}
-      transition={{ duration: 2, repeat: Infinity }}
-      className={className}
+    <div
+      className={`${className} animate-pulse`}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };
 
@@ -266,23 +413,51 @@ export const CountUp: React.FC<{
   className?: string;
 }> = ({ from, to, duration = 2, suffix = "", className = "" }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true });
+  const [count, setCount] = useState(from);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    if (!ref.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    let start = from;
+    const increment = (to - from) / (duration * 60);
+    let frame = 0;
+    const totalFrames = duration * 60;
+
+    const interval = setInterval(() => {
+      frame++;
+      start += increment;
+      setCount(Math.floor(start));
+
+      if (frame >= totalFrames) {
+        setCount(to);
+        clearInterval(interval);
+      }
+    }, 1000 / 60);
+
+    return () => clearInterval(interval);
+  }, [isInView, from, to, duration]);
 
   return (
-    <motion.div
-      ref={ref}
-      className={className}
-      initial={{ opacity: 0 }}
-      animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-    >
-      {isInView ? (
-        <motion.span>
-          {to}
-          {suffix}
-        </motion.span>
-      ) : (
-        <span>{from}{suffix}</span>
-      )}
-    </motion.div>
+    <div ref={ref} className={className}>
+      <span>{count}{suffix}</span>
+    </div>
   );
 };

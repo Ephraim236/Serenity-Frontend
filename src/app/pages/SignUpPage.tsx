@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router";
-import { Button } from "../components/ui/button";
-import { Card } from "../components/ui/card";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import Auth3DBackground from "../components/Auth3DBackground";
 import { 
@@ -20,9 +18,10 @@ import {
   Phone,
   Image as ImageIcon,
   Plus,
-  X
+  X,
+  Check
 } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useAuth, authApi } from "../contexts/AuthContext";
 
@@ -237,13 +236,16 @@ export function SignUpPage() {
       {/* 3D Immersive Background */}
       <Auth3DBackground theme={theme} showWelcome={showWelcome} userName={welcomeName} />
 
+      {/* Gradient overlay */}
+      <div className="fixed inset-0 bg-gradient-to-b from-pink-500/10 via-transparent to-blue-500/10 pointer-events-none z-0" />
+
       <div className="absolute top-4 left-4 z-10">
         <button 
           onClick={() => navigate('/')} 
-          className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors backdrop-blur-sm bg-white/10 px-3 py-2 rounded-full touch-manipulation"
+          className="group flex items-center gap-1.5 text-white/80 hover:text-white transition-all backdrop-blur-md bg-white/[0.08] hover:bg-white/[0.12] px-3 py-2 rounded-full touch-manipulation border border-white/[0.15] hover:border-white/[0.3]"
           aria-label="Go to home"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
           <span className="text-sm font-medium hidden sm:inline">Back</span>
         </button>
       </div>
@@ -251,58 +253,130 @@ export function SignUpPage() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6 }}
         className="w-full max-w-2xl z-10"
       >
-        <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center text-white mx-auto mb-6 shadow-2xl border border-white/20">
-            <UserPlus className="w-10 h-10" />
-          </div>
-          <h1 className="text-4xl font-bold text-white drop-shadow-lg">Create Account</h1>
-          <p className="text-white/70 mt-2">Join Booqlly</p>
+        {/* Header */}
+        <div className="text-center mb-10">
+          <motion.div 
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="w-24 h-24 mx-auto mb-6 relative"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-pink-500 to-purple-500 rounded-3xl blur-xl opacity-50 animate-pulse" />
+            <div className="relative w-full h-full glass-card-premium rounded-3xl flex items-center justify-center text-white shadow-2xl">
+              <UserPlus className="w-12 h-12" />
+            </div>
+          </motion.div>
+          <h1 className="text-5xl font-bold gradient-text mb-2">Create Account</h1>
+          <p className="text-white/70 text-lg">Join Booqlly and get started</p>
         </div>
 
-        <Card className="p-8 border-none shadow-2xl bg-white/10 backdrop-blur-2xl rounded-[40px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.37)] dark:bg-neutral-950/30">
+        {/* Step Indicator */}
+        <div className="flex gap-2 mb-8 justify-center">
+          {[1, 2, 3].map((step) => (
+            <motion.div
+              key={step}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className={`h-2 rounded-full transition-all ${
+                step === currentStep 
+                  ? 'w-8 bg-gradient-to-r from-blue-400 to-purple-400'
+                  : step < currentStep 
+                  ? 'w-2 bg-green-400'
+                  : 'w-2 bg-white/20'
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Main Card */}
+        <div className="glass-card-premium rounded-[32px] p-8 md:p-10 backdrop-blur-[30px]">
           {/* Role Selector */}
           {currentStep === 1 && (
-            <div className="mb-8">
-              <label className="text-sm font-bold text-neutral-700 block mb-4 text-center">I want to join as a:</label>
+            <motion.div 
+              className="space-y-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <div className="text-center">
+                <h2 className="text-2xl font-bold text-white mb-2">I want to join as:</h2>
+                <p className="text-white/60">Choose your account type</p>
+              </div>
+              
               <div className="grid grid-cols-2 gap-4">
-                <button
+                <motion.button
                   type="button"
                   onClick={() => setRole("client")}
-                  className={`flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all ${
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`relative group p-6 rounded-2xl transition-all ${
                     role === "client" 
-                      ? "border-blue-600 bg-blue-50/50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300" 
-                      : "border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 text-neutral-600 dark:text-neutral-300"
+                      ? "glass-card-premium border-blue-400/40 shadow-lg shadow-blue-500/20" 
+                      : "glass-card border-white/[0.15] hover:border-white/[0.3]"
                   }`}
                 >
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "client" ? "bg-blue-600 text-white" : "bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300"}`}>
-                    <User className="w-6 h-6" />
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-4 mx-auto transition-all ${
+                    role === "client" 
+                      ? "bg-gradient-to-br from-blue-500 to-blue-600" 
+                      : "bg-white/[0.1] group-hover:bg-white/[0.15]"
+                  }`}>
+                    <User className="w-7 h-7 text-white" />
                   </div>
                   <div className="text-center">
-                    <span className="block font-bold">Client</span>
-                    <span className="text-[10px] opacity-70">Book appointments</span>
+                    <span className="block font-bold text-white text-lg">Client</span>
+                    <span className="text-xs text-white/60">Book appointments</span>
                   </div>
-                </button>
-                <button
+                  {role === "client" && (
+                    <div className="absolute top-2 right-2 bg-blue-500 rounded-full p-1">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                  )}
+                </motion.button>
+
+                <motion.button
                   type="button"
                   onClick={() => { setRole("business"); nextStep(); }}
-                  className={`flex flex-col items-center gap-3 p-6 rounded-3xl border-2 transition-all ${
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`relative group p-6 rounded-2xl transition-all ${
                     role === "business" 
-                      ? "border-blue-600 bg-blue-50/50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300" 
-                      : "border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 text-neutral-600 dark:text-neutral-300"
+                      ? "glass-card-premium border-purple-400/40 shadow-lg shadow-purple-500/20" 
+                      : "glass-card border-white/[0.15] hover:border-white/[0.3]"
                   }`}
                 >
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${role === "business" ? "bg-blue-600 text-white" : "bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300"}`}>
-                    <Briefcase className="w-6 h-6" />
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-4 mx-auto transition-all ${
+                    role === "business" 
+                      ? "bg-gradient-to-br from-purple-500 to-pink-500" 
+                      : "bg-white/[0.1] group-hover:bg-white/[0.15]"
+                  }`}>
+                    <Briefcase className="w-7 h-7 text-white" />
                   </div>
                   <div className="text-center">
-                    <span className="block font-bold">Business</span>
-                    <span className="text-[10px] opacity-70">Manage my salon</span>
+                    <span className="block font-bold text-white text-lg">Business</span>
+                    <span className="text-xs text-white/60">Manage my business</span>
                   </div>
-                </button>
+                  {role === "business" && (
+                    <div className="absolute top-2 right-2 bg-purple-500 rounded-full p-1">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                  )}
+                </motion.button>
               </div>
-            </div>
+
+              {role === "client" && (
+                <motion.button
+                  onClick={nextStep}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full glass-button rounded-2xl h-12 text-white font-bold text-lg flex items-center justify-center gap-2 mt-6"
+                >
+                  Continue <ArrowRight className="w-5 h-5" />
+                </motion.button>
+              )}
+            </motion.div>
           )}
 
           {/* Business Profile Form - Step 2 */}
@@ -675,15 +749,15 @@ export function SignUpPage() {
             </form>
           )}
 
-          <div className="mt-10 pt-8 border-t border-neutral-100 dark:border-neutral-800 text-center">
-            <p className="text-neutral-500 dark:text-neutral-400 text-sm">
+          <div className="mt-10 pt-8 border-t border-white/10 text-center">
+            <p className="text-white/70 text-sm">
               Already have an account?{" "}
-              <Link to="/login" className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline">
+              <Link to="/login" className="text-blue-400 font-bold hover:text-blue-300 transition-colors">
                 Sign in here
               </Link>
             </p>
           </div>
-        </Card>
+        </div>
       </motion.div>
     </div>
   );

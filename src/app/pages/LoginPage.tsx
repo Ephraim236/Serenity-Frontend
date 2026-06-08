@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router";
-import { Button } from "../components/ui/button";
-import { Card } from "../components/ui/card";
 import {
   Scissors,
   Mail,
@@ -12,7 +10,7 @@ import {
   ChevronLeft,
   Chrome
 } from "lucide-react";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useAuth, authApi } from "../contexts/AuthContext";
 import Auth3DBackground from "../components/Auth3DBackground";
@@ -86,13 +84,16 @@ export function LoginPage() {
       {/* 3D Immersive Background */}
       <Auth3DBackground theme={theme} showWelcome={showWelcome} userName={welcomeName} />
 
+      {/* Gradient overlay */}
+      <div className="fixed inset-0 bg-gradient-to-b from-blue-500/10 via-transparent to-purple-500/10 pointer-events-none z-0" />
+
       <div className="absolute top-4 left-4 z-10">
         <button 
           onClick={() => navigate('/')} 
-          className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors backdrop-blur-sm bg-white/10 px-3 py-2 rounded-full touch-manipulation"
+          className="group flex items-center gap-1.5 text-white/80 hover:text-white transition-all backdrop-blur-md bg-white/[0.08] hover:bg-white/[0.12] px-3 py-2 rounded-full touch-manipulation border border-white/[0.15] hover:border-white/[0.3]"
           aria-label="Go to home"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
           <span className="text-sm font-medium hidden sm:inline">Back</span>
         </button>
       </div>
@@ -100,128 +101,173 @@ export function LoginPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
         className="w-full max-w-md z-10"
       >
-        <div className="text-center mb-10">
-          <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center text-white mx-auto mb-6 shadow-2xl border border-white/20">
-            <Scissors className="w-10 h-10" />
-          </div>
-          <h1 className="text-4xl font-bold text-white drop-shadow-lg">Welcome Back</h1>
-          <p className="text-white/70 mt-2">Sign in to your Booqlly account</p>
+        {/* Header */}
+        <div className="text-center mb-12">
+          <motion.div 
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="w-24 h-24 mx-auto mb-6 relative"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl blur-xl opacity-50 animate-pulse" />
+            <div className="relative w-full h-full glass-card-premium rounded-3xl flex items-center justify-center text-white shadow-2xl">
+              <Scissors className="w-12 h-12" />
+            </div>
+          </motion.div>
+          <h1 className="text-5xl font-bold gradient-text mb-2">Welcome Back</h1>
+          <p className="text-white/70 text-lg">Sign in to your Booqlly account</p>
         </div>
 
-        <Card className="p-8 border-none shadow-2xl bg-white/10 backdrop-blur-2xl rounded-[32px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.37)] dark:bg-neutral-950/30">
+        {/* Main Card */}
+        <div className="glass-card-premium rounded-[32px] p-8 md:p-10 backdrop-blur-[30px]">
           {/* Role Selector */}
-          <div className="flex bg-neutral-100 dark:bg-neutral-700 p-1 rounded-2xl mb-8">
-            <button
+          <div className="grid grid-cols-2 gap-3 mb-8">
+            <motion.button
               type="button"
               onClick={() => setRole("client")}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className={`flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold transition-all ${
                 role === "client" 
-                  ? "bg-white dark:bg-neutral-600 text-indigo-600 dark:text-white shadow-sm" 
-                  : "text-neutral-500 dark:text-neutral-300 hover:text-neutral-700 dark:hover:text-white"
+                  ? "glass-card-premium text-blue-300 shadow-lg shadow-blue-500/30 border-blue-400/30" 
+                  : "glass-card text-white/60 hover:text-white/80 border-white/[0.1]"
               }`}
             >
               <User className="w-4 h-4" />
               Client
-            </button>
-            <button
+            </motion.button>
+            <motion.button
               type="button"
               onClick={() => setRole("business")}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className={`flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold transition-all ${
                 role === "business" 
-                  ? "bg-white dark:bg-neutral-600 text-indigo-600 dark:text-white shadow-sm" 
-                  : "text-neutral-500 dark:text-neutral-300 hover:text-neutral-700 dark:hover:text-white"
+                  ? "glass-card-premium text-purple-300 shadow-lg shadow-purple-500/30 border-purple-400/30" 
+                  : "glass-card text-white/60 hover:text-white/80 border-white/[0.1]"
               }`}
             >
               <Building2 className="w-4 h-4" />
               Business
-            </button>
+            </motion.button>
           </div>
 
           {/* Google OAuth Button */}
           {googleAuthAvailable && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleGoogleLogin}
-              disabled={isGoogleLoading}
-              className="w-full h-12 mb-4 bg-white dark:bg-neutral-800 border-2 border-neutral-200 dark:border-neutral-600 hover:bg-neutral-50 dark:hover:bg-neutral-700 text-neutral-700 dark:text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2"
-            >
-              {isGoogleLoading ? (
-                <div className="w-5 h-5 border-2 border-neutral-400 border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <Chrome className="w-5 h-5" />
-              )}
-              Continue with Google
-            </Button>
+            <>
+              <motion.button
+                type="button"
+                onClick={handleGoogleLogin}
+                disabled={isGoogleLoading}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full h-12 mb-4 glass-card-premium text-white rounded-2xl text-sm font-bold flex items-center justify-center gap-2 hover:border-white/[0.4] transition-all"
+              >
+                {isGoogleLoading ? (
+                  <div className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <Chrome className="w-5 h-5" />
+                )}
+                Continue with Google
+              </motion.button>
+
+              {/* Divider */}
+              <div className="flex items-center gap-4 my-6">
+                <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                <span className="text-xs text-white/50 font-medium">or</span>
+                <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+              </div>
+            </>
           )}
 
-          {/* Divider */}
-          {(googleAuthAvailable) && (
-            <div className="flex items-center gap-4 my-6">
-              <div className="flex-1 h-px bg-neutral-200" />
-              <span className="text-xs text-neutral-400 font-medium">or</span>
-              <div className="flex-1 h-px bg-neutral-200" />
-            </div>
-          )}
-
+          {/* Form */}
           <form onSubmit={handleLogin} className="space-y-5">
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-neutral-700 dark:text-neutral-300 ml-1">Email Address</label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-indigo-400" />
-                  <input
-                    required
-                    type="email"
-                    placeholder="name@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3.5 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-900 dark:text-white dark:placeholder:text-neutral-400 focus:bg-white dark:focus:bg-neutral-600 transition-all"
-                  />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-                     <div className="flex justify-between items-center ml-1">
-                      <label className="text-sm font-bold text-neutral-700 dark:text-neutral-300">Password</label>
-                      <button type="button" className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300">Forgot Password?</button>
-                    </div>
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-indigo-400" />
-                  <input
-                    required
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3.5 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-900 dark:text-white dark:placeholder:text-neutral-400 focus:bg-white dark:focus:bg-neutral-600 transition-all"
-                  />
-              </div>
-            </div>
-
-            <Button 
-              type="submit" 
-              disabled={isLoading}
-              className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-lg font-bold shadow-lg shadow-blue-200 flex items-center justify-center gap-2 mt-4"
+            {/* Email Input */}
+            <motion.div 
+              className="space-y-2.5"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
             >
-              {isLoading ? "Signing in..." : (
+              <label className="text-sm font-semibold text-white/80 ml-1 block">Email Address</label>
+              <div className="relative group">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-400/60 group-focus-within:text-blue-400 transition-colors" />
+                <input
+                  required
+                  type="email"
+                  placeholder="name@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3.5 glass-input bg-white/[0.08] rounded-2xl text-white placeholder:text-white/40 focus:bg-white/[0.15] focus:shadow-lg focus:shadow-blue-500/20"
+                />
+              </div>
+            </motion.div>
+
+            {/* Password Input */}
+            <motion.div 
+              className="space-y-2.5"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              <div className="flex justify-between items-center ml-1">
+                <label className="text-sm font-semibold text-white/80">Password</label>
+                <button type="button" className="text-xs font-semibold text-blue-400/80 hover:text-blue-300 transition-colors">
+                  Forgot?
+                </button>
+              </div>
+              <div className="relative group">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-400/60 group-focus-within:text-blue-400 transition-colors" />
+                <input
+                  required
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3.5 glass-input bg-white/[0.08] rounded-2xl text-white placeholder:text-white/40 focus:bg-white/[0.15] focus:shadow-lg focus:shadow-blue-500/20"
+                />
+              </div>
+            </motion.div>
+
+            {/* Sign In Button */}
+            <motion.button
+              type="submit"
+              disabled={isLoading}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full h-14 mt-8 glass-button rounded-2xl text-white text-lg font-bold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                  Signing in...
+                </>
+              ) : (
                 <>
                   Sign In <ArrowRight className="w-5 h-5" />
                 </>
               )}
-            </Button>
+            </motion.button>
           </form>
 
-          <div className="mt-8 pt-8 border-t border-neutral-50 text-center">
-            <p className="text-neutral-500 text-sm">
+          {/* Signup Link */}
+          <motion.div 
+            className="mt-8 pt-8 border-t border-white/10 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
+            <p className="text-white/70 text-sm">
               Don't have an account?{" "}
-              <Link to="/signup" className="text-blue-600 font-bold hover:underline">
+              <Link to="/signup" className="text-blue-400 font-bold hover:text-blue-300 transition-colors">
                 Create one now
               </Link>
             </p>
-          </div>
-        </Card>
+          </motion.div>
+        </div>
       </motion.div>
     </div>
   );

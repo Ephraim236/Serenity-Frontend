@@ -19,7 +19,7 @@ import {
   Building2,
   Store
 } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Calendar } from "../components/ui/calendar";
 import { format } from "date-fns";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";

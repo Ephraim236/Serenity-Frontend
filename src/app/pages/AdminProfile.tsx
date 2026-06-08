@@ -1,11 +1,13 @@
 ﻿import { useState, useEffect } from "react";
-import { Camera, Save, MapPin, Phone, Mail, Clock, Image as ImageIcon, Loader2 } from "lucide-react";
-import { motion } from "motion/react";
+import { Camera, Save, MapPin, Phone, Mail, Clock, Image as ImageIcon, Loader2, Trash2 } from "lucide-react";
+import { motion } from "framer-motion";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { getAuthToken } from "../contexts/AuthContext";
 import { toast } from "sonner";
 import { MapPicker } from "../components/MapPicker";
+import { ImageUpload } from "../components/ImageUpload";
+import { ImageGallery } from "../components/ImageGallery";
 
 // Get API URL and Google Maps key from environment
 const getApiUrl = () => {
@@ -147,7 +149,16 @@ export function AdminProfile() {
 
       if (response.ok) {
         const data = await response.json();
-        setProfile({ ...profile, businessImage: data.url });
+        setProfile({ 
+          ...profile, 
+          businessImage: data.url,
+          // Also add to gallery
+          businessImages: [...(profile.businessImages || []), {
+            url: data.url,
+            publicId: data.publicId,
+            filename: data.filename
+          }]
+        });
         toast.success("Image uploaded successfully");
       }
     } catch (error) {
@@ -167,6 +178,7 @@ export function AdminProfile() {
         businessEmail: profile.businessEmail,
         businessPhone: profile.businessPhone,
         businessImage: profile.businessImage,
+        businessImages: profile.businessImages,
         location: {
           address: profile.location?.address || "",
           city: profile.location?.city || "",
@@ -588,6 +600,94 @@ export function AdminProfile() {
                   )}
                 </motion.div>
               ))}
+            </div>
+          </motion.div>
+
+          {/* Business Images Gallery */}
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-neutral-100 dark:border-neutral-700"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 rounded-xl flex items-center justify-center">
+                <ImageIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-300" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Business Gallery</h2>
+                <p className="text-sm text-neutral-500 dark:text-neutral-400">Upload and manage multiple images of your business</p>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-3 block">Upload Images</label>
+                <ImageUpload
+                  onUploadSuccess={(url, publicId) => {
+                    const newImage = {
+                      url,
+                      publicId: publicId || `img_${Date.now()}`,
+                      filename: `image_${Date.now()}`
+                    };
+                    setProfile({
+                      ...profile,
+                      businessImages: [...(profile.businessImages || []), newImage]
+                    });
+                    toast.success("Image added to gallery");
+                  }}
+                  onUploadError={(error) => {
+                    toast.error(error);
+                  }}
+                  multiple={true}
+                  maxFiles={10}
+                />
+              </div>
+
+              {profile.businessImages && profile.businessImages.length > 0 && (
+                <div>
+                  <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-3 block">Gallery Preview</label>
+                  <ImageGallery
+                    images={profile.businessImages.map((img: any) => ({
+                      url: typeof img === 'string' ? img : img.url,
+                      publicId: typeof img === 'string' ? undefined : img.publicId,
+                      filename: typeof img === 'string' ? 'Image' : (img.filename || 'Image')
+                    }))}
+                    onDelete={async (publicId) => {
+                      // Remove from gallery
+                      setProfile({
+                        ...profile,
+                        businessImages: profile.businessImages.filter((img: any) => {
+                          const imgId = typeof img === 'string' ? undefined : img.publicId;
+                          return imgId !== publicId;
+                        })
+                      });
+                      
+                      // Delete from Cloudinary if available
+                      if (publicId) {
+                        const token = getAuthToken();
+                        try {
+                          await fetch(
+                            `${import.meta.env.VITE_API_URL || 'https://booqlly.vercel.app'}/api/upload/image/${publicId}`,
+                            {
+                              method: 'DELETE',
+                              headers: {
+                                Authorization: `Bearer ${token}`
+                              }
+                            }
+                          );
+                        } catch (error) {
+                          console.error('Failed to delete from Cloudinary:', error);
+                        }
+                      }
+                      toast.success("Image removed from gallery");
+                    }}
+                    editable={true}
+                  />
+                </div>
+              )}
             </div>
           </motion.div>
 
