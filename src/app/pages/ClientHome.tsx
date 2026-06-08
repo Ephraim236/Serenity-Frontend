@@ -4,7 +4,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { SearchBackdrop3D } from "../components/SearchBackdrop3D";
-import { useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Star,
   Clock,
@@ -28,7 +28,7 @@ import {
   ScrollScale,
   StaggerContainer,
   StaggerItem,
-  ParallaxScroll,
+  ParallexScroll,
   HoverLift,
   PulseAnimation
 } from "../components/ScrollAnimations";
