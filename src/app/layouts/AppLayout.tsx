@@ -14,6 +14,8 @@ import {
   Moon,
   Download,
   MapPin,
+  Phone,
+  Mail,
   LogIn
 } from "lucide-react";
 import { cn } from "../components/ui/utils";
