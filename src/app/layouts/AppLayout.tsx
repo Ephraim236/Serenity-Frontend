@@ -335,11 +335,6 @@ const bottomMobileNav = isAuthenticated
       
       <Chatbot />
 
-      <footer className="border-t bg-white py-8 dark:bg-neutral-900 dark:border-neutral-800">
-        <div className="container mx-auto px-4">
-          <p className="text-center text-neutral-500 dark:text-neutral-400 text-sm">© 2026 Booqlly. All rights reserved.</p>
-        </div>
-      </footer>
-    </div>
+      </div>
   );
 }

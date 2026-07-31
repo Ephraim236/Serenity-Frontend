@@ -126,7 +126,7 @@ What would you like to know?`,
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-6 right-6 z-50 w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-600 rounded-full shadow-lg shadow-blue-500/30 flex items-center justify-center text-white hover:shadow-xl transition-shadow ${
+        className={`fixed bottom-24 right-6 z-50 w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-600 rounded-full shadow-lg shadow-blue-500/30 flex items-center justify-center text-white hover:shadow-xl transition-shadow ${
           isOpen ? "hidden" : "flex"
         }`}
       >
@@ -146,7 +146,7 @@ What would you like to know?`,
             }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className={`fixed bottom-6 right-6 z-50 w-96 bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl border border-violet-100 dark:border-violet-800/30 flex flex-col overflow-hidden ${
+            className={`fixed bottom-24 right-6 z-50 w-96 bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl border border-violet-100 dark:border-violet-800/30 flex flex-col overflow-hidden ${
               isMinimized ? "h-auto max-h-[60px]" : "h-[500px]"
             }`}
           >

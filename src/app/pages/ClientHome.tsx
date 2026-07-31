@@ -462,18 +462,13 @@ export function ClientHome() {
                       )}
                     </div>
 
-                    <div className="flex gap-3 mt-6">
-                      <Link to={`/book?business=${business._id}`} className="flex-1">
-                        <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white rounded-xl transition-all hover:scale-105 active:scale-95">
-                          View Services & Book
-                        </Button>
-                      </Link>
-                      <Link to={`/business-map?highlight=${business._id}`} className="flex-1">
-                        <Button variant="outline" className="w-full border-indigo-200 text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all hover:scale-105 active:scale-95">
-                          View on Map
-                        </Button>
-                      </Link>
-                    </div>
+                     <div className="flex gap-3 mt-6">
+                       <Link to={`/book?business=${business._id}`} className="flex-1">
+                         <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white rounded-xl transition-all hover:scale-105 active:scale-95">
+                           View Services & Book
+                         </Button>
+                       </Link>
+                     </div>
                   </div>
                 </motion.div>
               </motion.div>
@@ -630,12 +625,6 @@ export function ClientHome() {
               </ul>
             </div>
           </div>
-          <div className="border-t border-neutral-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-neutral-400 text-sm">© 2026 Booqlly. All rights reserved.</p>
-            <div className="flex items-center gap-6 text-sm text-neutral-400">
-              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-            </div>
           </div>
         </div>
       </footer>
