@@ -13,6 +13,7 @@ import { WriteReview } from "./pages/WriteReview";
 
 import { LoginPage } from "./pages/LoginPage";
 import { SignUpPage } from "./pages/SignUpPage";
+import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
 import { NotFound } from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -138,6 +139,10 @@ export const router = createBrowserRouter([
   {
     path: "/signup",
     Component: SignUpPage,
+  },
+  {
+    path: "/forgot-password",
+    Component: ForgotPasswordPage,
   },
   {
     path: "/auth/callback",
