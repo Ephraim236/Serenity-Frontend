@@ -244,13 +244,13 @@ export function AdminProfile() {
   if (isLoading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-stone-900" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
+    <div className="min-h-screen bg-stone-50">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -284,11 +284,11 @@ export function AdminProfile() {
             }}
             transition={{ duration: 0.5, ease: "easeOut" }}
             whileHover={{ y: -4 }}
-            className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-neutral-100 dark:border-neutral-700"
+            className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-sm border border-stone-200"
           >
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 rounded-xl flex items-center justify-center">
-                <ImageIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-300" />
+              <div className="w-10 h-10 bg-stone-100 dark:bg-stone-800 rounded-xl flex items-center justify-center">
+                <ImageIcon className="w-5 h-5 text-stone-900 dark:text-indigo-300" />
               </div>
               <div>
                 <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Business Image</h2>
@@ -313,7 +313,7 @@ export function AdminProfile() {
               <div className="flex-1">
                 <label
                   htmlFor="business-image"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl cursor-pointer transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-stone-900 hover:bg-stone-800 text-white rounded-xl cursor-pointer transition-colors"
                 >
                   {isUploading ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -341,11 +341,11 @@ export function AdminProfile() {
               visible: { opacity: 1, y: 0 }
             }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-neutral-100 dark:border-neutral-700"
+            className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-sm border border-stone-200"
           >
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 rounded-xl flex items-center justify-center">
-                <ImageIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-300" />
+              <div className="w-10 h-10 bg-stone-100 dark:bg-stone-800 rounded-xl flex items-center justify-center">
+                <ImageIcon className="w-5 h-5 text-stone-900 dark:text-indigo-300" />
               </div>
               <div>
                 <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Business Information</h2>
@@ -390,11 +390,11 @@ export function AdminProfile() {
               visible: { opacity: 1, y: 0 }
             }}
             transition={{ duration: 0.55, ease: "easeOut" }}
-            className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-neutral-100 dark:border-neutral-700"
+            className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-sm border border-stone-200"
           >
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 rounded-xl flex items-center justify-center">
-                <MapPin className="w-5 h-5 text-indigo-600 dark:text-indigo-300" />
+              <div className="w-10 h-10 bg-stone-100 dark:bg-stone-800 rounded-xl flex items-center justify-center">
+                <MapPin className="w-5 h-5 text-stone-900 dark:text-indigo-300" />
               </div>
               <div>
                 <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Location</h2>
@@ -545,11 +545,11 @@ export function AdminProfile() {
               visible: { opacity: 1, y: 0 }
             }}
             transition={{ duration: 0.55, ease: "easeOut" }}
-            className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-neutral-100 dark:border-neutral-700"
+            className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-sm border border-stone-200"
           >
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 rounded-xl flex items-center justify-center">
-                <Clock className="w-5 h-5 text-indigo-600 dark:text-indigo-300" />
+              <div className="w-10 h-10 bg-stone-100 dark:bg-stone-800 rounded-xl flex items-center justify-center">
+                <Clock className="w-5 h-5 text-stone-900 dark:text-indigo-300" />
               </div>
               <div>
                 <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Service Hours</h2>
@@ -575,7 +575,7 @@ export function AdminProfile() {
                         onChange={() => handleToggleDay(day)}
                         className="sr-only peer"
                       />
-                      <div className="w-11 h-6 bg-neutral-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 dark:peer-focus:ring-indigo-800 rounded-full peer dark:bg-neutral-600 peer-checked:bg-indigo-600 transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5"></div>
+                      <div className="w-11 h-6 bg-neutral-300 peer-focus:ring-2 peer-focus:ring-stone-300 dark:peer-focus:ring-stone-700 rounded-full peer dark:bg-neutral-600 peer-checked:bg-stone-900 transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5"></div>
                     </label>
                     <span className="font-medium text-neutral-900 dark:text-white">{day}</span>
                   </div>
@@ -610,11 +610,11 @@ export function AdminProfile() {
               visible: { opacity: 1, y: 0 }
             }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg border border-neutral-100 dark:border-neutral-700"
+            className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-sm border border-stone-200"
           >
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 rounded-xl flex items-center justify-center">
-                <ImageIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-300" />
+              <div className="w-10 h-10 bg-stone-100 dark:bg-stone-800 rounded-xl flex items-center justify-center">
+                <ImageIcon className="w-5 h-5 text-stone-900 dark:text-indigo-300" />
               </div>
               <div>
                 <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Business Gallery</h2>
@@ -702,7 +702,7 @@ export function AdminProfile() {
             <Button
               onClick={handleSave}
               disabled={isSaving}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-xl"
+              className="bg-stone-900 hover:bg-stone-800 text-white px-8 py-3 rounded-xl"
             >
               {isSaving ? (
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />

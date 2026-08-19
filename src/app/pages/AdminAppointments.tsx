@@ -254,7 +254,7 @@ export function AdminAppointments() {
         
         {/* Left Sidebar - Calendar */}
         <div className="w-full lg:w-80 shrink-0 space-y-6">
-          <Card className="p-4 border-none shadow-sm bg-white rounded-3xl overflow-hidden">
+          <Card className="p-4 border border-stone-200 shadow-sm bg-white rounded-xl overflow-hidden">
             <Calendar
               mode="single"
               selected={date}
@@ -268,7 +268,7 @@ export function AdminAppointments() {
             />
           </Card>
 
-          <Card className="p-6 border-none shadow-sm bg-white rounded-3xl">
+          <Card className="p-6 border border-stone-200 shadow-sm bg-white rounded-xl">
             <h4 className="font-bold mb-4">Summary for Today</h4>
             <div className="space-y-4">
               <div className="flex justify-between items-center text-sm">
@@ -292,7 +292,7 @@ export function AdminAppointments() {
 
           {/* Pending Appointments Alert */}
           {pending > 0 && (
-            <Card className="p-4 border-none shadow-sm bg-amber-50 rounded-3xl">
+            <Card className="p-4 border border-stone-200 shadow-sm bg-amber-50 rounded-xl">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
                   <Clock className="w-5 h-5 text-amber-600" />
@@ -321,7 +321,7 @@ export function AdminAppointments() {
                 <input 
                   type="text" 
                   placeholder="Search client..." 
-                  className="pl-10 pr-4 py-2 bg-white border border-neutral-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-64"
+                   className="pl-10 pr-4 py-2 bg-white border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-stone-200 w-full md:w-64"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -337,7 +337,7 @@ export function AdminAppointments() {
             <div className="space-y-4">
               {filteredAppointments.length > 0 ? (
                 filteredAppointments.map((apt) => (
-                  <Card key={apt._id} className="p-6 border-none shadow-sm bg-white rounded-3xl group hover:ring-2 hover:ring-indigo-100 transition-all">
+                   <Card key={apt._id} className="p-6 border border-stone-200 shadow-sm bg-white rounded-xl hover:shadow-md transition-all">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                       <div className="flex items-start gap-4">
                         <div className="w-12 h-12 rounded-2xl bg-blue-50 flex flex-col items-center justify-center shrink-0">
@@ -428,7 +428,7 @@ export function AdminAppointments() {
                   </Card>
                 ))
               ) : (
-                <div className="text-center py-20 bg-white rounded-[40px] border-2 border-dashed border-neutral-100">
+                <div className="text-center py-20 bg-white rounded-xl border border-stone-200">
                   <div className="w-16 h-16 bg-neutral-50 rounded-full flex items-center justify-center mx-auto mb-4">
                     <CalendarIcon className="w-8 h-8 text-neutral-300" />
                   </div>
@@ -443,7 +443,7 @@ export function AdminAppointments() {
 
       {/* Confirm Appointment Dialog */}
       <AlertDialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
-        <AlertDialogContent className="rounded-3xl">
+        <AlertDialogContent className="rounded-xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Confirm Appointment</AlertDialogTitle>
             <AlertDialogDescription>
@@ -473,7 +473,7 @@ export function AdminAppointments() {
 
       {/* Cancel Appointment Dialog */}
       <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
-        <AlertDialogContent className="rounded-3xl">
+        <AlertDialogContent className="rounded-xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Cancel Appointment</AlertDialogTitle>
             <AlertDialogDescription>
@@ -503,7 +503,7 @@ export function AdminAppointments() {
 
       {/* Delete Appointment Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent className="rounded-3xl">
+        <AlertDialogContent className="rounded-xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Appointment</AlertDialogTitle>
             <AlertDialogDescription>

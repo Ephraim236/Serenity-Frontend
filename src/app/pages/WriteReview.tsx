@@ -152,12 +152,12 @@ export function WriteReview() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 py-8">
+    <div className="min-h-screen bg-stone-50 py-8">
       <div className="container mx-auto px-4 max-w-3xl">
         {/* Back button */}
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-neutral-600 hover:text-indigo-600 mb-6 transition-colors"
+          className="flex items-center gap-2 text-neutral-600 hover:text-stone-900 mb-6 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
           <span>Back</span>
@@ -175,7 +175,7 @@ export function WriteReview() {
 
         {/* Business Preview */}
         <div className="bg-white dark:bg-neutral-800 rounded-xl p-4 flex items-center gap-4 mb-8 shadow-sm">
-          <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
+           <div className="w-16 h-16 bg-stone-900 rounded-xl flex items-center justify-center">
             <Building2 className="w-8 h-8 text-white" />
           </div>
           <div>
@@ -193,7 +193,7 @@ export function WriteReview() {
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Star Rating */}
-          <div className="bg-white dark:bg-neutral-800 rounded-2xl shadow-lg border border-neutral-100 dark:border-neutral-700 p-8">
+          <div className="bg-white dark:bg-neutral-800 rounded-2xl shadow-sm border border-stone-200 p-8">
             <div className="text-center">
               <h2 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">
                 How was your experience?
@@ -212,7 +212,7 @@ export function WriteReview() {
               </div>
               
               {rating > 0 && (
-                <p className="text-lg font-medium text-indigo-600 dark:text-indigo-400">
+                 <p className="text-lg font-medium text-stone-900">
                   {rating === 1 && 'Poor - We can do better'}
                   {rating === 2 && 'Fair - Room for improvement'}
                   {rating === 3 && 'Good - Satisfactory'}
@@ -224,7 +224,7 @@ export function WriteReview() {
           </div>
 
           {/* Optional Tags */}
-          <div className="bg-white dark:bg-neutral-800 rounded-2xl shadow-lg border border-neutral-100 dark:border-neutral-700 p-6">
+          <div className="bg-white dark:bg-neutral-800 rounded-2xl shadow-sm border border-stone-200 p-6">
             <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-4">
               What did you like? (Optional)
             </h3>
@@ -236,8 +236,8 @@ export function WriteReview() {
                   onClick={() => handleTagToggle(tag.value)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                     selectedTags.includes(tag.value)
-                      ? 'bg-indigo-600 text-white shadow-md'
-                      : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30'
+                      ? 'bg-stone-900 text-white shadow-md'
+                      : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
                   }`}
                 >
                   {tag.label}
@@ -247,7 +247,7 @@ export function WriteReview() {
           </div>
 
           {/* Comment */}
-          <div className="bg-white dark:bg-neutral-800 rounded-2xl shadow-lg border border-neutral-100 dark:border-neutral-700 p-6">
+          <div className="bg-white dark:bg-neutral-800 rounded-2xl shadow-sm border border-stone-200 p-6">
             <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-4">
               Your Review (Optional)
             </h3>
@@ -276,7 +276,7 @@ export function WriteReview() {
             <Button
               type="submit"
               disabled={submitting || rating === 0}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+              className="flex-1 bg-stone-900 hover:bg-stone-800 text-white"
             >
               {submitting ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />

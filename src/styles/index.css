@@ -2,90 +2,81 @@
 @import './tailwind.css';
 @import './theme.css';
 
-/* Glass Morphism Effects */
-@layer components {
-  .glass-card {
-    @apply bg-white/[0.05] backdrop-blur-[20px] border border-white/[0.15] shadow-2xl;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-  }
-
-  .glass-card-premium {
-    @apply bg-gradient-to-br from-white/[0.08] via-white/[0.03] to-white/[0.01] backdrop-blur-[30px];
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 
-      0 8px 32px rgba(0, 0, 0, 0.1),
-      inset 0 1px 1px rgba(255, 255, 255, 0.3),
-      inset 0 -1px 1px rgba(0, 0, 0, 0.1);
-  }
-
-  .glass-input {
-    @apply bg-white/[0.08] backdrop-blur-sm border border-white/[0.15];
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .glass-input:focus {
-    @apply bg-white/[0.15] border-white/[0.3] shadow-lg shadow-white/[0.1];
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
-  }
-
-  .glass-button {
-    @apply relative overflow-hidden bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700;
-    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .glass-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 32px rgba(59, 130, 246, 0.6);
-  }
-
-  .glass-button::before {
+/* Subtle noise texture for realism */
+@layer base {
+  body::before {
     content: '';
-    @apply absolute inset-0 bg-gradient-to-r from-white/[0.2] to-transparent;
+    position: fixed;
+    inset: 0;
     pointer-events: none;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    z-index: 9999;
+  }
+}
+
+/* Smooth, subtle transitions */
+@layer base {
+  * {
+    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
   }
 
-  .gradient-text {
-    @apply bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent;
-    background-size: 200% 200%;
-    animation: gradient-shift 4s ease infinite;
+  button, input, select, textarea {
+    transition: all 0.2s ease;
+  }
+}
+
+/* Realistic card styling */
+@layer components {
+  .card {
+    @apply bg-white border border-stone-200 rounded-xl shadow-sm;
   }
 
-  @keyframes gradient-shift {
-    0%, 100% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
+  .card-hover {
+    @apply bg-white border border-stone-200 rounded-xl shadow-sm transition-all duration-200;
   }
 
-  .shimmer {
-    animation: shimmer 2s infinite;
-    background: linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.2) 20%,
-      rgba(255, 255, 255, 0) 100%
-    );
-    background-size: 200% 100%;
+  .card-hover:hover {
+    @apply shadow-md border-stone-300;
+  }
+}
+
+/* Custom scrollbar */
+@layer base {
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
   }
 
-  @keyframes shimmer {
-    0% {
-      background-position: -200% 0;
-    }
-    100% {
-      background-position: 200% 0;
-    }
+  ::-webkit-scrollbar-track {
+    background: transparent;
   }
 
-  /* Smooth fade-in animations */
-  .fade-in {
-    animation: fadeIn 0.6s ease-in-out;
+  ::-webkit-scrollbar-thumb {
+    background: #d6d3d1;
+    border-radius: 3px;
   }
 
-  @keyframes fadeIn {
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a8a29e;
+  }
+}
+
+/* Smooth fade-in animation */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out forwards;
+  }
+
+  @keyframes fadeInUp {
     from {
       opacity: 0;
       transform: translateY(10px);
@@ -94,19 +85,5 @@
       opacity: 1;
       transform: translateY(0);
     }
-  }
-
-  /* Glow effect for elements */
-  .glow-text {
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-  }
-
-  /* Smooth transitions */
-  * {
-    transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
-  }
-
-  button, input, select, textarea {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }

@@ -312,20 +312,20 @@ export function AdminServices() {
           <div className="flex bg-neutral-100 p-1 rounded-xl mr-2">
             <button 
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-white shadow-sm text-violet-600' : 'text-neutral-500'}`}
+              className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500'}`}
             >
               <Grid className="w-4 h-4" />
             </button>
             <button 
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-white shadow-sm text-violet-600' : 'text-neutral-500'}`}
+              className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500'}`}
             >
               <ListIcon className="w-4 h-4" />
             </button>
           </div>
           <Button
             onClick={openAddModal}
-            className="bg-violet-600 hover:bg-violet-700 text-white rounded-xl flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
+            className="bg-stone-900 hover:bg-stone-800 text-white rounded-lg flex items-center gap-2 transition-all"
           >
             <Plus className="w-4 h-4" /> Add Service
           </Button>
@@ -338,12 +338,12 @@ export function AdminServices() {
           <input 
             type="text" 
             placeholder="Search services by name or category..." 
-            className="w-full pl-12 pr-4 py-3 bg-white border border-neutral-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-violet-500"
+             className="w-full pl-12 pr-4 py-3 bg-white border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-200"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <select className="px-6 py-3 bg-white border border-neutral-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-violet-500 font-medium">
+          <select className="px-6 py-3 bg-white border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-200 font-medium">
           <option>All Categories</option>
           {CATEGORIES.map(cat => (
             <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -365,7 +365,7 @@ export function AdminServices() {
                   whileHover={{ y: -6 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                 >
-                  <Card className="p-6 border-none shadow-sm bg-white rounded-[32px] hover:shadow-xl transition-all group overflow-hidden relative">
+                   <Card className="p-6 border border-stone-200 shadow-sm bg-white rounded-xl hover:shadow-md transition-all group overflow-hidden">
               {/* Service Image */}
               <div className="relative h-40 -mx-6 -mt-6 mb-4 overflow-hidden bg-neutral-100">
                 {service.image ? (
@@ -382,14 +382,14 @@ export function AdminServices() {
               </div>
               
               <div className="flex justify-between items-start mb-6">
-                <div className="w-14 h-14 bg-violet-50 rounded-2xl flex items-center justify-center text-violet-600">
+                <div className="w-14 h-14 bg-stone-100 rounded-xl flex items-center justify-center text-stone-700">
                   <Tag className="w-7 h-7" />
                 </div>
                 <div className="flex items-center gap-2">
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="h-9 w-9 rounded-xl text-neutral-400 hover:text-violet-600 hover:bg-violet-50"
+                    className="h-9 w-9 rounded-lg text-stone-500 hover:text-stone-900 hover:bg-stone-50"
                     onClick={() => openEditModal(service)}
                   >
                     <Edit2 className="w-4 h-4" />
@@ -407,7 +407,7 @@ export function AdminServices() {
 
               <div className="space-y-2 mb-6">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold uppercase text-violet-400 tracking-wider">{service.category}</span>
+                  <span className="text-xs font-bold uppercase text-stone-500 tracking-wider">{service.category}</span>
                   <div className={`w-2 h-2 rounded-full ${service.isActive ? 'bg-green-500' : 'bg-neutral-300'}`} />
                 </div>
                 <h3 className="text-xl font-bold text-neutral-900">{service.name}</h3>
@@ -439,7 +439,7 @@ export function AdminServices() {
                <div className="mt-6">
                  <Button
                    variant="outline"
-                   className={`w-full rounded-xl h-11 text-sm font-bold ${service.isActive ? 'border-neutral-200 text-neutral-600' : 'border-violet-600 text-violet-600'}`}
+                   className={`w-full rounded-lg h-11 text-sm font-bold ${service.isActive ? 'border-stone-200 text-stone-600' : 'border-stone-900 text-stone-900'}`}
                    onClick={() => toggleStatus(service)}
                  >
                    {service.isActive ? "Disable Service" : "Enable Service"}
@@ -486,7 +486,7 @@ export function AdminServices() {
                   </td>
                   <td className="px-8 py-4 text-neutral-500 capitalize">{service.category}</td>
                   <td className="px-8 py-4 text-neutral-500">{service.duration} min</td>
-                  <td className="px-8 py-4 font-bold text-violet-600">₵{service.price}</td>
+                  <td className="px-8 py-4 font-bold text-stone-900">₵{service.price}</td>
                   <td className="px-8 py-4">
                     {service.averageRating !== undefined && service.averageRating > 0 ? (
                       <div className="flex items-center gap-2">
@@ -509,7 +509,7 @@ export function AdminServices() {
                       <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="h-9 w-9 rounded-xl text-neutral-400 hover:text-violet-600"
+                        className="h-9 w-9 rounded-lg text-stone-500 hover:text-stone-900"
                         onClick={() => openEditModal(service)}
                       >
                         <Edit2 className="w-4 h-4" />
@@ -679,7 +679,7 @@ export function AdminServices() {
               </Button>
               <Button 
                 type="submit" 
-                className="bg-violet-600 hover:bg-violet-700"
+                className="bg-stone-900 hover:bg-stone-800"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? 'Saving...' : editingService ? 'Update Service' : 'Add Service'}

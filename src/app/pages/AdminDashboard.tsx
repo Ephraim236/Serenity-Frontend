@@ -70,7 +70,6 @@ const DEFAULT_REVENUE_DATA = [
 ];
 
 const DEFAULT_STAFF: Staff[] = [];
-
 const DEFAULT_APPOINTMENTS: Appointment[] = [];
 
 export function AdminDashboard() {
@@ -178,7 +177,7 @@ export function AdminDashboard() {
       case 'completed':
         return 'bg-green-50 text-green-600';
       default:
-        return 'bg-neutral-50 text-neutral-600';
+        return 'bg-stone-100 text-stone-600';
     }
   };
 
@@ -189,13 +188,13 @@ export function AdminDashboard() {
   if (isLoading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-stone-900" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
+    <div className="min-h-screen bg-stone-50">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -205,15 +204,14 @@ export function AdminDashboard() {
           className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10"
         >
           <div>
-            <h1 className="text-3xl font-bold text-neutral-900 dark:text-white">Business Overview</h1>
-            <p className="text-neutral-500 dark:text-neutral-400">Welcome back!</p>
+            <h1 className="text-3xl font-semibold text-stone-900">Business Overview</h1>
+            <p className="text-stone-500">Welcome back!</p>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="outline" className="rounded-xl bg-white/60 backdrop-blur-sm border-white/20 shadow-sm hover:bg-white/80">Export Report</Button>
+            <Button variant="outline" className="rounded-lg border-stone-200 hover:bg-stone-50">Export Report</Button>
           </div>
         </motion.div>
 
-        {/* Stats Grid with Glass Effect */}
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -225,10 +223,10 @@ export function AdminDashboard() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10"
         >
           {[
-            { title: "Total Revenue", value: formatCurrency(stats.totalRevenue), iconBg: "from-green-500 to-green-600", iconColor: "text-green-600", statBg: "bg-green-50/80 backdrop-blur-sm", growth: stats.growth },
-            { title: "Bookings", value: stats.totalAppointments, iconBg: "from-indigo-500 to-indigo-600", iconColor: "text-green-600", statBg: "bg-green-50/80 backdrop-blur-sm", growth: stats.growth / 2 },
-            { title: "Active Clients", value: stats.activeClients, iconBg: "from-blue-500 to-blue-600", iconColor: "text-green-600", statBg: "bg-green-50/80 backdrop-blur-sm", growth: stats.growth / 3 },
-            { title: "Today's Appointments", value: stats.todayAppointments, iconBg: "from-purple-500 to-purple-600", iconColor: "text-green-600", statBg: "bg-green-50/80 backdrop-blur-sm", growth: stats.growth / 4 },
+            { title: "Total Revenue", value: formatCurrency(stats.totalRevenue), iconBg: "bg-stone-900", iconColor: "text-white", statBg: "bg-stone-100", growth: stats.growth },
+            { title: "Bookings", value: stats.totalAppointments, iconBg: "bg-stone-800", iconColor: "text-white", statBg: "bg-stone-100", growth: stats.growth / 2 },
+            { title: "Active Clients", value: stats.activeClients, iconBg: "bg-stone-700", iconColor: "text-white", statBg: "bg-stone-100", growth: stats.growth / 3 },
+            { title: "Today's Appointments", value: stats.todayAppointments, iconBg: "bg-stone-600", iconColor: "text-white", statBg: "bg-stone-100", growth: stats.growth / 4 },
           ].map((stat, idx) => (
             <motion.div
               key={stat.title}
@@ -237,24 +235,22 @@ export function AdminDashboard() {
                 visible: { opacity: 1, y: 0, scale: 1 }
               }}
               transition={{ duration: 0.5, ease: "easeOut" }}
-              whileHover={{ y: -6, scale: 1.02 }}
-              className="relative overflow-hidden rounded-3xl bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl cursor-default"
+              className="bg-white rounded-xl border border-stone-200 shadow-sm"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent" />
-              <div className="relative p-6">
+              <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
-                  <div className={`w-12 h-12 bg-gradient-to-br ${stat.iconBg} text-white rounded-2xl flex items-center justify-center shadow-lg`}>
+                  <div className={`w-12 h-12 ${stat.iconBg} text-white rounded-xl flex items-center justify-center`}>
                     {stat.title === "Total Revenue" && <span className="text-xl font-bold">₵</span>}
                     {stat.title === "Bookings" && <CalendarIcon className="w-6 h-6" />}
                     {stat.title === "Active Clients" && <Users className="w-6 h-6" />}
                     {stat.title === "Today's Appointments" && <TrendingUp className="w-6 h-6" />}
                   </div>
-                  <span className={`text-xs font-bold text-green-600 ${stat.statBg} px-2 py-1 rounded-full`}>
+                  <span className={`text-xs font-medium text-stone-600 ${stat.statBg} px-2 py-1 rounded-full`}>
                     +{typeof stat.growth === 'number' && stat.growth % 1 !== 0 ? stat.growth.toFixed(0) : stat.growth}%
                   </span>
                 </div>
-                <h3 className="text-neutral-500 dark:text-neutral-400 text-sm font-medium mb-1">{stat.title}</h3>
-                <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stat.value}</p>
+                <h3 className="text-stone-500 text-sm font-medium mb-1">{stat.title}</h3>
+                <p className="text-2xl font-semibold text-stone-900">{stat.value}</p>
               </div>
             </motion.div>
           ))}
@@ -267,14 +263,13 @@ export function AdminDashboard() {
           transition={{ duration: 0.6 }}
           className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10"
         >
-          {/* Revenue Chart with Glass Effect */}
-          <div className="lg:col-span-2 p-8 border-none shadow-xl bg-white/70 backdrop-blur-xl rounded-3xl border border-white/20 dark:bg-neutral-800/70 dark:border-neutral-700/20">
+          <div className="lg:col-span-2 p-8 border border-stone-200 shadow-sm bg-white rounded-xl">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-xl font-bold text-neutral-900 dark:text-white">Revenue Analytics</h3>
+              <h3 className="text-xl font-medium text-stone-900">Revenue Analytics</h3>
               <select 
                 value={period} 
                 onChange={(e) => setPeriod(e.target.value)}
-                className="bg-neutral-50/80 backdrop-blur-sm border border-neutral-200 text-sm font-medium p-2 rounded-lg outline-none cursor-pointer"
+                className="bg-white border border-stone-200 text-sm font-medium p-2 rounded-lg outline-none cursor-pointer"
               >
                 <option value="7">Last 7 Days</option>
                 <option value="30">Last 30 Days</option>
@@ -286,32 +281,32 @@ export function AdminDashboard() {
                 <AreaChart data={revenueData}>
                   <defs>
                     <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#1e293b" stopOpacity={0.1}/>
+                      <stop offset="95%" stopColor="#1e293b" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f5f5f5" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f5f5f4" />
                   <XAxis 
                     dataKey="name" 
                     axisLine={false} 
                     tickLine={false} 
-                    tick={{ fill: '#9ca3af', fontSize: 12 }} 
+                    tick={{ fill: '#78716c', fontSize: 12 }} 
                     dy={10}
                   />
                   <YAxis 
                     axisLine={false} 
                     tickLine={false} 
-                    tick={{ fill: '#9ca3af', fontSize: 12 }}
+                    tick={{ fill: '#78716c', fontSize: 12 }}
                   />
                   <Tooltip 
-                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}
+                    contentStyle={{ borderRadius: '8px', border: '1px solid #e7e5e4', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', background: '#ffffff' }}
                     formatter={(value: number) => [formatCurrency(value), 'Revenue']}
                   />
                   <Area 
                     type="monotone" 
                     dataKey="revenue" 
-                    stroke="#4f46e5" 
-                    strokeWidth={3}
+                    stroke="#1e293b" 
+                    strokeWidth={2}
                     fillOpacity={1} 
                     fill="url(#colorRevenue)" 
                   />
@@ -320,45 +315,42 @@ export function AdminDashboard() {
             </div>
           </div>
 
-          {/* Staff Availability with Glass Effect */}
-          <div className="p-8 border-none shadow-xl bg-white/70 backdrop-blur-xl rounded-3xl border border-white/20 dark:bg-neutral-800/70 dark:border-neutral-700/20">
-            <h3 className="text-xl font-bold mb-6 text-neutral-900 dark:text-white">Staff Utilization</h3>
+          <div className="p-8 border border-stone-200 shadow-sm bg-white rounded-xl">
+            <h3 className="text-xl font-medium mb-6 text-stone-900">Staff Utilization</h3>
             <div className="space-y-6">
               {staff.map((member) => (
                 <div key={member.name} className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="font-bold">{member.name}</span>
-                    <span className="text-neutral-500">{member.value}%</span>
+                    <span className="font-medium text-stone-900">{member.name}</span>
+                    <span className="text-stone-500">{member.value}%</span>
                   </div>
-                  <div className="h-2 w-full bg-neutral-100/80 backdrop-blur-sm rounded-full overflow-hidden">
+                  <div className="h-2 w-full bg-stone-100 rounded-full overflow-hidden">
                     <div 
-                      className={`h-full ${member.value >= 80 ? 'bg-blue-600' : member.value >= 60 ? 'bg-blue-600' : 'bg-emerald-600'}`} 
+                      className={`h-full ${member.value >= 80 ? 'bg-stone-900' : member.value >= 60 ? 'bg-stone-700' : 'bg-stone-500'}`} 
                       style={{ width: `${member.value}%` }} 
                     />
                   </div>
                 </div>
               ))}
             </div>
-            <Button variant="outline" className="w-full mt-8 rounded-xl bg-white/60 backdrop-blur-sm border-white/20 hover:bg-white/80">View Schedule</Button>
+            <Button variant="outline" className="w-full mt-8 rounded-lg border-stone-200 hover:bg-stone-50">View Schedule</Button>
           </div>
         </motion.div>
 
-        {/* Today's Appointments - Modern Mobile-Friendly Cards */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.6 }}
-          className="p-4 sm:p-6 border-none shadow-xl bg-white/70 backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-white/20"
+          className="p-4 sm:p-6 border border-stone-200 shadow-sm bg-white rounded-xl"
         >
           <div className="flex items-center justify-between mb-4 sm:mb-6">
-            <h3 className="text-lg sm:text-xl font-bold">Today's Appointments</h3>
+            <h3 className="text-lg font-medium text-stone-900">Today's Appointments</h3>
             <Link to="/admin/appointments">
-              <Button variant="link" className="text-blue-600 font-bold p-0 text-sm">View Calendar</Button>
+              <Button variant="link" className="text-stone-900 font-medium p-0 text-sm">View Calendar</Button>
             </Link>
           </div>
           
-          {/* Mobile Card View */}
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -377,29 +369,29 @@ export function AdminDashboard() {
                   visible: { opacity: 1, y: 0, scale: 1 }
                 }}
                 transition={{ duration: 0.35, ease: "easeOut" }}
-                className="bg-white dark:bg-neutral-800 rounded-xl p-4 shadow-sm border border-neutral-100 dark:border-neutral-700"
+                className="bg-white border border-stone-200 rounded-xl p-4"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-300 font-bold text-sm">
+                    <div className="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-stone-700 font-medium text-sm">
                       {apt.clientName.charAt(0)}
                     </div>
                     <div>
-                      <p className="font-bold text-neutral-900 dark:text-white text-sm">{apt.clientName}</p>
-                      <p className="text-xs text-neutral-500 dark:text-neutral-400">{apt.service}</p>
+                      <p className="font-medium text-stone-900 text-sm">{apt.clientName}</p>
+                      <p className="text-xs text-stone-500">{apt.service}</p>
                     </div>
                   </div>
-                  <span className={`px-2 py-1 rounded-full text-xs font-bold ${getStatusColor(apt.status)}`}>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(apt.status)}`}>
                     {formatStatus(apt.status)}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 text-sm text-neutral-600 dark:text-neutral-300">
+                  <div className="flex items-center gap-3 text-sm text-stone-600">
                     <div className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5 text-blue-500" />
+                      <Clock className="w-3.5 h-3.5 text-stone-500" />
                       <span>{apt.time}</span>
                     </div>
-                    <span className="text-neutral-400">•</span>
+                    <span className="text-stone-400">•</span>
                     <span>{apt.specialist}</span>
                   </div>
                   {apt.status === 'pending' && (
@@ -427,13 +419,12 @@ export function AdminDashboard() {
             ))}
             {appointments.length === 0 && (
               <div className="text-center py-8">
-                <CalendarIcon className="w-12 h-12 text-neutral-300 dark:text-neutral-600 mx-auto mb-2" />
-                <p className="text-neutral-500 dark:text-neutral-400">No appointments today</p>
+                <CalendarIcon className="w-12 h-12 text-stone-300 mx-auto mb-2" />
+                <p className="text-stone-500">No appointments today</p>
               </div>
              )}
             </motion.div>
 
-          {/* Desktop Table View */}
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -446,7 +437,7 @@ export function AdminDashboard() {
           >
             <table className="w-full">
               <thead>
-                <tr className="text-left text-neutral-400 text-sm border-b border-neutral-50 dark:border-neutral-700">
+                <tr className="text-left text-stone-400 text-sm border-b border-stone-100">
                   <th className="pb-4 font-medium">Client</th>
                   <th className="pb-4 font-medium">Service</th>
                   <th className="pb-4 font-medium">Time</th>
@@ -464,30 +455,30 @@ export function AdminDashboard() {
                       visible: { opacity: 1, x: 0 }
                     }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="border-b border-neutral-50 dark:border-neutral-700 last:border-none group"
+                    className="border-b border-stone-100 last:border-none"
                   >
                     <td className="py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-300 font-bold">
+                        <div className="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-stone-700 font-medium">
                           {apt.clientName.charAt(0)}
                         </div>
-                        <span className="font-bold text-neutral-900 dark:text-white">{apt.clientName}</span>
+                        <span className="font-medium text-stone-900">{apt.clientName}</span>
                       </div>
                     </td>
                     <td className="py-4">
-                      <span className="text-neutral-600 dark:text-neutral-300">{apt.service}</span>
+                      <span className="text-stone-600">{apt.service}</span>
                     </td>
                     <td className="py-4">
-                      <div className="flex items-center gap-2 text-neutral-600 dark:text-neutral-300">
-                        <Clock className="w-4 h-4 text-blue-500" />
+                      <div className="flex items-center gap-2 text-stone-600">
+                        <Clock className="w-4 h-4 text-stone-500" />
                         {apt.time}
                       </div>
                     </td>
                     <td className="py-4">
-                      <span className="text-neutral-600 dark:text-neutral-300">{apt.specialist}</span>
+                      <span className="text-stone-600">{apt.specialist}</span>
                     </td>
                     <td className="py-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(apt.status)}`}>
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(apt.status)}`}>
                         {formatStatus(apt.status)}
                       </span>
                     </td>

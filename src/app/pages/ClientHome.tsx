@@ -3,8 +3,6 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import { SearchBackdrop3D } from "../components/SearchBackdrop3D";
-import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Star,
   Clock,
@@ -17,7 +15,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Search,
-  Sparkles,
   Heart
 } from "lucide-react";
 import { StarRating } from "../components/StarRating";
@@ -67,7 +64,7 @@ const SERVICES = [
     category: "Spa",
     duration: "60 min",
     price: "₵850",
-    image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGElMjBmYWNpYWwlMjB0cmVhdG1lbnQlMjBwcm9mZXNzaW9uYWx8ZW58MXx8fHwxNzcxNjA3MDk4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGElMjBmYWNpYWwlMjB0cmVhdG1lbnR8ZW58MXx8fHwxNzcxNjA3MDk4fDA&ixlib=rb-4.1.0&q=80&w=1080",
     description: "Deep cleansing and rejuvenation for glowing skin.",
     averageRating: 4.8,
     reviewCount: 124
@@ -78,7 +75,7 @@ const SERVICES = [
     category: "Spa",
     duration: "90 min",
     price: "₵1,200",
-    image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGElMjBtYXNzYWdlfGVufDF8fHx8MTc3NDQwNzgwMHww&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGElMjBtYXNzYWdl8ZW58MXx8fHwxNzcxNjA3MDk4fDA&ixlib=rb-4.1.0&q=80&w=1080",
     description: "Targeted pressure to release muscle tension and stress.",
     averageRating: 4.9,
     reviewCount: 98
@@ -89,7 +86,7 @@ const SERVICES = [
     category: "Spa",
     duration: "90 min",
     price: "₵1,400",
-    image: "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYWxvbiUyMHNhbG9uJTIwYXV0aG9yJTIwaW50ZXJpb3J8ZW58MXx8fHwxNzc0NDA3ODAwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYWxvbnxlbnwxfHx8fDE3NzE2MDcwOTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
     description: "Heated stones to melt away tension and promote relaxation.",
     averageRating: 4.7,
     reviewCount: 86
@@ -146,11 +143,8 @@ export function ClientHome() {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-   const businessesRef = useRef<HTMLDivElement>(null);
-   const servicesRef = useRef<HTMLDivElement>(null);
-
-  const { scrollY } = useScroll();
-  const heroY = useTransform(scrollY, [0, 500], [0, 150]);
+  const businessesRef = useRef<HTMLDivElement>(null);
+  const servicesRef = useRef<HTMLDivElement>(null);
 
   const scrollBusinesses = (direction: "left" | "right") => {
     if (businessesRef.current) {
@@ -177,7 +171,7 @@ export function ClientHome() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % HERO_IMAGES.length);
-    }, 4000);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -186,9 +180,12 @@ export function ClientHome() {
       try {
         const response = await fetch(`${getApiUrl()}/api/business`);
         if (response.ok) {
-          const data = await response.json();
-          setBusinesses(data);
-          setFilteredBusinesses(data);
+          const data = await fetch(`${getApiUrl()}/api/business`);
+          if (response.ok) {
+            const data = await response.json();
+            setBusinesses(data);
+            setFilteredBusinesses(data);
+          }
         }
       } catch (error) {
         console.error('Failed to fetch businesses:', error);
@@ -222,214 +219,153 @@ export function ClientHome() {
   return (
     <div className="flex flex-col gap-16 pb-16">
       {/* Hero Section */}
-      <section className="relative h-[600px] flex items-center overflow-hidden">
-        <motion.div className="absolute inset-0 z-0" style={{ y: heroY }}>
-          {HERO_IMAGES.map((image, index) => (
-            <motion.div
-              key={index}
-              className="absolute inset-0"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: index === currentSlide ? 1 : 0 }}
-              transition={{ duration: 1, ease: "easeInOut" }}
-            >
-              <ImageWithFallback
-                src={image}
-                alt={`Slide ${index + 1}`}
-                className="w-full h-full object-cover"
-                loading={index === 0 ? 'eager' : 'lazy'}
-                placeholder="skeleton"
-                fetchPriority={index === 0 ? 'high' : 'low'}
-              />
-            </motion.div>
-          ))}
-          <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" />
-        </motion.div>
+      <section className="relative h-[500px] md:h-[600px] flex items-center overflow-hidden">
+        {HERO_IMAGES.map((image, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
+          >
+            <ImageWithFallback
+              src={image}
+              alt={`Slide ${index + 1}`}
+              className="w-full h-full object-cover"
+              loading={index === 0 ? 'eager' : 'lazy'}
+              placeholder="skeleton"
+              fetchPriority={index === 0 ? 'high' : 'low'}
+            />
+            <div className="absolute inset-0 bg-black/30" />
+          </div>
+        ))}
 
         <div className="container mx-auto px-4 relative z-10 text-white">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-            className="max-w-2xl"
-          >
-            <motion.span
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="inline-block py-1 px-3 rounded-full bg-indigo-600 text-xs font-bold uppercase tracking-wider mb-6"
-            >
+          <div className="max-w-2xl">
+            <span className="inline-block py-1.5 px-4 rounded-full bg-white/90 text-stone-800 text-xs font-semibold uppercase tracking-wider mb-6">
               Welcome to Booqlly
-            </motion.span>
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35, duration: 0.7 }}
-              className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
-            >
-              Luxury <span className="text-blue-400">Self-Care</span> Effortlessly Booked
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.55, duration: 0.7 }}
-              className="text-lg md:text-xl text-neutral-200 mb-8 max-w-lg"
-            >
+            </span>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+              Luxury Self-Care,<br />Effortlessly Booked
+            </h1>
+            <p className="text-lg md:text-xl text-stone-100 mb-8 max-w-lg">
               Connecting Clients and Services Effortlessly.
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.75, duration: 0.5 }}
-              className="flex flex-col sm:flex-row gap-4"
-            >
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
               <Link to="/book">
-                <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 h-14 rounded-full text-lg transition-all hover:scale-105 active:scale-95">
+                <Button size="lg" className="bg-stone-900 hover:bg-stone-800 text-white px-8 h-12 rounded-lg text-base transition-all">
                   Book an Appointment
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 px-8 h-14 rounded-full text-lg transition-all hover:scale-105 active:scale-95">
+              <Button size="lg" variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20 px-8 h-12 rounded-lg text-base transition-all">
                 View Services
               </Button>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Stats/Info - Staggered reveal */}
-      <section className="container mx-auto px-4 mt-12">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8 bg-white dark:bg-neutral-800 rounded-3xl shadow-xl -mt-24 relative z-20 border border-neutral-100 dark:border-neutral-700"
-        >
+      {/* Stats/Info */}
+      <section className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8 bg-white rounded-2xl border border-stone-200 shadow-sm -mt-20 relative z-20">
           {[
-            { icon: Star, title: "5-Star Rated", desc: "Best rated service in the city.", delay: 0.1 },
-            { icon: Clock, title: "Flexible Hours", desc: "Choose the best available time that suits your prefernce.", delay: 0.2 },
-            { icon: CheckCircle2, title: "Trusted Businesses", desc: "All our Businesses are trusted with excellent experience.", delay: 0.3 }
+            { icon: Star, title: "5-Star Rated", desc: "Best rated service in the city." },
+            { icon: Clock, title: "Flexible Hours", desc: "Choose the best available time that suits your prefernce." },
+            { icon: CheckCircle2, title: "Trusted Businesses", desc: "All our Businesses are trusted with excellent experience." }
           ].map((item, idx) => (
-            <motion.div
+            <div
               key={idx}
-              initial={{ opacity: 0, x: idx === 0 ? -20 : idx === 2 ? 20 : 0, y: idx === 1 ? 20 : 0 }}
-              whileInView={{ opacity: 1, x: 0, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: item.delay, duration: 0.5 }}
               className="flex items-start gap-4 p-4"
             >
-              <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 shrink-0">
-                <item.icon className="w-6 h-6" />
+              <div className="w-10 h-10 bg-stone-100 rounded-lg flex items-center justify-center text-stone-700 shrink-0">
+                <item.icon className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-bold text-lg mb-1">{item.title}</h3>
-                <p className="text-neutral-500 text-sm">{item.desc}</p>
+                <h3 className="font-semibold text-base mb-1">{item.title}</h3>
+                <p className="text-stone-500 text-sm">{item.desc}</p>
               </div>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </section>
 
       {/* Search Bar */}
-      <section className="container mx-auto px-4 mt-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.6 }}
-          className="relative max-w-3xl mx-auto"
-        >
-          <SearchBackdrop3D />
-          <div className="absolute left-5 top-1/2 -translate-y-1/2 z-10">
-            <Search className="w-6 h-6 text-neutral-400" />
+      <section className="container mx-auto px-4">
+        <div className="relative max-w-2xl mx-auto">
+          <div className="relative bg-white rounded-xl border border-stone-200 shadow-sm">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2">
+              <Search className="w-5 h-5 text-stone-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search for salons, spas, or services..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="relative w-full h-14 pl-12 pr-24 text-base bg-transparent rounded-xl border-0 focus:ring-2 focus:ring-stone-200 transition-all outline-none"
+            />
+            <div className="absolute right-2 top-1/2 -translate-y-1/2">
+              <button className="px-5 py-2 bg-stone-900 hover:bg-stone-800 text-white font-medium rounded-lg transition-colors">
+                Search
+              </button>
+            </div>
           </div>
-          <input
-            type="text"
-            placeholder="Search for salons, spas, or services..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="relative w-full h-16 pl-14 pr-32 text-lg bg-transparent dark:bg-transparent rounded-2xl border-2 border-neutral-100 dark:border-neutral-700 shadow-lg focus:border-blue-500 focus:ring-0 transition-all outline-none"
-          />
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 z-10">
-            <button className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors">
-              Search
-            </button>
-          </div>
-        </motion.div>
-        {searchQuery && (
-          <p className="text-center text-sm text-neutral-500 dark:text-neutral-400 mt-4">
-            {filteredBusinesses.length} result{filteredBusinesses.length !== 1 ? 's' : ''} found
-          </p>
-        )}
+          {searchQuery && (
+            <p className="text-center text-sm text-stone-500 mt-4">
+              {filteredBusinesses.length} result{filteredBusinesses.length !== 1 ? 's' : ''} found
+            </p>
+          )}
+        </div>
       </section>
 
-      {/* Businesses Section - staggered cards */}
+      {/* Businesses Section */}
       {businesses.length > 0 && (
-        <section className="container mx-auto px-4 mt-12">
-          <ScrollFadeInUp className="mb-8">
-            <h2 className="text-3xl font-bold mb-4 text-neutral-900 dark:text-white">Featured Businesses</h2>
-            <p className="text-neutral-500 dark:text-neutral-400 max-w-xl">
+        <section className="container mx-auto px-4">
+          <div className="mb-8">
+            <h2 className="text-2xl font-semibold mb-2 text-stone-900">Featured Businesses</h2>
+            <p className="text-stone-500 max-w-xl">
               Choose a business below to view their services and book an appointment.
             </p>
-          </ScrollFadeInUp>
+          </div>
 
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={{
-              hidden: {},
-              visible: { transition: { staggerChildren: 0.1 } }
-            }}
+          <div
             ref={businessesRef}
             className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory scroll-smooth -mx-4 px-4"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {filteredBusinesses.map((business) => (
-              <motion.div
+              <div
                 key={business._id}
-                variants={{
-                  hidden: { opacity: 0, y: 50 },
-                  visible: { opacity: 1, y: 0 }
-                }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
                 onClick={() => handleBusinessClick(business._id)}
                 className="flex-shrink-0 w-[70%] sm:w-[45%] md:w-[30%] snap-start cursor-pointer group"
               >
-                <motion.div
-                  whileHover={{ y: -12, scale: 1.02 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 15 }}
-                  className="bg-white dark:bg-neutral-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-neutral-100 dark:border-neutral-700"
-                >
+                <div className="bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-md transition-all duration-200">
                   <div className="h-48 overflow-hidden relative">
                     {business.image ? (
                       <img
                         src={business.image}
                         alt={business.businessName || business.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         loading="eager"
                       />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-blue-600 to-blue-600 flex items-center justify-center">
-                        <Building2 className="w-16 h-16 text-white/50" />
+                      <div className="w-full h-full bg-stone-100 flex items-center justify-center">
+                        <Building2 className="w-12 h-12 text-stone-400" />
                       </div>
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                   </div>
 
                   <div className="p-6">
-                    <div className="flex items-start gap-4 mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-600 rounded-xl flex items-center justify-center text-white shrink-0">
-                        <Building2 className="w-6 h-6" />
+                    <div className="flex items-start gap-3 mb-4">
+                      <div className="w-10 h-10 bg-stone-100 rounded-lg flex items-center justify-center text-stone-700 shrink-0">
+                        <Building2 className="w-5 h-5" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-bold text-neutral-900 dark:text-white">
+                        <h3 className="font-semibold text-lg text-stone-900">
                           {business.businessName || business.name}
                         </h3>
-                        <p className="text-neutral-500 text-sm">{business.name}</p>
+                        <p className="text-stone-500 text-sm">{business.name}</p>
                         {business.averageRating !== undefined && business.averageRating > 0 && (
                           <div className="flex items-center gap-2 mt-1">
                             <StarRating rating={business.averageRating} size={14} showValue />
-                            <span className="text-xs text-neutral-500">
+                            <span className="text-xs text-stone-500">
                               ({business.reviewCount || 0} review{business.reviewCount !== 1 ? 's' : ''})
                             </span>
                           </div>
@@ -437,52 +373,46 @@ export function ClientHome() {
                       </div>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       {business.location?.address && (
-                        <div className="flex items-center gap-2 text-neutral-500 text-sm">
-                          <MapPin className="w-4 h-4 text-violet-600" />
+                        <div className="flex items-center gap-2 text-stone-500 text-sm">
+                          <MapPin className="w-4 h-4 text-stone-400" />
                           <span>{business.location.address}, {business.location.city}</span>
                         </div>
                       )}
                       {business.businessPhone && (
-                        <div className="flex items-center gap-2 text-neutral-500 text-sm">
-                          <Phone className="w-4 h-4 text-violet-600" />
+                        <div className="flex items-center gap-2 text-stone-500 text-sm">
+                          <Phone className="w-4 h-4 text-stone-400" />
                           <span>{business.businessPhone}</span>
                         </div>
                       )}
-                      <div className="flex items-center gap-2 text-neutral-500 text-sm">
-                        <Mail className="w-4 h-4 text-violet-600" />
+                      <div className="flex items-center gap-2 text-stone-500 text-sm">
+                        <Mail className="w-4 h-4 text-stone-400" />
                         <span>{business.email}</span>
                       </div>
-                      {business.location?.latitude && business.location?.longitude && (
-                        <div className="flex items-center gap-2 text-neutral-500 text-xs">
-                          <MapPin className="w-4 h-4 text-violet-600" />
-                          <span>GPS: {business.location.latitude.toFixed(4)}, {business.location.longitude.toFixed(4)}</span>
-                        </div>
-                      )}
                     </div>
 
-                     <div className="flex gap-3 mt-6">
-                       <Link to={`/book?business=${business._id}`} className="flex-1">
-                         <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white rounded-xl transition-all hover:scale-105 active:scale-95">
-                           View Services & Book
-                         </Button>
-                       </Link>
-                     </div>
+                    <div className="flex gap-3 mt-6">
+                      <Link to={`/book?business=${business._id}`} className="flex-1">
+                        <Button className="w-full bg-stone-900 hover:bg-stone-800 text-white rounded-lg transition-all">
+                          View Services & Book
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
-                </motion.div>
-              </motion.div>
+                </div>
+              </div>
             ))}
-          </motion.div>
+          </div>
         </section>
       )}
 
-      {/* Featured Services - scrollable with stagger */}
+      {/* Featured Services */}
       <section className="container mx-auto px-4">
-        <ScrollFadeInUp className="flex items-end justify-between mb-8">
+        <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-3xl font-bold mb-4 text-neutral-900 dark:text-white">Featured Services</h2>
-            <p className="text-neutral-500 dark:text-neutral-400 max-w-xl">
+            <h2 className="text-2xl font-semibold mb-2 text-stone-900">Featured Services</h2>
+            <p className="text-stone-500 max-w-xl">
               Choose from our most popular treatments designed to enhance your natural beauty.
             </p>
           </div>
@@ -490,7 +420,7 @@ export function ClientHome() {
             <Button
               variant="outline"
               size="icon"
-              className="rounded-full transition-all hover:scale-105 active:scale-95"
+              className="rounded-lg border-stone-200"
               onClick={() => scrollServices("left")}
             >
               <ChevronLeft className="w-5 h-5" />
@@ -498,83 +428,67 @@ export function ClientHome() {
             <Button
               variant="outline"
               size="icon"
-              className="rounded-full transition-all hover:scale-105 active:scale-95"
+              className="rounded-lg border-stone-200"
               onClick={() => scrollServices("right")}
             >
               <ChevronRight className="w-5 h-5" />
             </Button>
           </div>
-        </ScrollFadeInUp>
+        </div>
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.08 } }
-          }}
+        <div
           ref={servicesRef}
           className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory scroll-smooth -mx-4 px-4"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {SERVICES.map((service) => (
-            <motion.div
+            <div
               key={service.id}
-              variants={{
-                hidden: { opacity: 0, y: 50 },
-                visible: { opacity: 1, y: 0 }
-              }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="flex-shrink-0 w-[70%] sm:w-[45%] md:w-[30%] snap-start group bg-white dark:bg-neutral-800 rounded-3xl overflow-hidden border border-neutral-100 dark:border-neutral-700 shadow-sm hover:shadow-xl transition-all duration-300"
+              className="flex-shrink-0 w-[70%] sm:w-[45%] md:w-[30%] snap-start group bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-md transition-all duration-200"
             >
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                className="relative h-64 overflow-hidden"
-              >
+              <div className="relative h-64 overflow-hidden">
                 <ImageWithFallback
                   src={service.image}
                   alt={service.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   loading="lazy"
                   placeholder="skeleton"
                 />
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full font-bold text-blue-600">
+                <div className="absolute top-4 right-4 bg-white/95 px-3 py-1.5 rounded-md font-semibold text-stone-900 text-sm">
                   {service.price}
                 </div>
-              </motion.div>
+              </div>
               <div className="p-6">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xs font-semibold px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
+                  <span className="text-xs font-medium px-2.5 py-1 bg-stone-100 text-stone-700 rounded-full">
                     {service.category}
                   </span>
-                  <div className="flex items-center gap-1 text-neutral-400 text-xs">
-                    <Clock className="w-3 h-3" />
+                  <div className="flex items-center gap-1 text-stone-400 text-xs">
+                    <Clock className="w-3.5 h-3.5" />
                     <span>{service.duration}</span>
                   </div>
                 </div>
-                <h3 className="text-xl font-bold mb-2 text-neutral-900 dark:text-white">{service.name}</h3>
+                <h3 className="text-lg font-semibold mb-2 text-stone-900">{service.name}</h3>
 
                 {service.averageRating !== undefined && service.averageRating > 0 && (
                   <div className="flex items-center gap-2 mb-2">
                     <StarRating rating={service.averageRating} size={14} showValue />
-                    <span className="text-xs text-neutral-500">
+                    <span className="text-xs text-stone-500">
                       ({service.reviewCount || 0})
                     </span>
                   </div>
                 )}
 
-                <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6 line-clamp-2">{service.description}</p>
+                <p className="text-stone-500 text-sm mb-6 line-clamp-2">{service.description}</p>
                 <Link to="/book">
-                  <Button className="w-full bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl transition-all hover:scale-105 active:scale-95">
+                  <Button className="w-full bg-stone-900 hover:bg-stone-800 text-white rounded-lg transition-all">
                     Book This
                   </Button>
                 </Link>
               </div>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </section>
     </div>
   );

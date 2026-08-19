@@ -47,7 +47,7 @@ export function PWAInstallPrompt() {
     <div className="fixed bottom-6 left-4 right-4 md:left-auto md:right-6 md:w-96 z-50 animate-slide-up">
       <div className="bg-white rounded-xl shadow-2xl border border-gray-100 p-5">
         <div className="flex items-start gap-4">
-          <div className="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+          <div className="shrink-0 w-12 h-12 rounded-xl bg-stone-900 flex items-center justify-center">
             <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>

@@ -146,7 +146,7 @@ export function BusinessMapPage() {
           </p>
           <Button
             onClick={handleRefresh}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl transition-all hover:scale-105 active:scale-95"
+             className="bg-stone-900 hover:bg-stone-800 text-white px-6 py-3 rounded-lg transition-all hover:scale-105 active:scale-95"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
             Try Again
@@ -157,7 +157,7 @@ export function BusinessMapPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
+    <div className="min-h-screen bg-stone-50">
       <div className="container mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

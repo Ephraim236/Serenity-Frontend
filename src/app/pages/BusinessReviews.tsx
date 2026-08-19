@@ -113,21 +113,21 @@ export function BusinessReviews() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
+    <div className="min-h-screen bg-stone-50">
       <div className="container mx-auto px-4 py-8">
         {/* Back button */}
         <button
           onClick={() => window.history.back()}
-          className="flex items-center gap-2 text-neutral-600 hover:text-indigo-600 mb-6 transition-colors"
+          className="flex items-center gap-2 text-neutral-600 hover:text-stone-900 mb-6 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
           <span>Back</span>
         </button>
 
         {/* Business Header */}
-        <div className="bg-white dark:bg-neutral-800 rounded-2xl shadow-lg border border-neutral-100 dark:border-neutral-700 p-6 mb-8">
+        <div className="bg-white dark:bg-neutral-800 rounded-2xl shadow-sm border border-stone-200 p-6 mb-8">
           <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-            <div className="w-24 h-24 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center">
+            <div className="w-24 h-24 bg-stone-900 rounded-2xl flex items-center justify-center">
               <Building2 className="w-12 h-12 text-white" />
             </div>
             
@@ -139,18 +139,18 @@ export function BusinessReviews() {
               <div className="flex items-center gap-4 flex-wrap">
                 {business.location?.address && (
                   <div className="flex items-center gap-2 text-neutral-600">
-                    <MapPin className="w-4 h-4 text-indigo-500" />
+                    <MapPin className="w-4 h-4 text-stone-500" />
                     <span>{business.location.address}, {business.location.city}</span>
                   </div>
                 )}
                 {business.businessPhone && (
                   <div className="flex items-center gap-2 text-neutral-600">
-                    <Phone className="w-4 h-4 text-indigo-500" />
+                    <Phone className="w-4 h-4 text-stone-500" />
                     <span>{business.businessPhone}</span>
                   </div>
                 )}
                 <div className="flex items-center gap-2 text-neutral-600">
-                  <Mail className="w-4 h-4 text-indigo-500" />
+                  <Mail className="w-4 h-4 text-stone-500" />
                   <span>{business.email}</span>
                 </div>
               </div>
@@ -167,7 +167,7 @@ export function BusinessReviews() {
 
             <div className="flex gap-2">
               <Link to={`/book?business=${businessId}`}>
-                <Button className="bg-indigo-600 hover:bg-indigo-700">
+                <Button className="bg-stone-900 hover:bg-stone-800 text-white">
                   Book Now
                 </Button>
               </Link>
@@ -176,7 +176,7 @@ export function BusinessReviews() {
         </div>
 
         {/* Reviews Section */}
-        <div className="bg-white dark:bg-neutral-800 rounded-2xl shadow-lg border border-neutral-100 dark:border-neutral-700 p-6">
+        <div className="bg-white dark:bg-neutral-800 rounded-2xl shadow-sm border border-stone-200 p-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">
               Customer Reviews ({business.reviewCount})
@@ -218,7 +218,7 @@ export function BusinessReviews() {
                   className="border-b border-neutral-100 dark:border-neutral-700 pb-6 last:border-0 last:pb-0"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold shrink-0">
+                    <div className="w-12 h-12 rounded-full bg-stone-900 flex items-center justify-center text-white font-bold shrink-0">
                       {review.user.name?.charAt(0).toUpperCase() || 'U'}
                     </div>
                     

@@ -15,7 +15,7 @@ export function NotFound() {
       </p>
       <div className="flex gap-4">
         <Link to="/">
-          <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 rounded-xl h-12">
+          <Button className="bg-stone-900 hover:bg-stone-800 text-white px-8 rounded-lg h-12">
             Back to Home
           </Button>
         </Link>

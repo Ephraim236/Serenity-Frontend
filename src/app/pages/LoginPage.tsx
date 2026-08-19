@@ -7,7 +7,9 @@ import {
   Eye,
   EyeOff,
   ArrowRight,
-  Chrome
+  Chrome,
+  User,
+  Building2
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -16,6 +18,7 @@ import { useAuth, authApi } from "../contexts/AuthContext";
 export function LoginPage() {
   const navigate = useNavigate();
   const { login, loginWithGoogle } = useAuth();
+  const [role, setRole] = useState<"client" | "business">("client");
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [googleAuthAvailable, setGoogleAuthAvailable] = useState(false);
@@ -36,6 +39,15 @@ export function LoginPage() {
     
     try {
       const response = await authApi.login(email, password);
+      
+      if (response.user.role !== role) {
+        if (response.user.role === 'business' && role === 'client') {
+          throw new Error("This account is registered as a business. Please select Business to login.");
+        } else if (response.user.role === 'client' && role === 'business') {
+          throw new Error("This account is registered as a client. Please select Client to login.");
+        }
+      }
+      
       login(response.user, response.token);
       toast.success(`Logged in successfully`);
       
@@ -65,38 +77,57 @@ export function LoginPage() {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 bg-white">
         <div className="w-full max-w-md">
           {/* Brand Logo */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex justify-center mb-8"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
-                <Scissors className="w-7 h-7" />
+          <div className="flex justify-center mb-8">
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 bg-stone-900 rounded-xl flex items-center justify-center text-white">
+                <Scissors className="w-5 h-5" />
               </div>
-              <span className="text-3xl font-bold bg-gradient-to-r from-blue-700 to-blue-700 bg-clip-text text-transparent">Booqlly</span>
+              <span className="text-2xl font-semibold text-stone-900">Booqlly</span>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
+          <div>
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-neutral-900 mb-2">Welcome back</h1>
-              <p className="text-neutral-500">Sign in to your account to continue</p>
+              <h1 className="text-2xl font-semibold text-stone-900 mb-2">Welcome back</h1>
+              <p className="text-stone-500">Sign in to your account to continue</p>
+            </div>
+
+            {/* Role Selector */}
+            <div className="grid grid-cols-2 gap-3 mb-6">
+              <button
+                type="button"
+                onClick={() => setRole("client")}
+                className={`flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-medium transition-all border ${
+                  role === "client"
+                    ? "border-stone-900 bg-stone-50 text-stone-900"
+                    : "border-stone-200 bg-white text-stone-600 hover:border-stone-300"
+                }`}
+              >
+                <User className="w-4 h-4" />
+                Client
+              </button>
+              <button
+                type="button"
+                onClick={() => setRole("business")}
+                className={`flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-medium transition-all border ${
+                  role === "business"
+                    ? "border-stone-900 bg-stone-50 text-stone-900"
+                    : "border-stone-200 bg-white text-stone-600 hover:border-stone-300"
+                }`}
+              >
+                <Building2 className="w-4 h-4" />
+                Business
+              </button>
             </div>
 
             <form onSubmit={handleLogin} className="space-y-5">
               {/* Email Input */}
               <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-semibold text-neutral-700 ml-1">
+                <label htmlFor="email" className="block text-sm font-medium text-stone-700 ml-1">
                   Email address
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
                   <input
                     id="email"
                     type="email"
@@ -104,18 +135,18 @@ export function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@example.com"
-                    className="w-full pl-12 pr-4 h-12 bg-neutral-50 border border-neutral-200 rounded-2xl text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all"
+                    className="w-full pl-12 pr-4 h-12 bg-white border border-stone-200 rounded-lg text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-200 focus:border-stone-300 transition-all"
                   />
                 </div>
               </div>
 
               {/* Password Input */}
               <div className="space-y-2">
-                <label htmlFor="password" className="block text-sm font-semibold text-neutral-700 ml-1">
+                <label htmlFor="password" className="block text-sm font-medium text-stone-700 ml-1">
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
                   <input
                     id="password"
                     type={showPassword ? "text" : "password"}
@@ -123,12 +154,12 @@ export function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-12 pr-12 h-12 bg-neutral-50 border border-neutral-200 rounded-2xl text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all"
+                    className="w-full pl-12 pr-12 h-12 bg-white border border-stone-200 rounded-lg text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-200 focus:border-stone-300 transition-all"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 h-10 w-10 flex items-center justify-center rounded-lg hover:bg-neutral-100 transition-colors"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 h-10 w-10 flex items-center justify-center rounded-lg hover:bg-stone-50 transition-colors"
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -146,25 +177,23 @@ export function LoginPage() {
                       onChange={(e) => setRememberMe(e.target.checked)}
                       className="sr-only peer"
                     />
-                    <div className="w-5 h-5 border-2 border-neutral-300 rounded-md peer-checked:bg-blue-600 peer-checked:border-blue-600 transition-all"></div>
+                    <div className="w-5 h-5 border-2 border-stone-300 rounded peer-checked:bg-stone-900 peer-checked:border-stone-900 transition-all"></div>
                     <svg className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <span className="text-sm text-neutral-600">Remember me</span>
+                  <span className="text-sm text-stone-600">Remember me</span>
                 </label>
-                <Link to="/forgot-password" className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors">
+                <Link to="/forgot-password" className="text-sm font-medium text-stone-900 hover:text-stone-700 transition-colors">
                   Forgot password?
                 </Link>
               </div>
 
               {/* Sign In Button */}
-              <motion.button
+              <button
                 type="submit"
                 disabled={isLoading}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-base font-bold flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-6"
+                className="w-full h-12 bg-stone-900 hover:bg-stone-800 text-white rounded-lg text-base font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-6"
               >
                 {isLoading ? (
                   <div className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
@@ -173,27 +202,25 @@ export function LoginPage() {
                     Sign In <ArrowRight className="w-5 h-5" />
                   </>
                 )}
-              </motion.button>
+              </button>
             </form>
 
             {/* Divider */}
             <div className="flex items-center gap-4 my-6">
-              <div className="flex-1 h-px bg-neutral-200" />
-              <span className="text-xs font-medium text-neutral-400">or</span>
-              <div className="flex-1 h-px bg-neutral-200" />
+              <div className="flex-1 h-px bg-stone-200" />
+              <span className="text-xs font-medium text-stone-400">or</span>
+              <div className="flex-1 h-px bg-stone-200" />
             </div>
 
             {/* Google Sign In */}
-            <motion.button
+            <button
               type="button"
               onClick={handleGoogleLogin}
               disabled={isGoogleLoading}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full h-12 bg-white border-2 border-neutral-200 hover:border-neutral-300 text-neutral-700 rounded-2xl text-base font-bold flex items-center justify-center gap-2 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="w-full h-12 bg-white border border-stone-200 hover:border-stone-300 text-stone-700 rounded-lg text-base font-medium flex items-center justify-center gap-2 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               {isGoogleLoading ? (
-                <div className="w-5 h-5 border-2 border-neutral-400 border-t-transparent rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-stone-400 border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
                   <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -205,66 +232,48 @@ export function LoginPage() {
                   Sign in with Google
                 </>
               )}
-            </motion.button>
+            </button>
 
             {/* Sign up link */}
-            <p className="text-center text-sm text-neutral-500 mt-8">
+            <p className="text-center text-sm text-stone-500 mt-8">
               Don't have an account?{" "}
-              <Link to="/signup" className="text-blue-600 font-semibold hover:text-blue-700 transition-colors">
+              <Link to="/signup" className="text-stone-900 font-medium hover:text-stone-700 transition-colors">
                 Sign up
               </Link>
             </p>
-          </motion.div>
+          </div>
         </div>
       </div>
 
       {/* Right side - Decorative Panel (hidden on mobile) */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700">
-        {/* Geometric gradient decorations */}
-        <div className="absolute inset-0">
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4" />
-          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-white/10 to-transparent rounded-full" />
-        </div>
-
-        {/* Subtle grid pattern */}
-        <div className="absolute inset-0 opacity-10" style={{
-          backgroundImage: 'linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)',
-          backgroundSize: '60px 60px'
-        }} />
-
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-stone-900">
         {/* Content */}
         <div className="relative z-10 flex flex-col items-center justify-center p-12 text-white">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="max-w-lg text-center"
-          >
-            <div className="w-24 h-24 mx-auto mb-8 bg-white/10 backdrop-blur-sm rounded-3xl flex items-center justify-center border border-white/20">
-              <Scissors className="w-12 h-12 text-white" />
+          <div className="max-w-lg text-center">
+            <div className="w-20 h-20 mx-auto mb-8 bg-white/10 rounded-2xl flex items-center justify-center">
+              <Scissors className="w-10 h-10 text-white" />
             </div>
-            <h2 className="text-4xl font-bold mb-4">Luxury Self-Care Effortlessly Booked</h2>
-            <p className="text-lg text-white/80 leading-relaxed">
+            <h2 className="text-3xl font-semibold mb-4">Luxury Self-Care Effortlessly Booked</h2>
+            <p className="text-base text-stone-300 leading-relaxed">
               Connecting clients and services effortlessly. Book appointments with the best businesses in Ghana.
             </p>
             <div className="flex items-center justify-center gap-8 mt-12">
               <div className="text-center">
-                <div className="text-3xl font-bold">5-Star</div>
-                <div className="text-sm text-white/70 mt-1">Rated Service</div>
+                <div className="text-2xl font-semibold">5-Star</div>
+                <div className="text-sm text-stone-400 mt-1">Rated Service</div>
               </div>
-              <div className="w-px h-12 bg-white/20" />
+              <div className="w-px h-10 bg-stone-700" />
               <div className="text-center">
-                <div className="text-3xl font-bold">24/7</div>
-                <div className="text-sm text-white/70 mt-1">Online Booking</div>
+                <div className="text-2xl font-semibold">24/7</div>
+                <div className="text-sm text-stone-400 mt-1">Online Booking</div>
               </div>
-              <div className="w-px h-12 bg-white/20" />
+              <div className="w-px h-10 bg-stone-700" />
               <div className="text-center">
-                <div className="text-3xl font-bold">100+</div>
-                <div className="text-sm text-white/70 mt-1">Businesses</div>
+                <div className="text-2xl font-semibold">100+</div>
+                <div className="text-sm text-stone-400 mt-1">Businesses</div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>
